@@ -1,0 +1,3481 @@
+<!DOCTYPE html>
+<html lang="de" id="bigHead">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MDEPro</title>
+    <style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #1e1e1e;
+        color: #f0f0f0;
+    }
+
+    header {
+        background: #33333380;
+        padding: 10px;
+        text-align: center;
+        font-size: 1.5em;
+        -webkit-backdrop-filter: blur(17.5px);
+        backdrop-filter: blur(17.5px);
+    }
+
+    .titel {
+        background: #333;
+        padding: 10px;
+        text-align: center;
+        font-size: 1.5em;
+    }
+
+    #editorContainer {
+        display: flex;
+        height: calc(100vh - 50px) !important;
+    }
+
+    .pane {
+        flex: 1;
+        margin: 5px;
+        padding: 10px;
+        background: #2e2e2e;
+        border-radius: 5px;
+        overflow-y: auto;
+    }
+
+    #markdownEditor {
+        outlxine: none;
+        white-space: pre-wrap;
+        -webkit-backdrop-filter: blur(17.5px);
+        backdrop-filter: blur(17.5px);
+    }
+    
+    :root {
+        /* Standardwerte, falls JS noch nicht geladen hat */
+        --headerText: #ffffff;
+        --editorText: #e0e0e0;
+        --previewText: #ffffff;
+        --accent: #0078d4;
+    }
+
+    #markdownEditor { 
+        color: var(--editorText); 
+        caret-color: var(--accent); /* Cursor-Farbe */
+        -webkit-backdrop-filter: blur(17.5px);
+        backdrop-filter: blur(17.5px);
+    }
+
+    #htmlPreview { 
+        color: var(--previewText); 
+        -webkit-backdrop-filter: blur(17.5px);
+        backdrop-filter: blur(17.5px);
+    }
+
+    h1, h2, .header-class { 
+        color: var(--headerText); 
+    }
+
+    /* Beispiel für Links oder Markierungen im Preview */
+    #htmlPreview a { color: var(--accent); }
+    
+    #htmlPreview details {
+        background-color: --accent;
+        }
+        
+    #htmlPreview input[type="checkbox"]{
+            background-color: --accent;
+        }
+
+    pre {
+        white-space: pre-wrap;
+        background: #1e1e1e;
+        padding: 10px;
+        border-radius: 5px;
+        position: relative;
+        margin: 10px 0;
+        overflow-x: auto;
+    }
+
+    .code-lang {
+        position: absolute;
+        top: 0;
+        left: 0;
+        font-size: 0.8em;
+        font-family: Arial, sans-serif;
+        color: #ccc;
+        padding: 2px 5px;
+        background: #2e2e2e;
+        border-bottom-right-radius: 3px;
+    }
+
+    blockquote {
+        border-left: 3px solid #555;
+        margin: 5px 0;
+        padding-left: 10px;
+        color: #ccc;
+    }
+
+    hr {
+        border: 1px solid #555;
+        margin: 10px 0;
+    }
+
+    ul, ol {
+        margin: 5px 0 5px 20px;
+    }
+
+    li {
+        margin: 3px 0;
+    }
+
+    a {
+        color: #00fdff;
+        text-decoration: none;
+        transition: 5s;
+    }
+
+    a:hover {
+        text-decoration: underline;
+        color: #00fd99;
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    button {
+        margin: 5px;
+        padding: 5px 10px;
+        background: #555;
+        color: #f0f0f0;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        }
+
+    button:hover {
+        background: #777;
+    }
+
+    ul.checklist {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    ul.checklist li {
+        margin: 5px 0;
+    }
+
+    details {
+        background: #2a2a2a80;
+        padding: 5px 10px;
+        border-radius: 5px;
+        margin: 5px 0;
+        -webkit-backdrop-filter: blur(15.5px); backdrop-filter: blur(15.5px);
+        transition: -webkit-backdrop-filter 2s;
+        transition: backdrop-filter 2s;
+    }
+
+    summary {
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    details[open] {
+        background: #3a3a3a80;
+        -webkit-backdrop-filter: blur(17.5px); backdrop-filter: blur(17.5px);
+        transition: -webkit-backdrop-filter 2s;
+        transition: backdrop-filter 2s;
+        }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 10px 0;
+        background: #2e2e2e;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: left;
+        border: 1px solid #444;
+        color: #f0f0f0;
+    }
+
+    th {
+        background: #444;
+        font-weight: bold;
+    }
+
+    td {
+        background: #333;
+    }
+
+    tr:nth-child(even) {
+        background: #3a3a3a;
+    }
+
+    tr:hover {
+        background: #555;
+    }
+
+    caption {
+        font-size: 1.2em;
+        font-weight: bold;
+        color: #f0f0f0;
+        margin-bottom: 10px;
+        }
+
+    .info-box {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        max-width: 100%;
+        box-sizing: border-box;
+        display: flex;
+    }
+
+    .info-box .icon-container {
+        margin-right: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .info-box svg {
+        width: 24px;
+        height: 24px;
+        fill: currentColor;
+    }
+
+    .info-box.info {
+        background-color: #e0f7fa;
+        border-left: 5px solid #00bcd4;
+        color: #00796b;
+        display: flex;
+    }
+
+    .info-box.info .icon-container svg {
+        fill: #00bcd4;
+    }
+
+    .info-box.warning {
+        background-color: #fff8e1;
+        border-left: 5px solid #ffeb3b;
+        color: #ff6f00;
+        display: flex;
+    }
+
+    .info-box.warning .icon-container svg {
+        fill: #ffa13b;
+    }
+        
+    .info-box.error .icon-container svg {
+        fill: #b51a00;
+    }
+
+    .inline {
+        background: #1e1e1e;
+        padding: 2px 4px;
+        border-radius: 3px;
+        font-family: monospace;
+    }
+
+    .styleLoaderInput::button {
+        background-color: blue;
+    }
+
+    @font-face {
+        font-family: monospace;
+    }
+
+    #splashText {
+        font-family: arial;
+        color: white;
+        font-size: 15px;
+        text-align: left;
+    }
+
+    .splash-container {
+        place-items: right;
+    }
+
+    .version {
+        position: absolute;
+        top: 0;
+        left: 0;
+        font-size: 15px;
+        font-family: arial;
+        color: #ccc;
+        padding: 2px 5px;
+        background: #2e2e2e;
+        border-bottom-right-radius: 3px;
+    }
+
+    .ffooter {
+        font-family: Arial, sans-serif;
+        color: #f0f0f0;
+        background-color: #0a0a0a;
+        padding: 20px;
+        margin: 20px;
+        border: 1px solid #555;
+        border-radius: 8px;
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+    }
+
+    @font-face {
+        font-family: 'sga';
+        src: url('schriften/sga.ttf');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    @font-face {
+        font-family: 'creeperface';
+        src: url('schriften/creeperface.ttf');
+        font-weight: normal;
+        font-style: normal;
+    }
+        
+    .mailt {
+        position: absolute;
+        top: 0;
+        left: 100%;
+        font-size: 15px;
+        font-family: arial;
+        padding: 2px 5px;
+        background: #2e2e2e;
+        border-bottom-right-radius: 3px;
+    }
+
+    .news {
+        margin: 5px;
+        padding: 5px 10px;
+        background: #0056d6;
+        color: white;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .news:hover {
+        margin: 5px;
+        padding: 5px 10px;
+        background: #006d8f;
+        color: white;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+.overlay {
+    animation: glassAppear 0.3s ease-out;
+    
+    box-shadow: inset 0 0 10px rgba(225, 225, 225, 0.1);
+    /* Wichtig: Hintergrund muss transparent & leicht weißlich sein */
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    
+    /* Verstärkter Blur für den "Milchglas"-Effekt */
+    backdrop-filter: blur(15px); 
+    -webkit-backdrop-filter: blur(15px); /* Safari Support */
+
+    /* Die "Glanzkante": Oben heller als unten simuliert Lichtreflexion */
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    
+    /* Weicherer, diffuser Schatten für Tiefe */
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    
+    /* Rundere Ecken wirken organischer/flüssiger */
+    border-radius: 16px;
+    
+    position: absolute;
+    width: 250px;
+    height: 150px;
+    overflow: hidden;
+    resize: both;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    z-index: 1000;
+}
+
+.overlayft {
+    animation: glassAppear 0.3s ease-out;
+    
+    box-shadow: inset 0 0 10px rgba(225, 225, 225, 0.1);
+    /* Wichtig: Hintergrund muss transparent & leicht weißlich sein */
+    background: linear-gradient(135deg, #1e1e1e, #6e6e6e);
+
+    /* Die "Glanzkante": Oben heller als unten simuliert Lichtreflexion */
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    
+    /* Weicherer, diffuser Schatten für Tiefe */
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    
+    /* Rundere Ecken wirken organischer/flüssiger */
+    border-radius: 16px;
+    
+    position: absolute;
+    width: 250px;
+    height: 150px;
+    overflow: hidden;
+    resize: both;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    z-index: 1000;
+}
+
+@keyframes glassAppear {
+    from { transform: scale(0.1); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+        
+.drag-handle {
+    /* Etwas heller abgesetzt, um die Griffigkeit zu zeigen */
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px 14px;
+    cursor: move;
+    display: flex;
+    justify-content: flex-end; /* X nach rechts schieben */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    user-select: none;
+}
+
+.overlay-content {
+    padding: 15px;
+    flex-grow: 1;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Input Feld Styling für den Glas-Look */
+.overlay-content input {
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    padding: 5px;
+    border-radius: 4px;
+    outline: none;
+}
+
+/* Schließ-Button Styling (Optional) */
+.close-btn {
+    cursor: pointer;
+    opacity: 0.6;
+    transition: 0.2s;
+}
+.close-btn:hover { opacity: 1; color: #ff5f56; }
+
+
+    .popup {
+        display: none;
+        /* Standardmäßig versteckt */
+        position: fixed;
+        /* Bleibt an Ort und Stelle */
+        z-index: 1;
+        /* Über allem anderen */
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+        /* Dunkler Hintergrund */
+    }
+
+        .wave-container {
+    display: inline-block;
+}
+
+.wave-container span {
+    display: inline-block;
+    /* 'ease-in-out' macht die Bewegung weicher, wie im Wiki */
+    animation: wiki-wave 1.2s ease-in-out infinite;
+    /* Der Zeitversatz erzeugt die Wellenform */
+    animation-delay: calc(0.1s * var(--i));
+}
+
+@keyframes wiki-wave {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); } /* Sanftes Auf-Ab */
+}
+        
+        input[type="checkbox"]{
+            background-color: #5e5e5e;
+        }
+        input[type="checkbox"]::activ{
+            background-color: #9e9e9e;
+        }
+        
+        /* Das schwebende Vorschaufenster */
+#wiki-popup {
+    position: absolute;
+    display: none;
+    background: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    padding: 15px;
+    z-index: 1000;
+    width: 250px;
+    border-radius: 8px;
+    font-family: sans-serif;
+    color: #333;
+}
+
+/* Styling für das Wort im Text */
+.wiki-preview {
+    color: #00fdff;
+    cursor: help;
+    border-bottom: 1px dashed #00fdff;
+}
+        
+        .anleitung[open]{
+            position: fixed;
+            right: 15px;
+            top: 15px;
+            background-color: #3e3e3e80;
+            width: 600px;
+            transition: width 2s;
+            height: 95%;
+            animation: sweep .5s ease-in-out;
+            -webkit-backdrop-filter: blur(17.5px); 
+            backdrop-filter: blur(17.5px);
+        }
+        
+        @keyframes sweep {
+          0%    { opacity: 0; transform: scale(0.95) translateY(-5px); }
+          70%   { transform: scale(1.02); } /* Leichter Bounce-Effekt */
+          100%  { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .anleitung, .anleitung[open="false"]{
+            position: fixed;
+            right: 15px;
+            top: 15px;
+            min-width: 250px;
+            background-color: #1e1e1e50;
+            transition: width 2s;
+            overflow-x: auto;
+            transition:height 1s cubic-bezier(0.68, -0.55, 0.50, 1.55);
+            z-index: 99999999999;
+        }
+        
+        .docs[open]{
+            position: fixed;
+            top: 5px;
+            right: 15px;
+            background-color: #2e2e2e90;
+            width: 600px;
+            transition: width 2s;
+            height: 95%;
+            animation: sweep .5s ease-in-out;
+        }
+        .docs{
+            background-color: #2e2e2e;
+            position: fixed;
+            top: 5px;
+            right: 15px;
+            transition: width 2s;
+            animation: sweep .5s ease-in-out;
+        }
+        
+        #message-container {
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          display: flex;
+          flex-direction: column;
+          z-index: 1000;
+          max-height: 80vh;
+          overflow-y: auto;
+          overflow-x: hidden;
+          padding: 10px;
+          pointer-events: auto;
+          scrollbar-width: thin;
+          scrollbar-color: rgba(255,255,255,0.2) transparent;
+        }
+
+        /* Chrome/Safari Scrollbar Styling */
+        #message-container::-webkit-scrollbar {
+          width: 6px;
+        }
+        #message-container::-webkit-scrollbar-thumb {
+          background-color: rgba(255,255,255,0.2);
+          border-radius: 10px;
+        }
+
+
+        .msg-base {
+          pointer-events: auto; /* Nachricht ist klickbar */
+          cursor: pointer;      /* Zeigt die Hand beim Drüberfahren */
+          padding: 12px 15px;
+          border-radius: 6px;
+          margin-top: 10px;
+          width: 350px;
+          word-wrap: break-word;
+          white-space: normal;
+          line-height: 1.4;
+          max-height: 250px;
+          opacity: 1;
+          overflow: hidden;
+          box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+          user-select: none;    /* Verhindert, dass Text beim schnellen Klicken markiert wird */
+
+          transition: 
+            opacity 0.4s ease, 
+            transform 0.4s ease, 
+            max-height 0.4s ease 0.2s, 
+            margin 0.4s ease 0.2s, 
+            padding 0.4s ease 0.2s,
+            background 0.3s ease;
+        }
+
+        /* Farben & Typen */
+        .message       { background: rgba(40, 40, 40, 0.95); color: white; border-left: 4px solid #555; }
+        .error-message { background: rgba(220, 53, 69, 0.9); color: white; border-left: 4px solid #ff0000; }
+        .dev-message   { background: rgba(0, 0, 0, 0.85);   color: #00ff00; border-left: 4px solid #00ff00; font-family: 'Courier New', monospace; }
+
+        /* Hover-Status */
+        .msg-base:hover {
+          transform: scale(1.03);
+          filter: brightness(1.2);
+        }
+
+        /* Ausblenden */
+        .fade-out {
+          opacity: 0 !important;
+          transform: translateX(50px) !important;
+          max-height: 0 !important;
+          margin-top: 0 !important;
+          padding-top: 0 !important;
+          padding-bottom: 0 !important;
+        }
+        button[note="hiden"] {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px; /* Abstand zwischen Icon und Text */
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            background: #4e4e4e;
+            color: black;
+            font-size: 0.9em;
+            cursor: pointer;
+        }
+        button[note="seen"] {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px; /* Abstand zwischen Icon und Text */
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            background: #6e6e6e;
+            color: black;
+            font-size: 0.9em;
+            cursor: pointer;
+        }
+        [contenteditable].innerHTML{
+            all: unset;
+        }
+        #htmlPreview.details{
+            -webkit-backdrop-filter: blur(0px); 
+            backdrop-filter: blur(0px);
+            background-color: #3a3a3a;
+        }
+    </style>
+    <script>
+        //Stylesheet Loader
+        function ladenUndAnwenden() {
+            // Das Input-Element und die ausgewählten Dateien holen
+            const inputElement = document.getElementById('styleLoaderInput');
+            const dateiListe = inputElement.files;
+
+            // Prüfen, ob überhaupt eine Datei ausgewählt wurde
+            if (dateiListe.length === 0) {
+                alert("Bitte zuerst eine CSS-Datei auswählen.");
+                return;
+            }
+
+            const datei = dateiListe[0];
+
+            // Prüfen, ob es wirklich eine CSS-Datei ist (einfache Prüfung)
+            if (!datei.name.toLowerCase().endsWith('.css')) {
+                alert("Ungültiger Dateityp. Bitte eine .css Datei wählen.");
+                return;
+            }
+
+            // Temporäre URL für die ausgewählte Datei erstellen
+            const dateiURL = URL.createObjectURL(datei);
+
+            // Ein neues <link>-Element erstellen
+            const neuesStylesheet = document.createElement('link');
+            neuesStylesheet.rel = 'stylesheet';
+            neuesStylesheet.href = dateiURL;
+            neuesStylesheet.id = 'dynamischesCSS'; // ID hinzufügen, um es später zu ersetzen
+
+            // Optional: Ein altes, dynamisch geladenes Stylesheet entfernen, bevor ein neues hinzugefügt wird
+            const altesStylesheet = document.getElementById('dynamischesCSS');
+            if (altesStylesheet) {
+                document.head.removeChild(altesStylesheet);
+            }
+
+            // Das neue Stylesheet in den <head> Bereich einfügen
+            document.head.appendChild(neuesStylesheet);
+
+            console.log("Stylesheet geladen:", datei.name);
+        }
+        /*
+        Ehemalige funktion für soundButton
+        function toggleSound(soundId) {
+            // 1. Finde das Audio-Element und den zugehörigen Button anhand der ID
+            const audioPlayer = document.getElementById('audio-' + soundId);
+            const soundButton = document.getElementById('button-' + soundId);
+
+            if (!audioPlayer || !soundButton) {
+                console.error("Audio- oder Button-Element nicht gefunden für ID:", soundId);
+                return;
+            }
+
+            // 2. Prüfe den aktuellen Status des Audio-Players
+            if (audioPlayer.paused) {
+                // Wenn es pausiert ist, starte es und ändere den Button-Text zu 'Stop'
+                audioPlayer.play();
+                soundButton.textContent = 'Stop';
+
+                // Optional: Füge einen Event-Listener hinzu, um den Button automatisch wieder auf 'Play' zu stellen, 
+                // sobald die Wiedergabe beendet ist.
+                audioPlayer.onended = function() {
+                    soundButton.textContent = 'Play';
+                };
+
+            } else {
+                // Wenn es gerade spielt, stoppe es, setze die Zeit zurück und ändere den Button-Text zu 'Play'
+                audioPlayer.pause();
+                audioPlayer.currentTime = 0; // Setzt den Sound an den Anfang zurück
+                soundButton.textContent = 'Play';
+            }
+        }
+*/
+        //Splash Texte
+        const splashes = [
+        "Hey, wehe du skipst das Tutorial!",
+        "WIR LEBEN IN EINER SIMULATION... oder doch nicht?!",
+        "Jetzt kommt (keine) Werbung",
+        "'Ralf Schumacher?!' 'Nee, Tamino'",
+        "Splash Texte, woher kenne ich sie?",
+        "Was kommt wohl als nächstes?",
+        "67!!!",
+        "Nur schlaue leute nutzen den MDEP",
+        "LOL",
+        "Es gibt über 100 Splashtexte... (nein)",
+        "Sehen sie nun: eine Schildkröte",
+        "Wie putzt sich Voldemord die Nase?",
+        "Wenn du Lightmode nutzt, sollte man dich in Zwangsjacke abführen",
+        "Neuer Slogen für Berlin: 'Berlin, immer eine Abreise wert' (nickbert YT)",
+        "Schau dir mal die Heute Show an",
+        "PC-Nerd-Tipp: such dir Hobbys, oder gleich ein Leben",
+        "Toll, demonitarisiert",
+        "www.wirkaufenKEINauto.de",
+        "öfter mal was neues",
+        "Ich mag Züge (Zug geräusch)",
+        "DU WURDEST GEHACKT (wurdest du nicht)",
+        "Mit dem MDEP wurde mal eine Präsentation über Titan gehalten (nicht der Mond sondern der (chemische-)Stoff)",
+        "Mit liebe gemacht (und backpulver)",
+        "ich bin ein 8. Klässler und code besser als manche Lehrer/-in unterrichtet",
+        "Das Bild 'grafic.png' hab ich in Sandboxls gemacht",
+        "Huldicht dem Nerd aller Nerds (mir)",
+        "<3 danke fürs nutzen",
+        "über 500 zeilen code... lol",
+        "Chuck Noris hat bis unendlich gezählt... 2 mal",
+        "Meine Lieblingsspiele: Monopoly, Mensch ärger dich nicht (man möge diese spiele einäschern!)",
+        "Technoblade will never die <3",
+        "Die Simpsons",
+        "RIP Minecraft 1.22",
+        "Ich liebe Deutsche Politik wie Monopoly",
+        "Welche Features soll ich noch adden?",
+        "YOLO",
+        "furz auf Notch, ich bin der bessere Programmierer XD",
+        "Eigendlich hieß er mal MDE",
+        "STRG + A (Alles Makieren)",
+        "STRG + C (Auswahl Kopieren)",
+        "STRG + X (Auswahl ausschneiden)",
+        "STRG + V (Kopiertes einfügen)",
+        "Alt + F4 (alle zum Lachen bringen)",
+        "Old Mac Donald had server farm",
+        "Hast du schon mal 'Inhalt löschen' ausversehen gedrückt, wenn ja... bist du blind",
+        "WAAAS, ICH SOLL VON MINECRAFT IDEEN GEKLAUT HABEN... NEEEEEIN... ICH DOCH NICHT",
+        "Zitierte Zitat Zietierungs Zitat Zitierungs Zitate...",
+        "wusstest du, es gibt eine webseite namens example.com, wenn dir das zu International ist, beispiel.de...",
+        "Hast du schon mal Futurama gesehen?",
+        "Ich bin die Stimme in deinem Kopf und ich sage dir: Spende 1.000.000.000.000.000 Bitcoin an Tamino (oder gehe damit zur verwirten Kassiererin bei Aldi und bezahle 1 Donut in Bitcoin)",
+        "über 1000 zeilen code... nice",
+        "01101100 01101111 01101100",
+        "§ dev.binaer",
+        "Lade Daten... oder versuche es zumindest.",
+        "Kaffee-Level kritisch niedrig!",
+        "Jetzt mit 100% mehr Pixeln!",
+        "Sollte das so brennen?",
+        "Hast du es schon mit Aus- und Einschalten versucht?",
+        "Einfach lächeln und winken.",
+        "Fehler erfolgreich ignoriert.",
+        "Hier könnte Ihre Werbung stehen! (nein)",
+        "Wer das liest, ist zu langsam.",
+        "Ich bin nicht faul, ich bin im Energiesparmodus.",       "Geduld ist eine Tugend, aber wer hat schon Zeit dafür?",
+        "Berechne die Antwort auf alles... 42!",
+        "Vorsicht vor dem Eichhörnchen!",
+        "Dieser Text ist biologisch abbaubar.",
+        "Pixel-Schubsen im Gange...",
+        "Warum liegt hier überhaupt Stroh?",
+        "Zu 99% fertig... seit 10 Minuten.",
+        "Ein Bug? Nein, das ist ein Feature!",
+        "Nicht füttern!",
+        "Was machst du eigentlich hier draußen?"
+        ];
+
+        function getRandomSplash() {
+            // Zufälligen Index wählen
+            const randomIndex = Math.floor(Math.random() * splashes.length);
+            // Text holen und zurückgeben
+            return splashes[randomIndex];
+
+        }
+
+        // Wenn das Dokument geladen ist, Text setzen
+        document.addEventListener('DOMContentLoaded', () => {
+            const splashElement = document.getElementById('splashText');
+            splashElement.textContent = getRandomSplash();
+        });
+
+        // Richtlinien Überprüfung
+        let userliz = localStorage.getItem('richltinien_a');
+
+        if (userliz === 'false') {
+            window.location.href = 'plugins/error/404+rl.html';
+        }
+        if (userliz === 'true') {
+            console.log("%c Richtlinien akzeptiert?","font-size: 35px; color: #0fdff0;")
+            console.log("nein? dann dann ändern sie ihre Meinung in einstellungen.html");
+        }
+        
+        //Developer FUnktionen
+        function dev(){
+            const erwListe = document.getElementById('ErwListe');
+        const knopf = document.createElement('button');
+        knopf.onclick = () => {createDevOverlay();};
+        knopf.innerText = 'Konsole';
+        erwListe.appendChild(knopf);
+            document.body.style.transition = '5s';
+            addMessage("<h3>Developer Mode Aktiviert</h3>",'dev')
+            updateStorageUsage();
+            addMessage('Aktuell genutzter Web speicher: ' + UsedLS,'dev');
+            addMessage('<button onclick="createDevOverlay()" title="Dev Overlay" style="background-color: #000; color: #00ff00; border: 1px solid #00ff00;">+</button><button onclick="X()" title="NOT STOP" style="background-color: #000; color: #ff0000; border: 1px solid #ff0000;">NOT AUS</button><button onclick="location.reload();">neu laden</button>', 'dev');
+            const splashElement = document.getElementById('splashText');
+            const header = document.getElementById('head');
+            const body = document.body;
+            const editor = document.getElementById('markdownEditor');
+            const html = document.getElementById('htmlPreview');
+            const ver = document.getElementById('version');
+            const mailt = document.getElementById('mailt');
+            const footer = document.getElementById('footer');
+
+            splashElement.style.color = '#00ff00';
+            header.style.backgroundColor = 'black';
+            header.style.color = '#00ff00';
+            body.style.backgroundColor = 'black';
+            body.style.color = '#00ff00';
+            editor.style.backgroundColor = 'black';
+            editor.style.border = '1px solid #00ff00';
+            html.style.backgroundColor = 'black';
+            html.style.border = '1px solid #00ff00';
+            ver.style.backgroundColor = 'black';
+            header.style.border = '1px solid #00ff00';
+            mailt.style.backgroundColor = 'black';
+            footer.style.backgroundColor = 'black';
+            footer.style.border = '1px solid #00ff00';
+            footer.style.color = '#00ff00';
+            footer.style.borderRadius = '10px';
+            
+            console.log('LogIn');
+            console.log('...');
+            setTimeout(() => {
+            console.log('Inizialisiere Entwickler Protokoll');
+}, 2000);
+            setTimeout(() => {
+            console.log('Starte Tools...');
+}, 4000);
+            setTimeout(() => {
+            console.log('Lizenzen werden geprüft...');
+            console.log('Developer...');
+            console.log('%c Eingeloggt','color: #00ff00; background-color: black; margin: 5px; padding: 5p;');
+}, 6000);    
+        }
+        function devPopUp() {
+            var features = 'width=600,height=400,resizable=yes';
+
+            // Fenster 1
+            window.open('plugins/dev/troll/dev.l.1.html', 'Fenster1', features);
+
+            // Fenster 2
+            window.open('plugins/dev/dev.lol.html', 'Fenster2', features);
+
+            // Fenster 3
+            window.open('plugins/dev/dev.dev.html', 'DevFenster', features);
+        }
+        
+        // Selbstzerstörungs funktion zweck: unbekannt
+        let boomInterval = null; // Globale Variable für das Intervall
+        
+        function X(text) {
+            // Erstellt ein Dummy-Intervall, um die aktuell höchste ID zu finden
+            const highestId = setInterval(() => {}, 0);
+
+            // Löscht alle IDs von 0 bis zur aktuellsten
+            for (let i = 0; i <= highestId; i++) {
+                window.clearInterval(i);
+            }
+
+            localStorage.removeItem('boom');
+            console.log(`${highestId} Prozesse wurden zwangsgestoppt.`);
+            addMessage(`${highestId} Prozesse wurden zwangsgestoppt.`, 'error');
+            alert('Emergency Stop ausgeführt.');
+        }
+
+    function selfBoom(wert) {
+    if (wert === 'ja') {
+        // SOFORTIGER WHITESCREEN (Kein faden beim Reload)
+        document.head.innerHTML = '<title>System Offline</title>';
+        document.body.innerHTML = "";
+        document.body.style.backgroundColor = 'white';
+        
+        console.clear();
+        // Die Nachricht erscheint verzögert in der Konsole für den maximalen Effekt
+        setTimeout(() => {
+            console.log("%cSystem wurde vollständig gelöscht.", "color: red; font-weight: bold; font-size: 20px;");
+            console.log("Hoffnung: 0%");
+        }, 1000);
+
+    } else if (wert === true) {
+        // Der erste Countdown (mit Hoffnung)
+        localStorage.setItem('boom', 'true');
+        document.body.innerHTML = `
+            <div style="text-align:center; padding-top:20%; font-family: sans-serif;">
+                <h1 style="color:red;">Kritischer Systemfehler</h1>
+                <p>Selbstzerstörung eingeleitet...</p>
+                <h2 id="timer" style="font-size: 5rem;">5</h2>
+            </div>`;
+        
+        let sekunden = 5;
+        const interval = setInterval(() => {
+            sekunden--;
+            const timerElement = document.getElementById('timer');
+            if (timerElement) timerElement.innerText = sekunden;
+            if (sekunden <= 0) {
+                clearInterval(interval);
+                selfBoom('ja'); 
+            }
+        }, 1000);
+    }
+}
+
+function checkBoom() {
+    let bam = localStorage.getItem('boom');
+    
+    if (bam === 'true') {
+        // Beim Reload: Sofort alles weg, ohne 5s zu warten!
+        selfBoom('ja');
+    } else if (bam === 'new') {
+        // Dein Reset-Logik bleibt gleich
+        const keys = ['richltinien_a', 'NewsletterMDEP', 'AutoSaveMDEP', 'MDEP_SaveData', 'boom'];
+        keys.forEach(k => localStorage.removeItem(k));
+        console.log('Reset erfolgreich.');
+    }
+}
+
+    document.addEventListener('DOMContentLoaded', checkBoom);
+
+        function count(zeit, obj, callback) {
+            let objekt = document.getElementById(obj);
+            let anzahl = zeit;
+
+            let counter = setInterval(() => {
+                anzahl--; // Zählt jede Sekunde runter
+
+                if (anzahl <= 0) {
+                    clearInterval(counter);
+                    callback(); // Führt die übergebene Funktion aus
+                } else {
+                    objekt.innerText = anzahl;
+                }
+            }, 1000);
+        }
+        
+    </script>
+</head>
+<body>
+    <script src="Java%20Script/zensur.js"></script><script src="Java%20Script/Taminos_Funktionen.js"></script>
+    <details style="position: fixed; top: 45px; z-index: 1000; -webkit-backdrop-filter: blur(17.5px); backdrop-filter: blur(17.5px);" class="docs"><summary>Andere Dokumente für den MDE<b title="Beste Qualität für alle und kostenlos"><a style="color: #00fdff; cursor: pointer;" href="resources/info.html">Pro</a></b></summary>
+        <div style="font-family: monospace">
+            <a href="einstellungen.html">├ Einstellungen</a><br>
+            <a href="richtlinien.html">├ Richtlinien</a><br>
+            <a href="for%20dev's.html">├ Entwickler Sheet</a><br>
+            <a target="_blank" href="plugins">├- PlugIns 📁</a><br>
+            <a target="_blank" href="../">..</a>
+            <!--<a href="einstellungen.html">├ </a><br>-->
+            <hr>
+            <br>
+            <span>weitere Unterordner ect. werden bald folgen</span>
+            <br>
+            <alpha-tag></alpha-tag>
+        </div>
+    </details>
+    <header id="head">
+        <span id="MDE">MDE</span><span><b title="Beste Qualität für alle und kostenlos"><a id="Pro" style="color: #00fdff; cursor: pointer;" href="resources/info.html">Pro</a></b></span>
+
+        <div class="splash-container">
+            <h1 id="splashText">Irgendwas ist schiefgelaufen (Ich bin es nicht)</h1>
+        </div>
+        <div class="version" id="version">
+            Version 18.0.0
+            <br>
+            <a id="mail" class="mail" href="mailto:mdep-tps.design@gmx.de?subject=Fehlermeldung&">Fehler Melden</a>
+            <a id="mailt" class="mailt" href="mailto:mdep-tps.design@gmx.de?subject=Fehlermeldung&">Feedback geben</a>
+        </div>
+            <div style="text-align: left; font-size: 15px;">
+    <div id="datum">Fehler</div>
+    <div id="uhr">Fe:hl:er</div>
+    <div id="event-banner"></div>
+        </div>
+    </header>
+    <div id="message-container"></div>
+    <details class="anleitung"><summary>Befehle</summary>
+            <div style="overflow-x: auto;"><table style="width:100%;border-collapse:collapse;border:1px solid #ccc;"><thead><tr><th style="border:1px solid #ccc;padding:8px;text-align:left;">Befehl</th><th style="border:1px solid #ccc;padding:8px;text-align:left;">Ergebnis</th></tr></thead><tbody><tr><td style="border:1px solid #ccc;padding:8px;">+[Text]</td><td style="border:1px solid #ccc;padding:8px;">Header (Überschriftsbox)</td></tr><tr><td style="border:1px solid #ccc;padding:8px;"># Text - ###### Text</td><td style="border:1px solid #ccc;padding:8px;">Sehr große Überschrift bis kleine Überschrift</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">---</td><td style="border:1px solid #ccc;padding:8px;">normale Trennlinie</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">-.-/-=-</td><td style="border:1px solid #ccc;padding:8px;">gepunktete Trennlinie</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">===</td><td style="border:1px solid #ccc;padding:8px;">doppelte Trennlinie</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">> Text</td><td style="border:1px solid #ccc;padding:8px;">Zitate (können beliebig oft erweitert werden (>>>>>>...))</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">**Text**</td><td style="border:1px solid #ccc;padding:8px;">fetter Text</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">*Text*</td><td style="border:1px solid #ccc;padding:8px;">kursiver/schräger Text</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">~Text~</td><td style="border:1px solid #ccc;padding:8px;">durchgestrichener Text</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">:{Text}</td><td style="border:1px solid #ccc;padding:8px;">hochgestellter Text</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">.{Text}</td><td style="border:1px solid #ccc;padding:8px;">untergestellter Text</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">'Text'</td><td style="border:1px solid #ccc;padding:8px;">Inline Code</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">[Text](https://link.com)</td><td style="border:1px solid #ccc;padding:8px;">Link</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">#[link]</td><td style="border:1px solid #ccc;padding:8px;">Bild</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">#[link, 100px, 100px]</td><td style="border:1px solid #ccc;padding:8px;">Bild mit angegebenen Maßen</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">( ) Text</td><td style="border:1px solid #ccc;padding:8px;">Checkliste (leer)</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">(x) Text</td><td style="border:1px solid #ccc;padding:8px;">Checkliste (Abgehackt)</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">+{Titel <br> Inhalt}</td><td style="border:1px solid #ccc;padding:8px;">Ausklappbarer Inhalt</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">$#00ff00{Text}</td><td style="border:1px solid #ccc;padding:8px;">Farbiger Text mit Hex-Farbcode</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">$"Schriftart"{Text}</td><td style="border:1px solid #ccc;padding:8px;">Text mit besonderer Schriftart</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">- Text</td><td style="border:1px solid #ccc;padding:8px;">Liste mit Punkten</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">!{Text}</td><td style="border:1px solid #ccc;padding:8px;">Warnbox</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">i{Text}</td><td style="border:1px solid #ccc;padding:8px;">Infobox</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">(!){Text}</td><td style="border:1px solid #ccc;padding:8px;">Fehlerbox</td></tr><tr><td style="border:1px solid #ccc;padding:8px;"><[Link]</td><td style="border:1px solid #ccc;padding:8px;">Musik-leiste</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">#{link}</td><td style="border:1px solid #ccc;padding:8px;">Video-Wiedergabe Fenster</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">§[titel]</td><td style="border:1px solid #ccc;padding:8px;">PlugIn Fenster</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">;+</td><td style="border:1px solid #ccc;padding:8px;">Overlay Knopf (nicht durchsichtig)</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">;-</td><td style="border:1px solid #ccc;padding:8px;">Overlay Knopf (etwas transparent aber unlesbar)</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">;#</td><td style="border:1px solid #ccc;padding:8px;">Overlay mit Whiteboard</td></tr><tr><td style=" background-color: #000; color: #00ff00; border:1px solid #ccc;padding:8px;">;°</td><td style="background-color: #000; color: #00ff00; border:1px solid #ccc;padding:8px;">Developer Konsole</td></tr><tr><td style="background-color: #000; color: #ff0000; border:1px solid #ccc;padding:8px;">;!</td><td style=" background-color: #000; color: #ff0000;border:1px solid #ccc;padding:8px;">Notfall Abschaltungs knopf</td></tr><tr><td style="background-color: #ff0000; color: #fff; border:1px solid #ccc;padding:8px;">;?</td><td style="background-color: #ff0000; color: #fff; border:1px solid #ccc;padding:8px;">MDEPro zerstörender Knopf (warum? KEINE AHNUNG)</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">?{Text}</td><td style="border:1px solid #ccc;padding:8px;">Kommentar der ausgeblendet wird</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">-[Footer]</td><td style="border:1px solid #ccc;padding:8px;">Gegenstück zum Header</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">+Details+=Text=</td><td style="border:1px solid #ccc;padding:8px;">Details die beim hovern angezeigt werden</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">§(Password)</td><td style="border:1px solid #ccc;padding:8px;">Password gesicherter Sichtschutz im Export</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">?=text=</td><td style="border:1px solid #ccc;padding:8px;">Text der Versteckt wird bis er angeklickt wird</td></tr></tbody></table></div>
+        </details>
+    <div id="rl">
+        <span>
+            Akzeptieren sie die 
+            <a href="richtlinien.html">Richtlinien</a>?</span>
+        <button onclick="rl_true()">Ja</button>
+        <button onclick="rl_false()">Nein</button>
+    </div>
+    <script>
+        // iframe check
+        if (window.self !== window.top) {
+            //fI = frameInfo
+            const fI = document.createElement('div');
+            fI.innerHTML = '<h1 style="color: #fff;">Der MDEP wird aktuelle über ein iframe angezeigt!<h1><a onclick="document.getElementById(`infoFrame`).remove()">x</a>';
+            fI.style = 'position: fixed; left: 20px; bottom: 20px; background-color: #ff000080; border: 2.5px soid #990000; padding: 5px;';
+            fI.id = 'infoFrame';
+            document.body.appendChild(fI);
+        } else {
+            console.log("Diese Seite ist das Hauptfenster.");
+        }
+        
+        // Mitteilungen
+        function addMessage(text, type = 'normal') {
+            const container = document.getElementById('message-container');
+            if (!container) return;
+
+            const maxMessages = 15; // Limit für gleichzeitige Nachrichten
+
+            // 1. BEGRENZUNG: Älteste Nachricht entfernen, wenn Limit erreicht
+            const currentMessages = container.getElementsByClassName('msg-base');
+            if (currentMessages.length >= maxMessages) {
+                const oldest = currentMessages[0];
+                if (!oldest.classList.contains('fade-out')) {
+                    oldest.classList.add('fade-out');
+                }
+            }
+
+            // 2. ERSTELLEN: Element generieren und Klassen zuweisen
+            const msg = document.createElement('div');
+            msg.classList.add('msg-base');
+
+            // Typ-Zuweisung (deine Logik optimiert)
+            if (type === 'error') {
+                msg.classList.add('error-message');
+            } else if (type === 'dev') {
+                msg.classList.add('dev-message');
+            } else {
+                msg.classList.add('message');
+            }
+
+            msg.innerHTML = text;
+            container.appendChild(msg);
+
+            // 3. SCROLLEN: Automatisch zum neuesten Eintrag springen
+            container.scrollTo({
+                top: container.scrollHeight,
+                behavior: 'smooth'
+            });
+
+            let timer;
+
+            // 4. TIMER-LOGIK (Auto-Vanish)
+            const startTimeout = () => {
+                timer = setTimeout(() => {
+                    msg.classList.add('fade-out');
+                }, 5000);
+            };
+
+            const stopTimeout = () => {
+                clearTimeout(timer);
+                msg.classList.remove('fade-out');
+            };
+
+            // 5. INTERAKTIONEN (Hover & Klick)
+            msg.addEventListener('mouseenter', stopTimeout);
+            msg.addEventListener('mouseleave', startTimeout);
+
+            msg.addEventListener('click', () => {
+                msg.classList.add('fade-out');
+            });
+
+            // 6. CLEANUP: Element aus dem DOM löschen, wenn Animation fertig
+            msg.addEventListener('transitionend', (e) => {
+                // Wir prüfen auf 'max-height', da dies das Ende der Nachrück-Animation markiert
+                if (msg.classList.contains('fade-out') && e.propertyName === 'max-height') {
+                    msg.remove();
+                }
+            });
+
+            // Startschuss für den 5-Sekunden-Timer
+            startTimeout();
+        }
+        function clearAllSmooth() {
+          const container = document.getElementById('message-container');
+          const messages = container.querySelectorAll('.msg-base');
+
+          messages.forEach(msg => {
+            msg.classList.add('fade-out');
+            // Der Cleanup (msg.remove) passiert automatisch durch den 
+            // 'transitionend'-Listener, den wir in addMessage eingebaut haben!
+          });
+        }
+
+// --- TEST-AUFRUFE ---
+         addMessage("System bereit");
+         if(navigator.onLine === false)addMessage("Keine Verbindung zum Internet Herstellbar", "error");
+         addMessage('<span style="color:red;">Debug: </span>Developer Mode <a style="color: blue;" onclick="dev()">inaktiv</a>', "dev");
+
+        addMessage('<h2>Willkommen im MDE<span><b title="Beste Qualität für alle und kostenlos"><a style="color: #00fdff; cursor: pointer;" href="resources/info.html">Pro</a></b></span></h2>','normal');
+
+    // Richtlinien Akzeptiert oder Nicht
+    function rl_true() {
+        localStorage.setItem('richltinien_a', 'true');
+        alert('Vielen dank, diese Anzeige verschwindet beim nächsten Neuladen')
+    }
+
+    function rl_false() {
+        localStorage.setItem('richltinien_a', 'false');
+        alert('Schade das es Menschen gibt die sich nicht an reglen halten wollen!');
+        location.reload();
+    }
+
+    const rl = document.getElementById('rl'); // ID deines Buttons
+    if (localStorage.getItem('richltinien_a') === 'true') {
+        // Wenn der Schlüssel 'buttonGesehen' existiert und 'true' ist,
+        // verstecke den Button oder entferne ihn
+        rl.style.display = 'none'; // Verstecken
+    }
+    </script>
+
+    <div id="editorContainer">
+        <div class="pane" id="markdownEditor" contenteditable="true" spellcheck="false">+[Header]
+# Überschrift
+## Etwas kleinere Überschrift
+### Unterschrift?
+---
+Trennlinien
+===
+> Zitat
+>> Zitierte Zitate
+>>> Zitierte Zitat Zitate
+>>>> Zitierte Zitat Zitate Zitierung
+>>>>> Zitierte Zitat Zitate Zitierungs Zitate
+-.-
+**Fetter Text**
+*Schräger Text*
+~Durchgestrichender Text~
+:{hochgestellter Text} Normaler Text .{Runtergestellter Text}
+'inline Code'
+[Links](https://beispiel.de)
+#[Bilder/grafic.png]
+#[Bilder/grafic.png, 250px, 100px]
+( ) listen
+(x) listen
++{Ausklappbarer
+Inhalt}
+$#0ffd0f(Farbiger Text)
+$"creeperface"{Andere Schriftarten}
+- Liste Mit Punkten
+1. Liste mit Nummern
+!{Warnboxen}
+i{Infoboxen}
+(!){Fehlerboxen}
+<[sound/minecraft], Musik Button mit Titel anzeige
+#{video/video.mp4}
+§[liste] PlugIns
+;+
+;#
+;-
+?{Unsichtbare} Kommentare
+-[Footer]
++Details+=Hover Informationen=
+===
+Du willst dem Editor einen Neuen Look verpassen, dann gehe in den Hauptordner und suche die Datei ['einstellungen.html'](einstellungen.html) und aktiviere Stylesheets, du weist nicht wie man die Stylesheets aktiviert? Dann ziehe dein Mauszeiger über das Wort 'Stylesheets' und warte kurz bis der Anleitungstext zusehen ist.</div>
+        <div class="pane" id="htmlPreview"></div>
+    </div>
+    <div style="text-align:center; margin:10px;" id="footer">
+        <form><input placeholder="MUSS AUSGEFÜLLT SEIN!!!" id="InputTitle" required style="border: none; border-radius: 10px; padding: 5px; width: 175px;" value="exportiertes MDEP-Dokument"></input></form><button id="exportBtn" title="Wer das ließt ist doof XD">Als HTML exportieren</button><button id="exporttxt" title="Wer das ließt ist doof XD">Als TXT exportieren</button>
+        <button style="margin: 5px; padding: 5px 10px; background: #ff0000; color: #fff; border: none; border-radius: 3px; cursor: pointer;" id="wegbtn" onclick="weg()">Inhalt löschen</button>
+        <button onclick="stoppen()" style="display: none; background-color: green; color: white; border: 2px solid black; width: 100%; text-align: center; font-size: 35px; font-family: monospace;" id="stop">Löschen Abbrechen</button>
+        <hr>
+        <br>
+        <label>
+            <input type="checkbox" id="autosave" onclick="alert('btte schreibe oder lösche noch etwas im editor um die änderung zu speichern')"> Autosave aktivieren
+        </label>
+        <button onclick="saveMDE()">Speichern</button><button onclick="loadMDE()">Laden</button>
+        <button style="margin: 5px; padding: 5px 10px; background: #ff0000; color: #fff; border: none; border-radius: 3px; cursor: pointer;" onclick="deleteMDE()">Speicher löschen</button>
+        <span id="speicherUsed" style="color: #00ff00;">-----</span>
+        <div id="stw">
+        <hr>
+        <h4>Stoppuhr</h4>
+        <button onclick="timeron()">Stoppuhr zeigen</button>
+        <button onclick="timeroff()">Stoppuhr verstecken</button>
+        <iframe src="plugins/stoppuhr.html" style="width: auto; height: auto; border: none; display: none;" id="timer" sandbox="allow-scripts allow-same-origin"></iframe>
+        </div>
+        <div id="sh">
+            <hr>
+            <h4 title="Klicke auf 'Datei Auswählen' suche im Ordner 'Designs' Wähle eine Datei aus und Klicke auf 'Stylesheet anwenden'" style="cursor: help;">Stylesheets</h4>
+            <input type="file" class="styleLoaderInput" id="styleLoaderInput" accept=".css" title="Hier klicken um design zu importieren">
+            <button onclick="ladenUndAnwenden()" onclick="dateiAuswaehlen()">Stylesheet anwenden</button>
+            <details>
+                <summary>Design-Einstellungen <beta-tag></beta-tag></summary>
+                <span>Textfarbe Editor:</span>
+                <input type="color" onchange="updateStyle('editorText', this.value)">
+                <hr>
+                <br>
+                <span>Textfarbe Preview:</span>
+                <input type="color" onchange="updateStyle('previewText', this.value)">
+                <hr>
+                <br>
+                <span>Akzentfarbe:</span>
+                <input type="color" onchange="updateStyle('accent', this.value)">
+                <hr>
+                <br>
+                <span>Schriftart:</span>
+                <select onchange="updateFont(this.value)">
+                    <option value="arial">Standart (Arial)</option>
+                    <option value="sga">Magisch (Sandart Galaktik Alphabet)</option>
+                    <option value="sans-serif">Modern (Sans-Serif)</option>
+                    <option value="serif">Klassisch (Serif)</option>
+                    <option value="monospace">Coder (Monospace)</option>
+                </select>
+                <hr>
+                <br>
+                <span>Hintergrund (Bild oder Video):</span>
+                <br>
+                <!--<input type="file" accept="image/*,video/*" onchange="changeBGI(event)">-->
+                <input type="url" id="linkToPic"></input>
+                <button id="PickPic">Öffnen</button>
+                <hr>
+                <br>
+                <span>Hintergrund-Farbe (Fallback):</span>
+                <br>
+                <!-- Falls kein Bild gewählt ist oder als Akzent -->
+                <input type="color" onchange="changeBackgroundColor(this.value)">
+                <hr>
+                <br>
+                <br>
+                <span>Editor und Header Transparens: </span>
+                <input step="1" min="0" max="100" value="100" id="opacitySliderE" type="range"><br><span id="trspE">100</span>
+                <hr>
+                <span>Preview Transparens</span>
+                <input step="1" min="0" max="100" value="100" id="opacitySliderP" type="range"><br><span id="trspP">100</span>
+                <hr>
+                <br>
+                <button onclick="resetCSSop()">Alles auf Standard zurücksetzen</button>
+        </details>
+        </div>
+        <div id="jsDiv">
+            <hr>
+            <h4>JS Erweiterungen</h4>
+
+            <input type="file" id="fileInput" accept=".js">
+            <button id="activateBtn" disabled>Script aktivieren</button>
+            <input type="password" id="devCode" accept="/image">
+            <button onclick="checkDevCode()">Dev Code aktivieren</button>
+            <p id="status">Status: Warte auf Datei...</p>
+        </div>
+        <div id="AddIns">
+            <hr>
+            <h4>Erweiterugen</h4>
+            <br>
+            <details id="ErwListe">
+                
+            </details>
+        </div>
+        <br>
+        <div id="newsBtn">
+            <hr>
+            <a onclick="news()" id="newsBtn" href="mailto:mdep-tps.design.de?subject=Newsletter&body=Ich,%20[Ihr%20Name],%20möchte%20das%20sie%20mir%20in%20folgenden%20Situationen%20den%20Newsletter%20erhalten%0D%0A%0D%0Abitte%20ausfüllen:%0D%0A[%20]%20wenn%20es%20ein%20großes%20Update%20gibt%0D%0A[%20]%20wenn%20es%20neue%20features%20gibt%0D%0A[%20]%20bei%20jedem%20Update%0D%0A%0D%0AMit%20freundlichen%20Grüßen%20[Ihr%20Name]" class="news" style="display:inline-block;font-family:sans-serif;font-size:12px;font-weight:bold;line-height:40px;text-align:center;text-decoration:none;width:200px;height:40px;border-radius:4px;;-webkit-text-size-adjust:none;mso-hide:all;">
+                Newsletter Abonieren</a>
+            <button onclick="news()">nein danke</button>
+            <br>
+            <span>wenn du kostenlos abonierst, wirst du über tolle Feautures Informiert und bekommst am schnellsten neue Versionen, falls du Nein Danke drückst, musst du einmal neuladen um diese meldung nicht mehr sehen zu müssen</span>
+        </div>
+    </div>
+    </div>
+    <script>/*
+        // URL auslesung
+        const queryString = window.location.search;
+
+        if (queryString) {
+            console.log("Parameter gefunden:", queryString);
+
+            const urlParams = new URLSearchParams(queryString);
+            const MDE = document.getElementById('MDE');
+            const Pro = document.getElementById('Pro');
+
+            if (urlParams.has('info')) {
+                let url = JSON.parse(urlParams.get('info'));
+                console.log("Info ist: " + url);
+                if(url.includes('developer') === true){
+                    console.log('deveoper ist enthalten');
+                    let readyUrl = url;
+                    readyUrl = readyUrl.replaceAll('developer/','');
+                    console.log(readyUrl);
+                    MDE.innerText = 'Willkommen ';
+                    Pro.innerText = readyUrl;
+                } else if(url.includes('selfboom') === true){
+                    console.log('selfboom ist enthalten');
+                    let readyUrl = url;
+                    readyUrl = readyUrl.replaceAll('selfboom/','');
+                    setTimeout(() => {selfBoom(true);},readyUrl);
+                }
+            }
+        } else {
+            console.log("Keine Parameter in der URL.");
+        }
+        */
+        // Ordner Symbol
+        class symOrd extends HTMLElement {
+          constructor() {
+            super();
+            this.innerHTML = '<svg xmlns="http://w3.org" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #666;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>';
+          }
+        }
+        customElements.define('symbol-ordner', symOrd);
+        
+        // Alpha Funktions Tags
+        class alpha extends HTMLElement {
+          constructor() {
+            super();
+            this.innerHTML = '<a href="resources/informations%20sheets/alpha.html" style="color: #00fdff;">[ALPHA]</a>';
+          }
+        }
+        customElements.define('alpha-tag', alpha);
+        
+        // Beta Funktions Tags
+        class beta extends HTMLElement {
+          constructor() {
+            super();
+            this.innerHTML = '<a href="resources/informations%20sheets/beta.html" style="color: #a96800;">[BETA]</a>';
+          }
+        }
+        customElements.define('beta-tag', beta);
+        
+        // Gamma Funktions Tags
+        class gamma extends HTMLElement {
+          constructor() {
+            super();
+            this.innerHTML = '<a href="resources/informations%20sheets/gamma.html" style="color: #999999;">[GAMMA]</a>';
+          }
+        }
+        customElements.define('gamma-tag', gamma);
+        // --- 1. SETTINGS MANAGEMENT ---
+        const getSettings = () => {
+            const defaultSet = {
+                ET: 100, PT: 100, 
+                font: 'arial',
+                colors: {
+                    headerText: '#ffffff',
+                    editorText: '#ffffff',
+                    previewText: '#ffffff',
+                    accent: '#0078d4',
+                }
+            };
+            const saved = localStorage.getItem('cSet');
+            return saved ? JSON.parse(saved) : defaultSet;
+        };
+
+        const saveSettings = (settings) => localStorage.setItem('cSet', JSON.stringify(settings));
+        
+        function changeBackgroundColor(color) {
+            document.body.style.backgroundColor = color;
+            localStorage.setItem('customBackground', color);
+        }
+        
+        const sliderE = document.getElementById('opacitySliderE');
+        const sliderP = document.getElementById('opacitySliderP');
+        const trspE = document.getElementById('trspE');
+        const trspP = document.getElementById('trspP');
+        
+        document.getElementById('PickPic').addEventListener('click', (e) => {
+            urlToPic();
+            addMessage('<span style="color:red;">Debug: </span>Bild/Video/Gif angewendet','dev');
+        });
+        function urlToPic(){
+            const pic = document.getElementById('linkToPic').value.trim();
+            document.body.style.backgroundSize = "cover",
+            document.body.style.backgroundAttachment = "fixed",
+            document.body.style.backgroundPosition = "center",
+            document.body.style.backgroundColor = "transparent"
+            document.body.style.backgroundImage = `url('${pic}')`;
+            localStorage.setItem('customBackgroundImage', pic);
+        }
+
+        function updateOpacityEditor() {
+                const alpha = parseFloat(sliderE.value) / 100;
+                editor.style.backgroundColor = `rgba(46, 46, 46, ${alpha})`;
+                trspE.innerText = (alpha*100).toFixed(0) + '%';
+                
+                const settings = getSettings();
+                settings.ET = alpha;
+                saveSettings(settings);
+            }
+
+        function updateOpacityPreview() {
+            const alpha = parseFloat(sliderP.value) / 100;
+            preview.style.backgroundColor = `rgba(46, 46, 46, ${alpha})`;
+            trspP.innerText = (alpha*100).toFixed(0) + '%';
+            
+            const settings = getSettings();
+            settings.PT = alpha;
+            saveSettings(settings);
+        }
+
+        sliderE.addEventListener('input', () => applyOpacity('ET',sliderE.value));
+        sliderP.addEventListener('input', () => applyOpacity('PT',sliderP.value));// Falls PT nicht funktioniert nutze EP
+        
+        function changeBGI(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const result = e.target.result;
+                    localStorage.setItem('backgroundType', file.type);
+                    localStorage.setItem('customBackgroundImage', result);
+                    applyBackground(result);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function applyBackground(data) {
+            const type = localStorage.getItem('backgroundType') || '';
+            let videoBg = document.getElementById('bg-video');
+
+            if (type.startsWith('video/')) {
+                // Falls Bild-Hintergrund aktiv war, entfernen
+                document.body.style.backgroundImage = 'none';
+
+                if (!videoBg) {
+                    videoBg = document.createElement('video');
+                    videoBg.id = 'bg-video';
+                    Object.assign(videoBg.style, {
+                        position: 'fixed', right: '0', bottom: '0',
+                        minWidth: '100%', minHeight: '100%', zIndex: '-5',
+                        objectFit: 'cover'
+                    });
+                    videoBg.autoplay = videoBg.loop = videoBg.muted = true;
+                    videoBg.setAttribute('playsinline', ''); // Wichtig für Mobile/Safari
+                    document.body.appendChild(videoBg);
+                }
+                videoBg.src = data;
+            } else {
+                // Falls Video-Hintergrund aktiv war, entfernen
+                if (videoBg) videoBg.remove();
+
+                Object.assign(document.body.style, {
+                    backgroundImage: `url(${data})`,
+                    backgroundSize: "cover",
+                    backgroundAttachment: "fixed",
+                    backgroundPosition: "center",
+                    backgroundColor: "transparent" // Damit die Hintergrundfarbe nicht durchscheint
+                });
+            }
+        }
+
+        // --- 2. ZENTRALE UPDATE FUNKTIONEN ---
+
+        function updateStyle(property, value) {
+            // CSS Variable setzen
+            document.documentElement.style.setProperty(`--${property}`, value);
+
+            const settings = getSettings();
+
+            // Fallunterscheidung: Transparenz vs. Textfarben
+            if (property === 'ET' || property === 'PT') {
+                settings[property] = value;
+                applyOpacity(property, value);
+            } else {
+                settings.colors[property] = value;
+            }
+
+            saveSettings(settings);
+        }
+        
+        function applyOpacity(type, value) {
+            const settings = getSettings();
+
+            const id = (type === 'ET') ? 'markdownEditor' : 'htmlPreview';
+            const element = document.getElementById(id);
+            const alpha = parseFloat(value) / 100;
+            if(type === 'ET'){
+                settings.ET = value;
+            }else if(type === 'PT'){
+                settings.PT = value;
+            }
+
+            if (element) {
+                element.style.backgroundColor = `rgba(46, 46, 46, ${alpha})`;
+            }
+
+            const labelId = (type === 'ET') ? 'trspE' : 'trspP';
+            const label = document.getElementById(labelId);
+            if (label) label.innerText = `${value}%`;
+            saveSettings(settings);
+
+        }
+        
+        function updateFont(fontName) {
+            document.body.style.fontFamily = fontName;
+            const settings = getSettings();
+            settings.font = fontName;
+            saveSettings(settings);
+        }
+
+        // --- 3. LADEN BEIM START ---
+
+        function loadAllSettings() {
+            const settings = getSettings();
+
+            // 1. Schriftart
+            document.body.style.fontFamily = settings.font;
+
+            // 2. Farben & CSS Variablen
+            for (const [key, value] of Object.entries(settings.colors)) {
+                document.documentElement.style.setProperty(`--${key}`, value);
+            }
+
+            // 3. Transparenz & Slider UI synchronisieren
+            // Wir nutzen hier konsequent settings.ET und settings.PT
+            applyOpacity('ET', settings.ET);
+            applyOpacity('PT', settings.PT);
+
+            const sE = document.getElementById('opacitySliderE');
+            const sP = document.getElementById('opacitySliderP');
+
+            if(sE) sE.value = settings.ET;
+            if(sP) sP.value = settings.PT;
+
+            // 4. Hintergrund (Bild/Video/Farbe)
+            const savedBgI = localStorage.getItem('customBackgroundImage');
+            if (savedBgI){
+                document.getElementById('linkToPic').value = savedBgI;
+                urlToPic();
+            }
+        }
+
+        function resetCSSop() {
+            const keys = ['cSet', 'customBackground', 'customBackgroundImage', 'backgroundType'];
+            keys.forEach(k => localStorage.removeItem(k));
+            alert('Bitte Neuladen um die änderung anzuwenden, ohne Auto Save oder manuelles specihern gehen alle Texte aus dem Editor Feld verloren!');
+        }
+
+        // Event-Listener statt window.onload für bessere Kompatibilität
+        document.addEventListener('DOMContentLoaded', loadAllSettings);
+
+        // Developer Codes
+        function checkDevCode(){
+            const devCode = document.getElementById('devCode').value.trim();
+
+            if (devCode === 'Jonas_Stinkt'){
+                editor.innerText = 'Hallo Tamino';
+                addMessage("Hallo Tamino, schön sie zu sehen");
+                updatePreview();
+                setTimeout(() => {
+                    editor.innerText = '.';
+                    updatePreview();
+                }, 2000);
+                setTimeout(() => {
+                    editor.innerText = '.';
+                    updatePreview();
+                }, 2500);
+                setTimeout(() => {
+                    editor.innerText = '...';
+                    updatePreview();
+                }, 3000);
+                setTimeout(() => {
+                    editor.innerText = '# Ininialiesiere Schröder Protokoll';
+                    updatePreview();
+                }, 4000);
+                setTimeout(() => {
+                    dev()
+                    createDevOverlay()
+                    editor.innerText = `# DevMode aktiviert
+Konsolen Tool geladen`;
+                    updatePreview();
+                    document.body.style.transition = '5s';
+                    document.body.style.rotate = '360deg';
+                    setTimeout(() => {
+                        document.body.style.rotate = '0deg';
+                    }, 5000);
+                    document.body.style.filter.invert = '100%';
+                    setTimeout(() => {
+                        document.body.style.filter.invert = '0%';
+                    }, 5000);
+                }, 5000);
+            } else if (devCode === 'dev'){
+                editor.innerText = 'Hello Developer';
+                addMessage("Devcode aktiviert",'dev');
+                updatePreview();
+                dev('true');
+            } else if (devCode === 'Lock_System'){
+                addMessage("Selbstzerstörung aktiviert, sie werden den MDEPro in zukunft nicht mehr in diesem Browser auf diesem Gerät öffnen können, es sei den sie sind oder kennen einen Web-Developer!",'error');
+                document.body.style.backgroundColor = 'black';
+                document.head.innerHTML = '';
+                document.body.innerHTML = '<h1 style="text-align: center; color: white;">SYSTEM SPERRE WIRD AKTIVIERT, MDEP ZUGANG GESPERRT</h1>';
+                setTimeout(() => {
+                    document.body.innerHTML = '';
+                }, 2000);
+                setTimeout(() => {
+                    selfBoom(true);
+                }, 2500);
+            } else if (devCode === 'Javis'){
+                addMessage("Javis wird aktiviert",'dev');
+                const screen = document.createElement('div');
+                screen.style = 'border: 2.5px solid #00fffd; background-color: #00fffd99; position: fixed; left: 0px; top: 0px; width: 100%; height: 100%; font-family: monospace; padding: 15px; color: black; border-radius: 10px;';
+                screen.innerHTML = '<h2>Hallo, ich bin Javis    <button onclick="document.body.lastChild.remove()" style="border: none; background: none; color: red;">X</button></h2><br><h3>Alle verfügbaren Daten wurden abgerufen:</h3><br><h4>app Version: ' + navigator.appVersion + '<br>Sprache: ' + navigator.language + '<br>Online: ' + navigator.onLine + '<br> Plattform: ' + navigator.platform + '<br> User-Agent: ' + navigator.userAgent + '<br> App Name:' + navigator.appName + ' ' + navigator.appCodeName + '</h4>';
+                document.body.appendChild(screen);
+            } else if (devCode === 'remove'){
+                const re = document.createElement('div');
+                re.style = 'border: 2.5px solid #000; position: fixed; left: 10px; top: 10px; font-family: monospace; padding: 15px; color: black; border-radius: 10px; background-color: #fff;';
+                re.innerHTML = `<button style="background-color: transparent; color: red;" onclick="closen('reWind')">x</button><span>Entfernen eines Tags: </span><br><input id="reInp"></input><br><button style="background-color: #ff0000; color: white;" onclick="removen()">remove</button>`;
+                re.id = 'reWind';
+                document.body.appendChild(re);
+            } else if (devCode === 'change'){
+                const ch = document.createElement('div');
+                ch.style = 'border: 2.5px solid #000; position: fixed; left: 10px; top: 10px; font-family: monospace; padding: 15px; color: black; border-radius: 10px; background-color: #fff;';
+                ch.innerHTML = `<div id="chWind">
+    <button style="background-color: transparent; color: red; border: none; cursor: pointer; float: right;" onclick="closen('AE-Wind')">x</button>
+    <span><b>Objekt bearbeiten:</b></span><br><br>
+    
+    <input id="chID" placeholder="ID des Elements" style="width: 90%; margin-bottom: 5px;"><br>
+    
+    <select id="chType" style="width: 95%; margin-bottom: 5px;">
+        <option value="attr">Attribut (z.B. class, title, data-*)</option>
+        <option value="prop">Eigenschaft (z.B. innerHTML, value, style.color)</option>
+    </select><br>
+    
+    <input id="chAt" placeholder="Name (z.B. class)" style="width: 90%; margin-bottom: 5px;"><br>
+    <input id="chVal" placeholder="Neuer Wert" style="width: 90%; margin-bottom: 10px;"><br>
+    
+    <button style="background-color: #ff0000; color: white; border: none; padding: 5px 15px; cursor: pointer;" onclick="change()">Änderung anwenden</button>
+</div>`;
+                ch.id = 'AE-Wind';
+                document.body.appendChild(ch);
+            }
+        }
+        function closen(tag){
+            document.querySelector('div[id="' + tag + '"]').remove();
+        }
+        function removen(){
+            const item = document.getElementById('reInp').value.trim();
+            document.querySelector('*[id="' + item + '"]').remove();
+            close('reWind');
+        }
+       function change() {
+            const id = document.getElementById('chID').value.trim();
+            const type = document.getElementById('chType').value;
+            const key = document.getElementById('chAt').value.trim();
+            const val = document.getElementById('chVal').value.trim();
+
+            const target = document.getElementById(id);
+
+            if (!target) {
+                addMessage("Element mit ID '" + id + "' nicht gefunden!",'error');
+                return;
+            }
+
+            if (type === 'attr') {
+                target.setAttribute(key, val);
+            } else {
+                target[key] = val;
+            }
+        }
+        
+        const speicherUsed = document.getElementById('speicherUsed');
+        let UsedLS = 0;
+        
+        updateStorageUsage();
+        
+        setInterval(updateStorageUsage, 60000);
+        
+        function updateStorageUsage() {
+            let total = 0;
+            for (let x in localStorage) {
+                if (localStorage.hasOwnProperty(x)) {
+                    total += (localStorage[x].length * 2);
+                }
+            }
+            const limit = 5 * 1024 * 1024; 
+            const percent = ((total / limit) * 100).toFixed(2);
+            speicherUsed.innerText = `${percent}% Belegt`;
+            speicherUsed.style.color = percent > 80 ? "#f44336" : "#888";
+            UsedLS = percent + '%';
+        }
+        
+    // Einstellungen
+    const settings = JSON.parse(localStorage.getItem('editorSettings')) || {};
+
+    // Definition der Logik: [Element-ID, Setting-Key, Invertiert?]
+    const UI_MAP = [
+        ['jsDiv', 'Java_Script', false],
+        ['sh',    'sh', true],
+        ['head',  'header', true],
+        ['stw',   'sw', true]
+    ];
+
+    UI_MAP.forEach(([id, key, inverted]) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+
+        const val = settings[key]; // Ist 1, 0 oder undefined
+
+        // Logik: Wenn kein Wert da ist oder 0 (bei nicht-invertiert), dann 'none'
+        const isVisible = inverted ? (val !== 1) : (val === 1);
+
+        el.style.display = isVisible ? 'block' : 'none';
+
+        //if (val === undefined) console.warn(`Option ${key} nicht gesetzt!`);
+    });
+
+    const timer = document.getElementById('timer');
+    function timeron() {
+        timer.style.display = "flex";
+    }
+    function timeroff() {
+        timer.style.display = "none";
+    }
+
+    const fileInput = document.getElementById('fileInput');
+    const activateBtn = document.getElementById('activateBtn');
+    const status = document.getElementById('status');
+
+    let scriptContent = "";
+        
+    const picInput = document.getElementById('picInput');
+    let currentFileName = "";
+
+    // 1. Datei einlesen
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file)
+            return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            scriptContent = event.target.result;
+            activateBtn.disabled = false;
+            status.innerText = "Status: Datei bereit zum Aktivieren.";
+        };
+        reader.readAsText(file);
+    });
+
+    // 2. Script in DOM injizieren
+    activateBtn.addEventListener('click', () => {
+        if (!scriptContent)
+            return;
+
+        try {
+            const scriptElement = document.createElement('script');
+            scriptElement.type = 'text/javascript';
+            scriptElement.text = scriptContent;
+
+            document.body.appendChild(scriptElement);
+
+            status.style.color = "green";
+            status.innerText = "Status: Script wurde aktiviert!";
+            activateBtn.disabled = true; // Verhindert mehrfaches Ausführen
+        } catch (err) {
+            status.style.color = "red";
+            status.innerText = "Fehler: " + err.message;
+        }
+    });
+        
+    const stop = document.getElementById('stop');
+    let timerId; // Variable global definieren, damit beide Funktionen darauf zugreifen können
+    
+    // inhalt lösch Funktion
+    function weg() {
+        let time = 5;
+        alert('Nach Schließen dieser Nachricht haben Sie 5 Sekunden Zeit bis die Seite neugestartet wird, falls das ausversehen war und sie "zufällig" auf einen roten Knopf mit der Aufschrift Inhalt löschen gekommen sind, drücken sie den GRÜNEN knopf der gleich erscheinen wird, sollten sie Farbenblind sein, Pech.');
+        stop.style.display = "flex";
+        console.log("Reload-Timer gestartet");
+        
+        function viewCount(){
+            time = time - 1;
+            console.log(time + ' sekunde übrig');
+        }
+        
+        setInterval(viewCount, 1000);
+        
+        // TimerID der globalen Variable zuweisen
+        timerId = setTimeout(() => {
+            location.reload(); // Dieser Befehl führt das Neuladen tatsächlich aus
+        }, 5000);
+    }
+    
+    // Inhalt löschen stoppen
+    function stoppen() {
+        if (timerId) {
+            clearTimeout(timerId); // Stoppt den Timer
+            stop.style.display = "none"; // Versteckt den Button wieder
+            addMessage('Löschen abgebrochen!');
+        }
+    }
+        
+    // Uhr Zeit und events
+    function updateDashboard() {
+        let jetzt = new Date();
+        const stunde = jetzt.getHours(); 
+
+        // 1. Uhrzeit aktualisieren
+        document.getElementById('uhr').innerText = jetzt.toLocaleTimeString('de-DE');
+
+        // 2. Datum aktualisieren
+        const datumOptionen = { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' };
+        document.getElementById('datum').innerText = jetzt.toLocaleDateString('de-DE', datumOptionen);
+
+        // 3. Event-Logik mit "if" (Format: "Tag.Monat.")
+        const tagMonat = jetzt.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' }) + ".";
+        const banner = document.getElementById('event-banner');
+
+        // Deine Events hier definieren:
+        if (tagMonat === "02.01.") { // Heute (Beispiel für den 2. Januar)
+            banner.style.display = "block";
+            banner.innerText = "✨ Neujahrs-Woche! ✨";
+        } else if (tagMonat === "24.12.") {
+            banner.style.display = "block";
+            banner.innerText = "🎄 Frohe Weihnachten!";
+        } else {
+            banner.style.display = "none";
+        }
+// Die aktuelle Stunde als Zahl extrahieren (0-23)
+                
+                
+        if(!banner) return;
+        setInterval(() => {if(!document.getElementById('uhr')) return;},900);
+        
+    }
+        // Events
+        function checkTime(){
+            const jetzt = new Date();
+            const stunde = jetzt.getHours(); 
+            const sleep = sessionStorage.getItem('schlaf');
+            const body = document.body;
+            const banner = document.getElementById('event-banner');
+            
+            if (stunde >= 3 && stunde >= 23 ) {
+
+                if (sleep === 'true') {
+                    console.warn('GEH SCHLAFEN');
+                    document.body.style.backgroundColor = '#ff0000';
+                    banner.style.display = 'block';
+                    banner.innerText = 'GEH SCHLAFEN';
+                    banner.style.color = '#ff0000';
+                    banner.style.fontSize = '25px';
+
+                } else if (sleep === 'nein') {
+                    document.body.style.backgroundColor = '#1e1e1e';
+                    banner.style.display = 'none';
+
+                }
+            }
+             else {
+                banner.style.display = 'none';
+
+            }
+        }
+
+    setInterval(checkTime, 60000);
+    setInterval(updateDashboard, 1000);
+    updateDashboard();
+    checkTime();
+
+    function createOverlay() {
+    const overlay = document.createElement("div");
+    overlay.className = "overlay";
+
+    // Struktur erstellen
+    overlay.innerHTML = `
+        <div class="drag-handle">
+            <span class="close-btn" onclick="this.parentElement.parentElement.remove()">✕</span>
+        </div>
+        <div class="overlay-content">
+            <input style="border: none; background-color: transparent; color: white;"></input>
+        </div>
+    `;
+
+    overlay.style.top = (Math.random() * 200 + 50) + "px";
+    overlay.style.left = (Math.random() * 200 + 50) + "px";
+
+    document.body.appendChild(overlay);
+    
+    // Wir übergeben das Element UND das Handle für die Drag-Logik
+    makeElementDraggable(overlay, overlay.querySelector(".drag-handle"));
+    overlay.style.zIndex = 1000 + document.querySelectorAll('.overlay').length;
+
+}
+
+function createOverlayft() {
+    const overlay = document.createElement("div");
+    overlay.className = "overlayft";
+
+    // Struktur erstellen
+    overlay.innerHTML = `
+        <div class="drag-handle">
+            <span class="close-btn" onclick="this.parentElement.parentElement.remove()">✕</span>
+        </div>
+        <div class="overlay-content">
+            <input style="border: none; background-color: transparent; color: white;"></input>
+        </div>
+    `;
+
+    overlay.style.top = (Math.random() * 200 + 50) + "px";
+    overlay.style.left = (Math.random() * 200 + 50) + "px";
+
+    document.body.appendChild(overlay);
+    
+    // Wir übergeben das Element UND das Handle für die Drag-Logik
+    makeElementDraggable(overlay, overlay.querySelector(".drag-handle"));
+    overlay.style.zIndex = 1000 + document.querySelectorAll('.overlay').length;
+
+}
+
+function createDevOverlay() {
+    const overlay = document.createElement("div");
+    overlay.className = "overlay";
+    
+    // --- Start: Konsolen-Umleitung ---
+const originalLog = console.log;
+const originalError = console.error;
+const originalWarn = console.warn;
+
+// Hilfsfunktion zum Umleiten
+const hookConsole = (originalFn, color) => {
+    return function(...args) {
+        // 1. In deine UI-Konsole schreiben
+        const message = args.map(arg => 
+            typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+        ).join(' ');
+        
+        logToUI(`[System] ${message}`, color);
+        
+        // 2. Den originalen Befehl trotzdem ausführen (für F12-Konsole)
+        originalFn.apply(console, args);
+    };
+};
+
+// Standard-Methoden überschreiben
+console.log = hookConsole(originalLog, '#888');       // Grau für normale Logs
+console.error = hookConsole(originalError, '#f44747'); // Rot für Fehler
+console.warn = hookConsole(originalWarn, '#ffca28');  // Gelb für Warnungen
+// --- Ende: Konsolen-Umleitung ---
+
+    // Grundstyling für das Fenster-Gefäß
+    Object.assign(overlay.style, {
+        position: "absolute",
+        width: "400px",
+        background: "#1e1e1e",
+        border: "1px solid rgba(255, 255, 255, 0.1)",
+        borderRadius: "8px",
+        boxShadow: "0 8px 32px rgba(0, 0, 0, 0.5)",
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column"
+    });
+
+    // Struktur mit Header, Output-Bereich und Input-Leiste
+    overlay.innerHTML = `
+        <div class="drag-handle" style="background: #333; padding: 10px; cursor: move; display: flex; justify-content: flex-end; align-items: center;">
+            <span style="color: #888; font-family: sans-serif; font-size: 12px; margin-right: auto; pointer-events: none;">JS Konsole 2026</span>
+            <span class="close-btn" style="color: white; cursor: pointer; font-family: sans-serif; font-weight: bold;">✕</span>
+        </div>
+        <div class="overlay-content" style="display: flex; flex-direction: column; height: 300px;">
+            <div class="console-output" style="flex: 1; overflow-y: auto; padding: 10px; color: #d4d4d4; font-family: monospace; font-size: 13px; line-height: 1.4;">
+                <div style="color: #666; border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 10px;">-- Konsole gestartet --</div>
+            </div>
+            <div class="input-bar" style="display: flex; background: #252526; padding: 10px; border-top: 1px solid #333;">
+                <span style="color: #569cd6; font-family: monospace; margin-right: 8px;">&gt;</span>
+                <input class="js-input" type="text" placeholder="Code..." style="background: transparent; border: none; color: #d4d4d4; outline: none; flex: 1; font-family: monospace; font-size: 14px;">
+                <button class="send-btn" style="background: #007acc; color: white; border: none; padding: 4px 10px; cursor: pointer; border-radius: 3px; font-family: sans-serif; font-size: 12px; margin-left: 8px;">Run</button>
+            </div>
+        </div>
+    `;
+
+    // Elemente referenzieren
+    const input = overlay.querySelector(".js-input");
+    const output = overlay.querySelector(".console-output");
+    const sendBtn = overlay.querySelector(".send-btn");
+    const closeBtn = overlay.querySelector(".close-btn");
+
+    // Schließen-Funktion
+    closeBtn.onclick = () => overlay.remove();
+
+    // Konsolen-Logik
+    function executeCommand() {
+        const cmd = input.value.trim();
+        if (!cmd) return;
+
+        // Befehl anzeigen
+        logToUI(cmd, '#569cd6');
+        
+        try {
+            // "let/const" am Anfang entfernen, um globale Variablen im window zu erlauben
+            let cleanCmd = cmd.replace(/^(let|const|var)\s+/, '');
+            const result = window.eval(cleanCmd);
+            
+            if (result !== undefined) {
+                logToUI(JSON.stringify(result) || String(result), '#b5cea8');
+            }
+        } catch (err) {
+            logToUI(err.message, '#f44747');
+        }
+
+        input.value = '';
+        output.scrollTop = output.scrollHeight;
+    }
+
+    function logToUI(msg, color) {
+        const div = document.createElement('div');
+        div.style.marginBottom = '5px';
+        div.style.borderLeft = `3px solid ${color}`;
+        div.style.paddingLeft = '8px';
+        div.style.color = color;
+        div.style.whiteSpace = 'pre-wrap';
+        div.style.wordBreak = 'break-all';
+        div.textContent = msg;
+        output.appendChild(div);
+    }
+
+    // Event Listener
+    sendBtn.addEventListener('click', executeCommand);
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') executeCommand();
+    });
+
+    // Positionierung
+    overlay.style.top = (Math.random() * 200 + 50) + "px";
+    overlay.style.left = (Math.random() * 200 + 50) + "px";
+
+    document.body.appendChild(overlay);
+    
+    // Drag & Drop aktivieren
+    makeElementDraggable(overlay, overlay.querySelector(".drag-handle"));
+    overlay.style.zIndex = 1000 + document.querySelectorAll('.overlay').length;
+
+}
+
+function createWhiteboardOverlay() {
+    var overlay = document.createElement("div");
+    overlay.className = "overlay whiteboard-overlay";
+
+    Object.assign(overlay.style, {
+        position: "absolute",
+        width: "550px",
+        height: "450px",
+        background: "#ffffff",
+        border: "2px solid #333",
+        borderRadius: "8px",
+        boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+        minWidth: "350px",
+        minHeight: "250px"
+    });
+
+    overlay.innerHTML = `
+        <div class="drag-handle" style="background: #333; color: white; padding: 8px 12px; cursor: move; display: flex; justify-content: space-between; align-items: center; user-select: none; gap: 10px;">
+            <div class="toolbar" style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-family: sans-serif; font-size: 11px; font-weight: bold; margin-right: 5px;">Whiteboard</span>
+                <input type="color" class="color-picker" value="#fff" style="width: 24px; height: 24px; border: none; padding: 0; background: none; cursor: pointer;">
+                <button class="eraser-btn" style="background: #555; border: none; color: white; padding: 3px 7px; border-radius: 4px; cursor: pointer; font-size: 14px;">🧽</button>
+                <div style="display: flex; align-items: center; gap: 4px; background: #444; padding: 2px 6px; border-radius: 4px;">
+                    <input type="number" class="thickness-input" min="1" max="50" value="3" style="width: 35px; background: transparent; border: none; color: white; font-family: monospace; font-size: 12px; outline: none;">
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <button class="clear-btn" style="background: #e74c3c; color: white; border: none; padding: 4px 10px; cursor: pointer; border-radius: 3px; font-size: 10px;">Clear</button>
+                <span class="close-btn" style="cursor: pointer; font-weight: bold; padding: 0 5px; font-size: 16px;">✕</span>
+            </div>
+        </div>
+        <div style="flex: 1; position: relative; background: #fafafa; overflow: hidden;">
+            <canvas class="whiteboard-canvas" style="display: block; cursor: crosshair;"></canvas>
+            <div class="resizer-handle" style="position: absolute; bottom: 0; right: 0; width: 20px; height: 20px; cursor: nwse-resize; background: linear-gradient(135deg, transparent 50%, #333 50%); z-index: 10;"></div>
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    var canvas = overlay.querySelector(".whiteboard-canvas");
+    var ctx = canvas.getContext("2d");
+    var colorPicker = overlay.querySelector(".color-picker");
+    var thicknessInput = overlay.querySelector(".thickness-input");
+    var eraserBtn = overlay.querySelector(".eraser-btn");
+    var resizer = overlay.querySelector(".resizer-handle");
+    var clearBtn = overlay.querySelector(".clear-btn");
+    var closeBtn = overlay.querySelector(".close-btn");
+
+    var isEraser = false;
+    var paths = [];
+    var currentPath = null;
+    var drawing = false;
+
+    overlay.querySelector(".toolbar").onmousedown = function(e) { e.stopPropagation(); };
+    clearBtn.onmousedown = function(e) { e.stopPropagation(); };
+    closeBtn.onmousedown = function(e) { e.stopPropagation(); };
+
+    function resizeCanvas() {
+        var parent = canvas.parentElement;
+        var tempImage = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        canvas.width = parent.clientWidth;
+        canvas.height = parent.clientHeight;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.putImageData(tempImage, 0, 0);
+    }
+
+    resizer.onmousedown = function(e) {
+        e.preventDefault(); e.stopPropagation();
+        var startX = e.clientX, startY = e.clientY;
+        var startW = overlay.offsetWidth, startH = overlay.offsetHeight;
+        
+        function onMM(mE) {
+            overlay.style.width = (startW + mE.clientX - startX) + "px";
+            overlay.style.height = (startH + mE.clientY - startY) + "px";
+            resizeCanvas();
+        }
+        function onMU() {
+            document.removeEventListener("mousemove", onMM);
+            document.removeEventListener("mouseup", onMU);
+        }
+        document.addEventListener("mousemove", onMM);
+        document.addEventListener("mouseup", onMU);
+    };
+
+    function getPos(e) {
+        var rect = canvas.getBoundingClientRect();
+        var clientX = e.clientX;
+        var clientY = e.clientY;
+        if (e.touches && e.touches.length > 0) {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+        }
+        return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+
+    function startDrawing(e) {
+        drawing = true;
+        var p = getPos(e);
+        ctx.beginPath();
+        var color = isEraser ? "#fafafa" : colorPicker.value;
+        var size = thicknessInput.value;
+        ctx.strokeStyle = color;
+        ctx.lineWidth = size;
+        ctx.moveTo(p.x, p.y);
+        currentPath = { color: color, size: size, points: [p] };
+    }
+
+    function draw(e) {
+        if (!drawing) return;
+        var p = getPos(e);
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+        currentPath.points.push(p);
+    }
+
+    function stopDrawing() {
+        if (drawing && currentPath) { paths.push(currentPath); }
+        drawing = false;
+    }
+
+    canvas.addEventListener("mousedown", startDrawing);
+    window.addEventListener("mousemove", draw);
+    window.addEventListener("mouseup", stopDrawing);
+
+    eraserBtn.onclick = function() {
+        isEraser = !isEraser;
+        eraserBtn.style.background = isEraser ? "#007acc" : "#555";
+    };
+
+    clearBtn.onclick = function() { ctx.clearRect(0, 0, canvas.width, canvas.height); paths = []; };
+    closeBtn.onclick = function() { overlay.remove(); };
+
+    resizeCanvas();
+    overlay.style.top = "100px";
+    overlay.style.left = "100px";
+    makeElementDraggable(overlay, overlay.querySelector(".drag-handle"));
+}
+
+
+function makeElementDraggable(elmnt, handle) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    handle.onmousedown = function(e) {
+        // Verhindert Textauswahl während des Ziehens
+        e.preventDefault();
+        
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        
+        document.onmousemove = elementDrag;
+        document.onmouseup = closeDragElement;
+        
+        // Optisches Feedback: Fenster leicht hervorheben beim Ziehen
+        elmnt.style.boxShadow = "0 12px 48px rgba(0, 0, 0, 0.7)";
+        elmnt.style.borderColor = "rgba(255, 255, 255, 0.3)";
+    };
+
+    function elementDrag(e) {
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+    }
+
+    function closeDragElement() {
+        document.onmousemove = null;
+        document.onmouseup = null;
+        // Schatten zurücksetzen
+        elmnt.style.boxShadow = "0 8px 32px rgba(0, 0, 0, 0.5)";
+        elmnt.style.borderColor = "rgba(255, 255, 255, 0.1)";
+    }
+}
+
+    function news() {
+        localStorage.setItem('NewsletterMDEP', 'true');
+    }
+
+    const newsBtn = document.getElementById('newsBtn'); // ID deines Buttons
+    if (localStorage.getItem('NewsletterMDEP') === 'true') {
+        // Wenn der Schlüssel 'buttonGesehen' existiert und 'true' ist,
+        // verstecke den Button oder entferne ihn
+        newsBtn.style.display = 'none'; // Verstecken
+        // oder: meinButton.remove(); // Entfernen
+
+        newsBtn.addEventListener('click', function() {
+            // Wenn der Button geklickt wird:
+            // 1. Setze den Schlüssel im localStorage, um ihn für zukünftige Neuladen zu markieren
+            localStorage.setItem('NewsletterMDEP', 'true');
+            addMessage('🎉 Du hast den Newsletter Aboniert🎊!');
+
+            // 3. Verstecke den Button nach dem Klick, falls er noch sichtbar ist
+            newsBtn.style.display = 'none';
+        });
+
+    }
+    </script>
+    <script id="main">
+        //////////// MD zu HTML ////////////
+    // Blockquote Parser für verschachtelte Zitate
+    function parseBlockquotes(md) {
+        const lines = md.split('\n');
+        const result = [];
+        let buffer = [];
+        let prevDepth = 0;
+
+        function flushBuffer(depth) {
+            if (buffer.length === 0)
+                return;
+            let content = buffer.map(line => line.replace(/^>+ ?/, '')).join('<br>');
+            for (let i = 0; i < depth; i++) {
+                content = `<blockquote>${content}</blockquote>`;
+            }
+            result.push(content);
+            buffer = [];
+        }
+
+        for (let line of lines) {
+            const match = line.match(/^(>+)\s?(.*)$/);
+            if (match) {
+                const depth = match[1].length;
+                if (depth !== prevDepth) {
+                    flushBuffer(prevDepth);
+                    prevDepth = depth;
+                }
+                buffer.push(line);
+            } else {
+                flushBuffer(prevDepth);
+                prevDepth = 0;
+                result.push(line);
+            }
+        }
+        flushBuffer(prevDepth);
+        return result.join('\n');
+    }
+
+    // Codeblock
+    function markdownToHTML(md) {
+        md = parseBlockquotes(md);
+
+        function escapeHTML(str) {
+            return str.replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/}/g, "&rbrace;")
+            .replace(/{/g, "&lbrace;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;")
+            .replace(/]/g, "");
+        }
+
+        let html = md.replace(/'''(\w*)\n([\s\S]*?)'''/g, (match, lang, code) => {
+            const langDiv = lang ? `<div class="code-lang">${lang}</div><br>` : '';
+            const escapedCode = escapeHTML(code);
+            return `<pre>${langDiv}<code>${escapedCode}</code></pre>`;
+        });
+
+        // Trennlinie ---
+        html = html.replace(/^---$/gm, '<hr />');
+        
+        // Doppelte Trennlinie ===
+        html = html.replace(/^===$/gm, '<hr /><hr />');
+        
+        // gepunktete Trennlinie -.-
+        html = html.replace(/^-.-$/gm, '<hr style="border: 1px dotted #555" />');
+
+        // Überschriften
+        html = html
+        .replace(/^###### (.*)$/gm, '<h6>$1</h6>')
+        .replace(/^##### (.*)$/gm, '<h5>$1</h5>')
+        .replace(/^#### (.*)$/gm, '<h4>$1</h4>')
+        .replace(/^### (.*)$/gm, '<h3>$1</h3>')
+        .replace(/^## (.*)$/gm, '<h2>$1</h2>')
+        .replace(/^# (.*)$/gm, '<h1>$1</h1>');
+
+        // Fett/Kursiv
+        html = html.replace(/\*\*\*(.*?)\*\*\*/g, '<b><i>$1</i></b>');
+        html = html.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+        html = html.replace(/\*(.*?)\*/g, '<i>$1</i>');
+        html = html.replace(/~(.*?)~/g, '<s>$1</s>');
+
+        // Inline-Code (dezenter Style)
+        html = html.replace(/'(.*?)'/g, '<code class="inline">$1</code>');
+
+        // Links
+        html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+
+        // Bilder
+        html = html.replace(/\#\[\s*([\s\S]*?)\s*(?:\,\s*([\s\S]*?)\s*)?(?:\,\s*([\s\S]*?)\s*)?\]/g,
+        function(match, url, width, height) {
+            // Falls Breite oder Höhe fehlen, wird kein Inline-Style dafür gesetzt
+            let style = "";
+            if (width)
+                style += `width: ${width}; `;
+            if (height)
+                style += `height: ${height}; `;
+
+            return `<a href="${url}"><img style="${style}" src="${url}" alt="Picture"></a>`;
+        });
+        // Checklisten
+        html = html.replace(/\( \)(.+)$/gm, '<input type="checkbox" style="accent-color: #000;"> $1</input>'); //   $/gm
+        html = html.replace(/\(x\)(.+)$/gm, '<input type="checkbox" checked style="accent-color: #000;"> $1 </input>');
+        //html = html.replace(/(<input type="checkbox".*)/gs, '<ul class="checklist">$1</ul>');
+
+        // Ausklappbare Bereiche (flexibler Regex)
+        html = html.replace(/\+\{\s*([\s\S]*?)\s*\}/g, (match, content) => {
+            const lines = content.trim().split('\n');
+            const summary = lines.shift();
+            const details = lines.join('<br>');
+            return `<details><summary>${summary}</summary>${details}</details>`;
+        });
+
+        // Farbsyntax $#xxxxxx{...}
+  html = html.replace(/\$\#([0-9A-Fa-f]{6})\(([^)]+)\)/g, '<span style="color:#$1;">$2</span>');
+
+        // Schriftartsyntax $"Arial"{...}
+        html = html.replace(/\$"([^"]+)"\{([^}]+)\}/g, '<span style="font-family:\'$1\';">$2</span>');
+
+        // Listen (gruppiert)
+        html = html.replace(/(?:^|\n)(?:- .+(?:\n- .+)*)/g, block => {
+            const items = block.trim().split('\n').map(line => `<li>${line.replace(/^- /, '')}</li>`).join('');
+            return `<ul>${items}</ul>`;
+        });
+        /*html = html.replace(/(?:^|\n)(?:\d+\. .+(?:\n\d+\. .+)*)/g, block => {
+            const items = block.trim().split('\n').map(line => `<li>${line.replace(/^\d+\. /, '')}</li>`).join('');
+            return `<ol>${items}</ol>`;
+        });*/
+
+        // Warnbox
+        html = html.replace(/\!\{\s*([\s\S]*?)\s*\}/g,
+        '<div class="info-box warning"><div class="icon-container"><svg xmlns="www.w3.org" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg></div><span class="text">$1</span></div>');
+
+        // Fehlerbox
+        html = html.replace(/\(\!\)\{\s*([\s\S]*?)\s*\}/g,
+        '<div class="info-box error" style="background-color: #fde8e8; border-left: 5px solid #f05252; display: flex; align-items: center; padding: 10px; border-radius: 4px; color: #9b1c1c;"><div class="icon-container" style="margin-right: 10px; flex-shrink: 0; display: flex; align-items: center;"><svg xmlns="www.w3.org" width="24" height="24" viewBox="0 0 24 24" fill="#fff" stroke="#ff4013" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div><span class="text" style="font-weight: 500;">$1</span></div>'
+        );
+
+        // Infobox
+        html = html.replace(/\i\{\s*([\s\S]*?)\s*\}/g, '<div class="info-box info"><div class="icon-container"><svg xmlns="www.w3.org" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></div><span class="text">$1</span></div>');
+
+        // Sound-Button
+        html = html.replace(/\<\[\s*([\s\S]*?)\s*\]/g,
+        '<audio id="audio-$1" src="$1.mp3" type="audio/mpeg" preload="auto" controls="true" style="width: 100%;"></audio><!--<button id="button-$1" onclick="toggleSound(\'$1\')">Play</button>--><span><b> $1</b></span>'
+        );
+
+        // footer setzten
+        html = html.replace(/\-\[\s*([\s\S]*?)\s*\]/g, '<footer class="ffooter">$1</footer>');
+
+        // header setzten
+        html = html.replace(/\+\[\s*([\s\S]*?)\s*\]/g, '<header style="padding: 10px; text-align: center; font-size: 1.5em;">$1</header>');
+
+        // plugIns
+        html = html.replace(/\§\[\s*([\s\S]*?)\s*\]/g, '<iframe src="plugins/$1.html" style="width: 100%; height: 600px; border: none;"></iframe><a style="font-size: 7.5px;" href="plugins/$1.html" target="_blank">plugIn in neuem Fenster öffnen</a><br>');
+
+        // Video
+        html = html.replace(/\#\{\s*([\s\S]*?)\s*\}/g,
+        '<video src="$1" class="player" width="640"height="360" controls="true"></video>'
+        );
+
+        // Hochgestellter Text
+        html = html.replace(/\:\{\s*([\s\S]*?)\s*\}/g, '<sup>$1</sup>');
+
+        // Runtergestellter Text
+        html = html.replace(/\.\{\s*([\s\S]*?)\s*\}/g, '<sub>$1</sub>');
+
+        // Overlay
+        html = html.replace(/^;\-(.*?)\r?$/gm, '<button onclick="createOverlay()" title="Nicht Lesbar aber farben erkennbar" style="background-color: background-color: -webkit-linear-gradient(218deg, #ffffff, #000000); color: white; border: 1px solid white;">+</button>');
+        
+        // Dev Overlay
+        html = html.replace(/^;\°(.*?)\r?$/gm, '<button onclick="createDevOverlay()" title="Dev Overlay" style="background-color: #000; color: #00ff00; border: 1px solid #00ff00;">+</button>');
+        
+        // Emergency Shutdown
+        html = html.replace(/^;\!(.*?)\r?$/gm, '<button onclick="X()" title="NOT STOP" style="background-color: #000; color: #ff0000; border: 1px solid #ff0000;">NOT AUS</button>');
+        
+        // Boom Switch
+        html = html.replace(/^;\?(.*?)\r?$/gm, '<button onclick="selfBoom(true)" title="MDEP zerstörender Knopf" style="background-color: #fff; color: #ff0000; border: 2.5px solid #ff0000;">SelfBoom</button>');
+
+        // Overlay ft
+        html = html.replace(/^;\+(.*?)\r?$/gm, '<button onclick="createOverlayft()" title="keinerlei Transparens" style="background-color: #000; border: 1px solid #fff;">+</button>');
+        
+        // Overlay Whiteboard
+        html = html.replace(/^;\#(.*?)\r?$/gm, '<button onclick="createWhiteboardOverlay()" title="Whiteboard" style="background: linear-gradient(45deg, #00c7fc, #ffffff); border: 1px solid #000; color: #000;">+</button>');
+
+        // Kommentar
+        html = html.replace(/\?\{\s*([\s\S]*?)\s*\}/g, '<div style="visibility: hidden;">$1</div>');
+        
+        //CP
+        html = html.replace(/\°\°/gm, 'MDE<span><b title="Beste Qualität für alle und kostenlos"><a style="color: #00fdff; cursor: pointer;" href="resources/info.html">Pro</a></b></span>');
+        
+        // Anmerkung
+        html = html.replace(/\+([^+]+)\+\=([^=]+)\=/g, '<span class="wiki-preview" data-info="$1">$2</span>');
+        
+        // 1. Popup-Element einmalig erstellen
+        const popup = document.createElement('div');
+        popup.id = 'wiki-popup';
+        document.body.appendChild(popup);
+
+        document.addEventListener('mouseover', (e) => {
+            if (e.target.classList.contains('wiki-preview')) {
+                const content = e.target.getAttribute('data-info');
+
+                popup.innerHTML = `${content}`;
+
+                // Positionieren
+                const rect = e.target.getBoundingClientRect();
+                popup.style.left = `${rect.left + window.scrollX}px`;
+                popup.style.top = `${rect.bottom + window.scrollY + 5}px`;
+                popup.style.display = 'block';
+            }
+        });
+
+        // Popup verstecken, wenn die Maus das Element verlässt
+        document.addEventListener('mouseout', (e) => {
+            if (e.target.classList.contains('wiki-preview')) {
+                popup.style.display = 'none';
+            }
+        });
+
+                // Wiki-Wellen-Animation (~w{ Text })
+        html = html.replace(/~w\{\s*([\s\S]*?)\s*\}/g, (match, content) => {
+            return `<span class="wave-container">` + 
+                [...content].map((char, i) => 
+                    char === ' ' ? ' ' : `<span style="--i:${i}">${char}</span>`
+                ).join('') + 
+            `</span>`;
+        });
+        
+        // Sperre
+        html = html.replace(/§\(\s*([\s\S]*?)\s*\)/g, (match, p1) => {
+        return `<div style="display: none;" id="password">${btoa(p1.trim())}</div>`;
+    });
+        
+        // Stylesheets
+        html = html.replace(/\$\#\s*([\s\S]*?)\s*\#/g, '<span id="styleSheet" style="visibility: hidden;" data-info="$1">$2</span>');
+        
+        // Hide Feld
+        html = html.replace(/\?\=\s*([\s\S]*?)\s*\=/g, (match, p1) => {
+            const clean = p1.replace(/"/g, '&quot;');
+            // Button startet im Status 'hidden' mit dem 'EyeOff' Icon
+            return `<button art="HideFeld" note="hidden" contain="${clean}">${iconEyeOff}</button>`;
+        });
+        
+        // Zeilenumbruch
+        html = html.replace(/\n/g, '<br />');
+
+        return html;
+    }
+
+    //////////////
+
+        
+    //////////////
+        
+    
+    const editor = document.getElementById('markdownEditor');
+    const preview = document.getElementById('htmlPreview');
+    const exportBtn = document.getElementById('exportBtn');
+    const audio = document.getElementById('audio');
+    const autosaveCheckbox = document.getElementById('autosave');
+    let nameOfDoc;
+
+    function saveMDE(){
+        let saveData = editor.innerText;
+        localStorage.setItem('MDEP_SaveData', saveData);
+    }
+        
+    function loadMDE(){
+        let loadData = localStorage.getItem('MDEP_SaveData');
+        editor.innerText = loadData;
+        updatePreview();
+    }
+        
+    function deleteMDE() {
+    const sicher = confirm('Möchtest du wirklich alle Daten unwiderruflich löschen?');
+    
+    if (sicher) {
+        localStorage.removeItem('MDEP_SaveData');
+        console.warn('Daten wurden gelöscht!');
+        addMessage('Erfolgreich gelöscht.','error');
+        location.reload(); // Optional: Seite neu laden, um Editor zu leeren
+    } else {
+        console.log('Löschvorgang abgebrochen.');
+    }
+}
+
+        
+    function updatePreview() {
+        const currentScroll = preview.scrollTop;
+
+        preview.innerHTML = markdownToHTML(editor.innerText);
+
+        requestAnimationFrame(() => {
+            preview.scrollTop = currentScroll;
+        });
+}
+        //Hide feld funktion
+        const iconEye = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+        const iconEyeOff = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`;
+
+        document.addEventListener('click', (event) => {
+            const btn = event.target.closest('button[art="HideFeld"]');
+            if (!btn) return;
+
+            const isHidden = btn.getAttribute('note') === 'hidden';
+            const content = btn.getAttribute('contain');
+
+            if (isHidden) {
+                // ZUM ANZEIGEN: Text + offenes Auge
+                btn.innerHTML = `${iconEye} ${content}`;
+                btn.setAttribute('note', 'seen');
+            } else {
+                // ZUM VERSTECKEN: Nur geschlossenes Auge
+                btn.innerHTML = iconEyeOff;
+                btn.setAttribute('note', 'hidden');
+            }
+        });
+
+
+        /////////////////////////
+        
+    //editor.addEventListener('input', updatePreview);
+        let timeout;
+        editor.addEventListener('input', () => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                updatePreview();
+                if (autosaveCheckbox.checked) {
+                        localStorage.setItem('AutoSaveMDEP','true');
+                        saveMDE();
+                     updatePreview();
+                    } else if (!autosaveCheckbox.checked) {
+                        localStorage.setItem('AutoSaveMDEP','false');
+                        updatePreview();
+                    }
+                                       }, 300);
+        });
+        // Korrigierte Initialisierung
+let speichern = localStorage.getItem('AutoSaveMDEP');
+
+if (speichern === 'true') {
+    autosaveCheckbox.checked = true;
+    loadMDE();
+} else {
+    console.log('AutoSave ist deaktiviert');
+    updatePreview();
+}
+
+editor.addEventListener('scroll', () => {
+    // Berechne das Verhältnis, wie weit im Editor gescrollt wurde
+    const scrollPercentage = editor.scrollTop / (editor.scrollHeight - editor.clientHeight);
+    
+    // Übertrage das Verhältnis auf die Preview
+    const scrollTarget = scrollPercentage * (preview.scrollHeight - preview.clientHeight);
+    
+    preview.scrollTop = scrollTarget;
+});
+     
+    updatePreview();
+    
+    // HTML Export
+    exportBtn.addEventListener('click', () => {
+        const titel = document.getElementById('InputTitle').value;
+        const mdSource = editor.innerText; // Original Markdown
+        if(document.getElementById('InputTitle').value){ console.log('titel des Dokuments: ' + titel); nameOfDoc = titel;} else{console.log('Dokument ist unbenannt!'); nameOfDoc = 'Nicht Benanntes MDEP-Dokument';}
+        const htmlContent = `
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${nameOfDoc}</title>
+<style>
+  html {
+    background-color: #0e0e0e; 
+  }
+header { background: #333; padding: 10px; text-align: center; font-size: 1.5em; }
+  body { 
+    font-family: Arial, sans-serif; 
+    color: #f0f0f0; 
+    background-color: #0e0e0e; 
+    background-color: #1a1a1a; 
+    padding: 20px;
+    margin: 20px; 
+    border: 1px solid #555;
+    border-radius: 8px;
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  pre { 
+    white-space: pre-wrap; 
+    background: #1e1e1e; 
+    padding: 10px; 
+    border-radius: 5px; 
+    overflow-x:auto; 
+    position: relative; 
+    margin:10px 0; 
+  }
+  .code-lang { position: absolute; top: 0; left: 0; font-size: 0.8em; font-family: Arial, sans-serif; color: #ccc; padding: 2px 5px; background: #2e2e2e; border-bottom-right-radius: 3px; }
+  blockquote { border-left: 3px solid #555; margin: 5px 0; padding-left: 10px; color: #ccc; }
+  hr { border: 1px solid #555; margin: 10px 0; }
+  ul, ol { margin: 5px 0 5px 20px; }
+  li { margin: 3px 0; }
+  a {
+        color: #00fdff;
+        text-decoration: none;
+        transition: 5s;
+    }
+
+    a:hover {
+        text-decoration: underline;
+        color: #00fd99;
+    }
+  img {
+    max-width: 100%;
+    height: auto;
+}
+  ul.checklist { list-style: none; padding-left: 0; }
+  ul.checklist li { margin: 5px 0; }
+  details { background: #2a2a2a; padding: 5px 10px; border-radius: 5px; margin: 5px 0; }
+  summary { cursor: pointer; font-weight: bold; }
+  details[open] { background: #3a3a3a; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  background: #2e2e2e;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+  button { margin: 5px; padding: 5px 10px; background: #555; color: #f0f0f0; border: none; border-radius: 3px; cursor: pointer; }
+    button:hover { background: #777; }
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #444;
+  color: #f0f0f0;
+}
+
+th {
+  background: #444;
+  font-weight: bold;
+}
+
+td {
+  background: #333;
+}
+
+tr:nth-child(even) {
+  background: #3a3a3a;
+}
+
+tr:hover {
+  background: #555;
+}
+
+caption {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #f0f0f0;
+  margin-bottom: 10px;
+}
+
+.info-box {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        .info-box .icon-container {
+            margin-right: 15px;
+            display: flex; 
+            align-items: center;
+            justify-content: center;
+        }
+        .info-box svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+        .info-box.info {
+            background-color: #e0f7fa;
+            border-left: 5px solid #00bcd4;
+            color: #00796b;
+        }
+
+        .info-box.info .icon-container svg {
+            fill: #00bcd4;
+        }
+        .info-box.warning {
+            background-color: #fff8e1;
+            border-left: 5px solid #ffeb3b;
+            color: #ff6f00;
+        }
+        .info-box.warning .icon-container svg {
+            fill: #ffeb3b;
+        }
+
+.inline {background:#0e0e0e; padding:2px 4px; border-radius:3px; font-family:monospace;}
+
+.overlay {
+    animation: glassAppear 0.3s ease-out;
+    
+    box-shadow: inset 0 0 10px rgba(225, 225, 225, 0.1);
+    /* Wichtig: Hintergrund muss transparent & leicht weißlich sein */
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    
+    /* Verstärkter Blur für den "Milchglas"-Effekt */
+    backdrop-filter: blur(15px); 
+    -webkit-backdrop-filter: blur(15px); /* Safari Support */
+
+    /* Die "Glanzkante": Oben heller als unten simuliert Lichtreflexion */
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    
+    /* Weicherer, diffuser Schatten für Tiefe */
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    
+    /* Rundere Ecken wirken organischer/flüssiger */
+    border-radius: 16px;
+    
+    position: absolute;
+    width: 250px;
+    height: 150px;
+    overflow: hidden;
+    resize: both;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    z-index: 1000;
+}
+
+.overlayft {
+    animation: glassAppear 0.3s ease-out;
+    
+    box-shadow: inset 0 0 10px rgba(225, 225, 225, 0.1);
+    /* Wichtig: Hintergrund muss transparent & leicht weißlich sein */
+    background: linear-gradient(135deg, #1e1e1e, #6e6e6e);
+
+    /* Die "Glanzkante": Oben heller als unten simuliert Lichtreflexion */
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    
+    /* Weicherer, diffuser Schatten für Tiefe */
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    
+    /* Rundere Ecken wirken organischer/flüssiger */
+    border-radius: 16px;
+    
+    position: absolute;
+    width: 250px;
+    height: 150px;
+    overflow: hidden;
+    resize: both;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    z-index: 1000;
+}
+
+@keyframes glassAppear {
+    from { transform: scale(0.1); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+        
+.drag-handle {
+    /* Etwas heller abgesetzt, um die Griffigkeit zu zeigen */
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px 14px;
+    cursor: move;
+    display: flex;
+    justify-content: flex-end; /* X nach rechts schieben */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    user-select: none;
+}
+
+.overlay-content {
+    padding: 15px;
+    flex-grow: 1;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Input Feld Styling für den Glas-Look */
+.overlay-content input {
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    padding: 5px;
+    border-radius: 4px;
+    outline: none;
+}
+
+/* Schließ-Button Styling (Optional) */
+.close-btn {
+    cursor: pointer;
+    opacity: 0.6;
+    transition: 0.2s;
+}
+.close-btn:hover { opacity: 1; color: #ff5f56; }
+
+
+    .popup {
+        display: none;
+        /* Standardmäßig versteckt */
+        position: fixed;
+        /* Bleibt an Ort und Stelle */
+        z-index: 1;
+        /* Über allem anderen */
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+        /* Dunkler Hintergrund */
+    }
+
+        .wave-container {
+    display: inline-block;
+}
+
+.wave-container span {
+    display: inline-block;
+    /* 'ease-in-out' macht die Bewegung weicher, wie im Wiki */
+    animation: wiki-wave 1.2s ease-in-out infinite;
+    /* Der Zeitversatz erzeugt die Wellenform */
+    animation-delay: calc(0.1s * var(--i));
+}
+
+@keyframes wiki-wave {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); } /* Sanftes Auf-Ab */
+}
+        
+        input[type="checkbox"]{
+            background-color: #5e5e5e;
+        }
+        input[type="checkbox"]::activ{
+            background-color: #9e9e9e;
+        }
+        
+        /* Das schwebende Vorschaufenster */
+#wiki-popup {
+    position: absolute;
+    display: none;
+    background: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    padding: 15px;
+    z-index: 1000;
+    width: 250px;
+    border-radius: 8px;
+    font-family: sans-serif;
+    color: #333;
+}
+
+/* Styling für das Wort im Text */
+.wiki-preview {
+    color: #00fdff;
+    cursor: help;
+    border-bottom: 1px dashed #00fdff;
+}
+
+/* Das Overlay deckt alles ab */
+#lock-screen {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: #1a1a1a;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    font-family: sans-serif;
+}
+
+#lock-screen input {
+    padding: 10px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 5px;
+    text-align: center;
+}
+
+/* Versteckt den eigentlichen Inhalt, solange gesperrt */
+.locked {
+    overflow: hidden;
+}
+
+</style></head>
+<body>
+<script>
+function lock() {
+    // 1. Prüfen, ob das Passwort-Tag existiert
+    const pwTag = document.getElementById('password');
+    if (!pwTag) return; // Falls kein §{} genutzt wurde, passiert nichts
+
+    const correctPassword = atob(pwTag.innerText.trim());
+
+    // 2. Seite optisch sperren
+    document.body.style.overflow = 'hidden';
+    
+    // 3. Overlay erstellen
+    const overlay = document.createElement('div');
+    overlay.setAttribute('style', \`
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: #1a1a1a; color: white; z-index: 99999;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        font-family: sans-serif;
+    \`);
+    overlay.id = 'lock-screen';
+    
+    overlay.innerHTML = \`
+        <div style="text-align: center;">
+            <h2 style="margin-bottom: 20px;">Inhalt geschützt</h2>
+            <input type="password" id="pw-input" placeholder="Passwort eingeben..." 
+                   style="padding: 12px; border-radius: 8px; border: none; text-align: center; font-size: 16px;">
+            <p id="error" style="color: #ff4444; margin-top: 15px; display: none;">Falsches Passwort!</p>
+        </div>
+    \`;
+    
+    document.body.appendChild(overlay);
+
+    const input = document.getElementById('pw-input');
+    const errorMsg = document.getElementById('error');
+
+    // 4. Eingabe prüfen
+    input.focus();
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            if (input.value === correctPassword) {
+                overlay.remove();
+                document.body.style.overflow = '';
+            } else {
+                errorMsg.style.display = 'block';
+                input.value = '';
+                // Kleiner visueller Effekt bei Fehler
+                input.style.border = '2px solid #ff4444';
+            }
+        }
+    });
+}
+/*
+function Style() {
+    const StSh = document.getElementById('password');
+    if (StSh){
+        document.head.appendChild(<link);
+    }
+}
+*/
+function createOverlay() {
+    const overlay = document.createElement("div");
+    overlay.className = "overlay";
+
+    overlay.innerHTML = \`
+        <div class="drag-handle">
+            <span class="close-btn" onclick="this.parentElement.parentElement.remove()">✕</span>
+        </div>
+        <div class="overlay-content">
+            <input style="border: none; background-color: transparent; color: white;"></input>
+        </div>
+    \`;
+
+    overlay.style.top = (Math.random() * 200 + 50) + "px";
+    overlay.style.left = (Math.random() * 200 + 50) + "px";
+    document.body.appendChild(overlay);
+    
+    makeElementDraggable(overlay, overlay.querySelector(".drag-handle"));
+    overlay.style.zIndex = 1000 + document.querySelectorAll('.overlay').length;
+}
+
+function createOverlayft() {
+    const overlay = document.createElement("div");
+    overlay.className = "overlayft";
+
+    overlay.innerHTML = \`
+        <div class="drag-handle">
+            <span class="close-btn" onclick="this.parentElement.parentElement.remove()">✕</span>
+        </div>
+        <div class="overlay-content">
+            <input style="border: none; background-color: transparent; color: white;"></input>
+        </div>
+    \`;
+
+    overlay.style.top = (Math.random() * 200 + 50) + "px";
+    overlay.style.left = (Math.random() * 200 + 50) + "px";
+    document.body.appendChild(overlay);
+    
+    makeElementDraggable(overlay, overlay.querySelector(".drag-handle"));
+    overlay.style.zIndex = 1000 + document.querySelectorAll('.overlay').length;
+}
+
+function createDevOverlay() {
+    const overlay = document.createElement("div");
+    overlay.className = "overlay";
+    
+    const originalLog = console.log;
+    const originalError = console.error;
+    const originalWarn = console.warn;
+
+    const hookConsole = (originalFn, color) => {
+        return function(...args) {
+            const message = args.map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+            ).join(' ');
+            logToUI('[System] ' + message, color);
+            originalFn.apply(console, args);
+        };
+    };
+
+    console.log = hookConsole(originalLog, '#888');
+    console.error = hookConsole(originalError, '#f44747');
+    console.warn = hookConsole(originalWarn, '#ffca28');
+
+    Object.assign(overlay.style, {
+        position: "absolute",
+        width: "400px",
+        background: "#1e1e1e",
+        border: "1px solid rgba(255, 255, 255, 0.1)",
+        borderRadius: "8px",
+        boxShadow: "0 8px 32px rgba(0, 0, 0, 0.5)",
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column"
+    });
+
+    overlay.innerHTML = \`
+        <div class="drag-handle" style="background: #333; padding: 10px; cursor: move; display: flex; justify-content: flex-end; align-items: center;">
+            <span style="color: #888; font-family: sans-serif; font-size: 12px; margin-right: auto; pointer-events: none;">JS Konsole 2026</span>
+            <span class="close-btn" style="color: white; cursor: pointer; font-family: sans-serif; font-weight: bold;">✕</span>
+        </div>
+        <div class="overlay-content" style="display: flex; flex-direction: column; height: 300px;">
+            <div class="console-output" style="flex: 1; overflow-y: auto; padding: 10px; color: #d4d4d4; font-family: monospace; font-size: 13px; line-height: 1.4;">
+                <div style="color: #666; border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 10px;">-- Konsole gestartet --</div>
+            </div>
+            <div class="input-bar" style="display: flex; background: #252526; padding: 10px; border-top: 1px solid #333;">
+                <span style="color: #569cd6; font-family: monospace; margin-right: 8px;">&gt;</span>
+                <input class="js-input" type="text" placeholder="Code..." style="background: transparent; border: none; color: #d4d4d4; outline: none; flex: 1; font-family: monospace; font-size: 14px;">
+                <button class="send-btn" style="background: #007acc; color: white; border: none; padding: 4px 10px; cursor: pointer; border-radius: 3px; font-family: sans-serif; font-size: 12px; margin-left: 8px;">Run</button>
+            </div>
+        </div>
+    \`;
+
+    const input = overlay.querySelector(".js-input");
+    const output = overlay.querySelector(".console-output");
+    const sendBtn = overlay.querySelector(".send-btn");
+    const closeBtn = overlay.querySelector(".close-btn");
+
+    closeBtn.onclick = () => overlay.remove();
+
+    function executeCommand() {
+        const cmd = input.value.trim();
+        if (!cmd) return;
+        logToUI(cmd, '#569cd6');
+        try {
+            let cleanCmd = cmd.replace(/^(let|const|var)\s+/, '');
+            const result = window.eval(cleanCmd);
+            if (result !== undefined) {
+                logToUI(JSON.stringify(result) || String(result), '#b5cea8');
+            }
+        } catch (err) {
+            logToUI(err.message, '#f44747');
+        }
+        input.value = '';
+        output.scrollTop = output.scrollHeight;
+    }
+
+    function logToUI(msg, color) {
+        const div = document.createElement('div');
+        div.style.marginBottom = '5px';
+        div.style.borderLeft = '3px solid ' + color;
+        div.style.paddingLeft = '8px';
+        div.style.color = color;
+        div.style.whiteSpace = 'pre-wrap';
+        div.style.wordBreak = 'break-all';
+        div.textContent = msg;
+        output.appendChild(div);
+    }
+
+    sendBtn.addEventListener('click', executeCommand);
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') executeCommand();
+    });
+
+    overlay.style.top = (Math.random() * 200 + 50) + "px";
+    overlay.style.left = (Math.random() * 200 + 50) + "px";
+    document.body.appendChild(overlay);
+    
+    makeElementDraggable(overlay, overlay.querySelector(".drag-handle"));
+    overlay.style.zIndex = 1000 + document.querySelectorAll('.overlay').length;
+}
+
+function createWhiteboardOverlay() {
+    var overlay = document.createElement("div");
+    overlay.className = "overlay whiteboard-overlay";
+
+    Object.assign(overlay.style, {
+        position: "absolute",
+        width: "550px",
+        height: "450px",
+        background: "#ffffff",
+        border: "2px solid #333",
+        borderRadius: "8px",
+        boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+        minWidth: "350px",
+        minHeight: "250px"
+    });
+
+    overlay.innerHTML = \`
+        <div class="drag-handle" style="background: #333; color: white; padding: 8px 12px; cursor: move; display: flex; justify-content: space-between; align-items: center; user-select: none; gap: 10px;">
+            <div class="toolbar" style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-family: sans-serif; font-size: 11px; font-weight: bold; margin-right: 5px;">Whiteboard</span>
+                <input type="color" class="color-picker" value="#333333" style="width: 24px; height: 24px; border: none; padding: 0; background: none; cursor: pointer;">
+                <button class="eraser-btn" style="background: #555; border: none; color: white; padding: 3px 7px; border-radius: 4px; cursor: pointer; font-size: 14px;">🧽</button>
+                <div style="display: flex; align-items: center; gap: 4px; background: #444; padding: 2px 6px; border-radius: 4px;">
+                    <input type="number" class="thickness-input" min="1" max="50" value="3" style="width: 35px; background: transparent; border: none; color: white; font-family: monospace; font-size: 12px; outline: none;">
+                </div>
+                <button class="svg-btn" style="background: #27ae60; border: none; color: white; padding: 3px 7px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold;">SVG</button>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <button class="clear-btn" style="background: #e74c3c; color: white; border: none; padding: 4px 10px; cursor: pointer; border-radius: 3px; font-size: 10px;">Clear</button>
+                <span class="close-btn" style="cursor: pointer; font-weight: bold; padding: 0 5px; font-size: 16px;">✕</span>
+            </div>
+        </div>
+        <div style="flex: 1; position: relative; background: #fafafa; overflow: hidden;">
+            <canvas class="whiteboard-canvas" style="display: block; cursor: crosshair;"></canvas>
+            <div class="resizer-handle" style="position: absolute; bottom: 0; right: 0; width: 20px; height: 20px; cursor: nwse-resize; background: linear-gradient(135deg, transparent 50%, #333 50%); z-index: 10;"></div>
+        </div>
+    \`;
+
+    document.body.appendChild(overlay);
+
+    var canvas = overlay.querySelector(".whiteboard-canvas");
+    var ctx = canvas.getContext("2d");
+    var colorPicker = overlay.querySelector(".color-picker");
+    var thicknessInput = overlay.querySelector(".thickness-input");
+    var eraserBtn = overlay.querySelector(".eraser-btn");
+    var svgBtn = overlay.querySelector(".svg-btn");
+    var resizer = overlay.querySelector(".resizer-handle");
+    var clearBtn = overlay.querySelector(".clear-btn");
+    var closeBtn = overlay.querySelector(".close-btn");
+
+    var isEraser = false;
+    var paths = [];
+    var currentPath = null;
+    var drawing = false;
+
+    overlay.querySelector(".toolbar").onmousedown = function(e) { e.stopPropagation(); };
+    clearBtn.onmousedown = function(e) { e.stopPropagation(); };
+    closeBtn.onmousedown = function(e) { e.stopPropagation(); };
+
+    function resizeCanvas() {
+        var parent = canvas.parentElement;
+        var tempImage = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        canvas.width = parent.clientWidth;
+        canvas.height = parent.clientHeight;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.putImageData(tempImage, 0, 0);
+    }
+
+    resizer.onmousedown = function(e) {
+        e.preventDefault(); e.stopPropagation();
+        var startX = e.clientX, startY = e.clientY;
+        var startW = overlay.offsetWidth, startH = overlay.offsetHeight;
+        
+        function onMM(mE) {
+            overlay.style.width = (startW + mE.clientX - startX) + "px";
+            overlay.style.height = (startH + mE.clientY - startY) + "px";
+            resizeCanvas();
+        }
+        function onMU() {
+            document.removeEventListener("mousemove", onMM);
+            document.removeEventListener("mouseup", onMU);
+        }
+        document.addEventListener("mousemove", onMM);
+        document.addEventListener("mouseup", onMU);
+    };
+
+    function getPos(e) {
+        var rect = canvas.getBoundingClientRect();
+        var clientX = e.clientX;
+        var clientY = e.clientY;
+        if (e.touches && e.touches.length > 0) {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+        }
+        return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+
+    function startDrawing(e) {
+        drawing = true;
+        var p = getPos(e);
+        ctx.beginPath();
+        var color = isEraser ? "#fafafa" : colorPicker.value;
+        var size = thicknessInput.value;
+        ctx.strokeStyle = color;
+        ctx.lineWidth = size;
+        ctx.moveTo(p.x, p.y);
+        currentPath = { color: color, size: size, points: [p] };
+    }
+
+    function draw(e) {
+        if (!drawing) return;
+        var p = getPos(e);
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+        currentPath.points.push(p);
+    }
+
+    function stopDrawing() {
+        if (drawing && currentPath) { paths.push(currentPath); }
+        drawing = false;
+    }
+
+    canvas.addEventListener("mousedown", startDrawing);
+    window.addEventListener("mousemove", draw);
+    window.addEventListener("mouseup", stopDrawing);
+
+    eraserBtn.onclick = function() {
+        isEraser = !isEraser;
+        eraserBtn.style.background = isEraser ? "#007acc" : "#555";
+    };
+
+    svgBtn.onclick = function() {
+        var svgLines = "";
+        for (var i = 0; i < paths.length; i++) {
+            var p = paths[i];
+            var d = "";
+            for (var j = 0; j < p.points.length; j++) {
+                d += (j === 0 ? "M " : " L ") + p.points[j].x + " " + p.points[j].y;
+            }
+            svgLines += '<path d="' + d + '" fill="none" stroke="' + p.color + '" stroke-width="' + p.size + '" stroke-linecap="round" stroke-linejoin="round" />\\n';
+        }
+        var svgContent = '<svg xmlns="http://www.w3.org" width="' + canvas.width + '" height="' + canvas.height + '"><rect width="100%" height="100%" fill="#fafafa"/>' + svgLines + '</svg>';
+        var blob = new Blob([svgContent], {type: "image/svg+xml"});
+        var url = URL.createObjectURL(blob);
+        var link = document.createElement("a");
+        link.href = url;
+        link.download = "whiteboard.svg";
+        link.click();
+    };
+
+    clearBtn.onclick = function() { ctx.clearRect(0, 0, canvas.width, canvas.height); paths = []; };
+    closeBtn.onclick = function() { overlay.remove(); };
+
+    resizeCanvas();
+    overlay.style.top = "100px";
+    overlay.style.left = "100px";
+    makeElementDraggable(overlay, overlay.querySelector(".drag-handle"));
+}
+
+function makeElementDraggable(elmnt, handle) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    handle.onmousedown = function(e) {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmousemove = elementDrag;
+        document.onmouseup = closeDragElement;
+        elmnt.style.boxShadow = "0 12px 48px rgba(0, 0, 0, 0.7)";
+        elmnt.style.borderColor = "rgba(255, 255, 255, 0.3)";
+    };
+    function elementDrag(e) {
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+    }
+    function closeDragElement() {
+        document.onmousemove = null;
+        document.onmouseup = null;
+        elmnt.style.boxShadow = "0 8px 32px rgba(0, 0, 0, 0.5)";
+        elmnt.style.borderColor = "rgba(255, 255, 255, 0.1)";
+    }
+}
+setTimeout(lock,100);
+
+function toggleSound(soundId) {
+  // 1. Finde das Audio-Element und den zugehörigen Button anhand der ID
+  const audioPlayer = document.getElementById('audio-' + soundId);
+  const soundButton = document.getElementById('button-' + soundId);
+
+  if (!audioPlayer || !soundButton) {
+    console.error("Audio- oder Button-Element nicht gefunden für ID:", soundId);
+    return;
+  }
+
+  // 2. Prüfe den aktuellen Status des Audio-Players
+  if (audioPlayer.paused) {
+    // Wenn es pausiert ist, starte es und ändere den Button-Text zu 'Stop'
+    audioPlayer.play();
+    soundButton.textContent = 'Stop';
+
+    // Optional: Füge einen Event-Listener hinzu, um den Button automatisch wieder auf 'Play' zu stellen, 
+    // sobald die Wiedergabe beendet ist.
+    audioPlayer.onended = function() {
+      soundButton.textContent = 'Play';
+    };
+
+  } else {
+    // Wenn es gerade spielt, stoppe es, setze die Zeit zurück und ändere den Button-Text zu 'Play'
+    audioPlayer.pause();
+    audioPlayer.currentTime = 0; // Setzt den Sound an den Anfang zurück
+    soundButton.textContent = 'Play';
+  }
+}
+<\/script>
+${preview.innerHTML}
+
+<footer style="font-family: Arial, sans-serif; color: #f0f0f0;margin-left: auto;margin-right: auto; text-align: center; font-size: 10px">made with <a class="mail" href="mailto:mdep-tps.design@gmx.de?subject=Footer&">MDEP</a> by TPS-Design ©</footer>
+
+<!-- 
+===== Original Markdown Quelle =====
+${mdSource}
+====================================
+-->
+</body>
+</html>
+`;
+
+        const blob = new Blob([htmlContent], {
+            type: 'text/html;charset=utf-8'
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = nameOfDoc;
+        a.click();
+        URL.revokeObjectURL(url);
+    });
+
+const exportMdBtn = document.getElementById('exporttxt'); 
+
+exportMdBtn.addEventListener('click', () => {
+    const titel = document.getElementById('InputTitle').value;
+    const mdSource = editor.innerText; // Holt nur den puren Text aus dem Editor
+    if(document.getElementById('InputTitle').value){ console.log('titel des Dokuments: ' + titel); nameOfDoc = titel;} else{console.log('Dokument ist unbenannt!'); nameOfDoc = 'Nicht Benanntes MDEP-Dokument';}
+    // Download-Funktion aufrufen
+    downloadFile(mdSource, nameOfDoc + '.txt', 'text/plain');
+});
+
+/**
+ * Hilfsfunktion, um Redundanz zu vermeiden
+ */
+function downloadFile(content, fileName, contentType) {
+    const blob = new Blob([content], { type: contentType });
+    const link = document.createElement("a");
+    
+    link.href = URL.createObjectURL(blob);
+    link.download = fileName;
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // Speicher freigeben
+    URL.revokeObjectURL(link.href);
+}
+    </script>
+</body>
+</html>
