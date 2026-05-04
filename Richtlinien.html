@@ -1,0 +1,271 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exportiertes Markdown</title>
+<style>
+  html {
+    background-color: #0e0e0e; 
+  }
+header { background: #333; padding: 10px; text-align: center; font-size: 1.5em; }
+  body { 
+    font-family: Arial, sans-serif; 
+    color: #f0f0f0; 
+    background-color: #0e0e0e; 
+    background-color: #1a1a1a; 
+    padding: 20px;
+    margin: 20px; 
+    border: 1px solid #555;
+    border-radius: 8px;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  pre { 
+    white-space: pre-wrap; 
+    background: #1e1e1e; 
+    padding: 10px; 
+    border-radius: 5px; 
+    overflow-x:auto; 
+    position: relative; 
+    margin:10px 0; 
+  }
+  .code-lang { position: absolute; top: 0; left: 0; font-size: 0.8em; font-family: Arial, sans-serif; color: #ccc; padding: 2px 5px; background: #2e2e2e; border-bottom-right-radius: 3px; }
+  blockquote { border-left: 3px solid #555; margin: 5px 0; padding-left: 10px; color: #ccc; }
+  hr { border: 1px solid #555; margin: 10px 0; }
+  ul, ol { margin: 5px 0 5px 20px; }
+  li { margin: 3px 0; }
+  a { color: #80c0ff; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  img {
+    max-width: 100%;
+    height: auto;
+}
+  ul.checklist { list-style: none; padding-left: 0; }
+  ul.checklist li { margin: 5px 0; }
+  details { background: #2a2a2a; padding: 5px 10px; border-radius: 5px; margin: 5px 0; }
+  summary { cursor: pointer; font-weight: bold; }
+  details[open] { background: #3a3a3a; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  background: #2e2e2e;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+  button { margin: 5px; padding: 5px 10px; background: #555; color: #f0f0f0; border: none; border-radius: 3px; cursor: pointer; }
+    button:hover { background: #777; }
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #444;
+  color: #f0f0f0;
+}
+
+th {
+  background: #444;
+  font-weight: bold;
+}
+
+td {
+  background: #333;
+}
+
+tr:nth-child(even) {
+  background: #3a3a3a;
+}
+
+tr:hover {
+  background: #555;
+}
+
+caption {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #f0f0f0;
+  margin-bottom: 10px;
+}
+
+.info-box {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        .info-box .icon-container {
+            margin-right: 15px;
+            display: flex; 
+            align-items: center;
+            justify-content: center;
+        }
+        .info-box svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+        .info-box.info {
+            background-color: #e0f7fa;
+            border-left: 5px solid #00bcd4;
+            color: #00796b;
+        }
+
+        .info-box.info .icon-container svg {
+            fill: #00bcd4;
+        }
+        .info-box.warning {
+            background-color: #fff8e1;
+            border-left: 5px solid #ffeb3b;
+            color: #ff6f00;
+        }
+        .info-box.warning .icon-container svg {
+            fill: #ffeb3b;
+        }
+
+.inline {background:#0e0e0e; padding:2px 4px; border-radius:3px; font-family:monospace;}
+
+.overlay {
+            background-color: #232323;
+            touch-action: none;
+            border: 2px solid #1e1e1e;
+            position: absolute;
+            width: 150px;
+            height: 100px;
+            overflow: auto;
+            resize: both; /* Größenveränderbar */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: move; /* Zeigt Verschiebbarkeit an */
+            user-select: none;
+            z-index: 1000;
+        }
+</style></head>
+<body>
+<script>
+        function createOverlay() {
+            const overlay = document.createElement("div");
+            overlay.className = "overlay";
+            //overlay.innerText = "Zieh mich!";
+            
+            // Zufällige Startposition
+            overlay.style.top = (Math.random() * 300 + 100) + "px";
+            overlay.style.left = (Math.random() * 300 + 50) + "px";
+            
+            document.body.appendChild(overlay);
+            makeElementDraggable(overlay);
+        }
+
+        // Alle Elemente mit der Klasse "overlay" entfernen
+        function removeAllOverlays() {
+            const overlays = document.querySelectorAll(".overlay");
+            overlays.forEach(el => el.remove());
+        }
+
+        // Logik zum Verschieben (Drag & Drop)
+        function makeElementDraggable(elmnt) {
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+            elmnt.onmousedown = function(e) {
+                e.preventDefault();
+                // Startposition der Maus
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                document.onmousemove = elementDrag;
+            };
+
+            function elementDrag(e) {
+                e.preventDefault();
+                // Neue Position berechnen
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                // Element verschieben
+                elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+                elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+            }
+
+            function closeDragElement() {
+                document.onmouseup = null;
+                document.onmousemove = null;
+            }
+        }
+    </script>
+<script>
+function toggleSound(soundId) {
+  // 1. Finde das Audio-Element und den zugehörigen Button anhand der ID
+  const audioPlayer = document.getElementById('audio-' + soundId);
+  const soundButton = document.getElementById('button-' + soundId);
+
+  if (!audioPlayer || !soundButton) {
+    console.error("Audio- oder Button-Element nicht gefunden für ID:", soundId);
+    return;
+  }
+
+  // 2. Prüfe den aktuellen Status des Audio-Players
+  if (audioPlayer.paused) {
+    // Wenn es pausiert ist, starte es und ändere den Button-Text zu 'Stop'
+    audioPlayer.play();
+    soundButton.textContent = 'Stop';
+
+    // Optional: Füge einen Event-Listener hinzu, um den Button automatisch wieder auf 'Play' zu stellen, 
+    // sobald die Wiedergabe beendet ist.
+    audioPlayer.onended = function() {
+      soundButton.textContent = 'Play';
+    };
+
+  } else {
+    // Wenn es gerade spielt, stoppe es, setze die Zeit zurück und ändere den Button-Text zu 'Play'
+    audioPlayer.pause();
+    audioPlayer.currentTime = 0; // Setzt den Sound an den Anfang zurück
+    soundButton.textContent = 'Play';
+  }
+}
+</script>
+<h1><header style="background: #333; padding: 10px; text-align: center; font-size: 1.5em;">Richtlinien</header></h1><br>Schön das sie sich entschlossen haben sich die Richtlinien durch zu lesen...<br><br><h2>1. Bitte beachten sie die CC Lizenz (siehe <code class="inline">Resources/infon.html</code>)</h2><br><hr><br><h2>2. As-Is:</h2><br>Es wird keine Haftung für Daten Verlust, Funktionalität, Richtigkeit und ähnliches übernommen<br><hr><br><h2>3. Nutzerbedingungen:</h2><br>Die Erstellung/Speicherung von Inhalten gegen das geltende Recht Deutschlands ist verboten, unteranderem:<ul><li>Hassrede</li><li>Urheberrechtsverletzungen</li><li>Datenschutzrechtsverletzungen</li></ul><br><br>Das Kommerzielle Nutzen des MDEP ist untersagt insofern es keine explizierte genemigung des Entwicklers gibt.<br><hr><br><h2>4. Datenschutzrichtlinien:</h2><br>Es werden keine Daten online gespeichert, der Browser Interne Speicher <code class="inline">localStorage</code> wird nur genutzt um z.B.: die aktivierung verschidener erweiterungen zu gewährleisten. Bilder/Videos/etc. werden nirgendwo gespeichert sondern <b>nur</b> aus den Ordner <code class="inline">Bilder</code>/<code class="inline">Video</code>/<code class="inline">...</code> entnommen.<br><hr><br><h2>5. Lizenzen:</h2><br>die CC Lizenz erlaubt das bearbeiten des MDEP unter der nennung des Original Entwicklers und den selben Lizenz bedingungen, bei der Bearbeitung einer Bearbeitung des MDEP ist immer der Entwickler des MDEP zu nennen.<br><br>Das Entfernen/Verändern/... des Footers einer Exportierten datei ist untersagt.<br><hr><br>So einfach kann es sein, das wars, danke fürs Nutzen des MDEP und das Lesen der Richtlinien<br>
+
+<footer style="font-family: Arial, sans-serif; color: #f0f0f0;margin-left: auto;margin-right: auto; text-align: center; font-size: 10px">made with <a class="mail" href="mailto:mdep-tps.design@gmx.de?subject=Footer&">MDEP</a> by TPS-Design ©</footer>
+
+<!-- 
+===== Original Markdown Quelle =====
+# +[Richtlinien]
+Schön das sie sich entschlossen haben sich die Richtlinien durch zu lesen...
+
+## 1. Bitte beachten sie die CC Lizenz (siehe 'Resources/infon.html')
+---
+## 2. As-Is:
+Es wird keine Haftung für Daten Verlust, Funktionalität, Richtigkeit und ähnliches übernommen
+---
+## 3. Nutzerbedingungen:
+Die Erstellung/Speicherung von Inhalten gegen das geltende Recht Deutschlands ist verboten, unteranderem:
+- Hassrede
+- Urheberrechtsverletzungen
+- Datenschutzrechtsverletzungen
+
+Das Kommerzielle Nutzen des MDEP ist untersagt insofern es keine explizierte genemigung des Entwicklers gibt.
+---
+## 4. Datenschutzrichtlinien:
+Es werden keine Daten online gespeichert, der Browser Interne Speicher 'localStorage' wird nur genutzt um z.B.: die aktivierung verschidener erweiterungen zu gewährleisten. Bilder/Videos/etc. werden nirgendwo gespeichert sondern **nur** aus den Ordner 'Bilder'/'Video'/'...' entnommen.
+---
+## 5. Lizenzen:
+die CC Lizenz erlaubt das bearbeiten des MDEP unter der nennung des Original Entwicklers und den selben Lizenz bedingungen, bei der Bearbeitung einer Bearbeitung des MDEP ist immer der Entwickler des MDEP zu nennen.
+
+Das Entfernen/Verändern/... des Footers einer Exportierten datei ist untersagt.
+---
+So einfach kann es sein, das wars, danke fürs Nutzen des MDEP und das Lesen der Richtlinien
+
+====================================
+-->
+</body>
+</html>
