@@ -1,0 +1,195 @@
+/* === Midnight Sky & Cyber Glass Theme === */
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: #e0e0ff;
+  background-color: #050508;
+  
+  /* Sternenhimmel-Generator */
+  background-image: 
+    radial-gradient(1px 1px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 40px 70px, #ffffff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 90px 40px, rgba(255,255,255,0.5), rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 160px 120px, #eeccff, rgba(0,0,0,0));
+  background-size: 300px 300px;
+  background-attachment: fixed;
+  
+  /* Funkel-Animation für die Sterne */
+  animation: twinkle 5s ease-in-out infinite alternate;
+  overflow-x: hidden;
+}
+
+/* --- Sternschnuppen-Effekt --- */
+body::before {
+  content: "";
+  position: fixed;
+  top: -10%;
+  left: -10%;
+  width: 2px;
+  height: 2px;
+  background: white;
+  box-shadow: 0 0 10px 2px white;
+  border-radius: 50%;
+  opacity: 0;
+  animation: shooting-star 10s linear infinite;
+  z-index: -1;
+}
+
+header {
+  background: rgba(10, 10, 25, 0.8);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  padding: 20px;
+  text-align: center;
+  font-size: 1.6em;
+  color: #00d4ff;
+  border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.6);
+}
+
+.ffooter {
+  background: rgba(10, 10, 20, 0.9);
+  padding: 15px;
+  text-align: center;
+  font-size: 14px;
+  color: #667;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#editorContainer {
+  display: flex;
+  height: calc(100vh - 100px);
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.pane {
+  flex: 1;
+  margin: 10px;
+  padding: 20px;
+  background: rgba(20, 20, 35, 0.6); /* Glas-Look */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  overflow-y: auto;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.pane:focus-within {
+  border-color: rgba(0, 212, 255, 0.5);
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+}
+
+/* --- Nacht-Tabellen Design --- */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 20px 0;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+th {
+  background: rgba(0, 212, 255, 0.1);
+  color: #00d4ff;
+  padding: 15px;
+  text-align: left;
+  text-transform: uppercase;
+  font-size: 0.9em;
+  letter-spacing: 1px;
+  border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+td {
+  padding: 12px 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background-color: rgba(0, 3, 130, 0.62) !important;
+  color: white !important;
+}
+td:hover {
+  padding: 12px 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background-color: #000265 !important;
+  color: white !important;
+}
+
+tr:hover {
+  background: rgba(255, 255, 255, 0.05);
+  transition: 0.2s;
+}
+
+/* --- Elemente & Buttons --- */
+button {
+  background: linear-gradient(135deg, #1a1a3a 0%, #0a0a1a 100%);
+  color: #00d4ff;
+  border: 1px solid rgba(0, 212, 255, 0.4);
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+button:hover {
+  background: #00d4ff;
+  color: #050508;
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.6);
+  transform: translateY(-2px);
+}
+
+details{
+    background-color: rgba(0, 10, 87, 0.56)!important;
+    color: white !important;
+}
+details[open]{
+    background-color: rgba(0, 21, 180, 0.47) !important;
+}
+
+blockquote {
+  border-left: 4px solid #2944e3;
+  background: rgba(138, 43, 226, 0.05);
+  margin: 15px 0;
+  font-style: italic;
+  padding: 2.5px;
+}
+
+a {
+  color: #ff00ff;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: 0.3s;
+}
+
+a:hover {
+  border-bottom: 1px solid #ff00ff;
+  text-shadow: 0 0 8px #ff00ff;
+  color: #003dff;
+}
+
+/* --- Animationen --- */
+@keyframes twinkle {
+  from { opacity: 0.7; }
+  to { opacity: 1; }
+}
+
+@keyframes shooting-star {
+  0% { transform: translateX(0) translateY(0) rotate(45deg) scale(1); opacity: 0; }
+  5% { opacity: 1; }
+  15% { transform: translateX(100vw) translateY(100vh) rotate(45deg) scale(0); opacity: 0; }
+  100% { transform: translateX(100vw) translateY(100vh) rotate(45deg) scale(0); opacity: 0; }
+}
+
+/* Info Boxen Anpassung */
+.info-box.info {
+  background: rgba(0, 212, 255, 0.1);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  color: #e0faff;
+}

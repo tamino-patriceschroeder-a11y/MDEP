@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Diagramm Editor</title>
+
+<script src="js/math.min.js"></script>
+
+<style>
+:root { --primary:#2563eb; --bg:#1e1e1e; --accent:#f59e0b; }
+body { margin:0; display:flex; height:100vh; background:var(--bg); color:white; font-family:system-ui; overflow:hidden; }
+#sidebar { width:420px; background:#2e2e2e; padding:20px; overflow-y:auto; }
+#main { flex:1; display:flex; align-items:center; justify-content:center; }
+canvas { background:white; border-radius:12px; cursor:crosshair; }
+.input-group { display:flex; gap:5px; margin-bottom:8px; }
+input, button { padding:6px; font-size:13px; border-radius:4px; border:none; }
+button { cursor:pointer; font-weight:bold; }
+.btn-add { width:100%; background:#eff6ff; color:#2563eb; margin-bottom:10px; }
+.func-box { background:#1f2937; padding:10px; border-radius:6px; margin-bottom:10px; }
+.color-dot { width:16px; height:16px; border-radius:50%; display:inline-block; margin-right:6px; }
+.info-box { background:#fef3c7; color:black; padding:10px; border-radius:6px; margin-top:10px; }
+</style>
+</head>
+
+<body>
+
+<div id="sidebar">
+<h2>Diagramm Editor</h2>
+
+<h3>Punkte</h3>
+<div id="point-list"></div>
+<button class="btn-add" onclick="addPoint(0,0)">+ Punkt</button>
+
+<h3>Funktionen</h3>
+<div id="function-list"></div>
+<button class="btn-add" onclick="addFunction()">+ Funktion</button>
+
+<div style="display: none;" class="info-box" id="status">Bereit.</div>
+
+<button onclick="lines=[]; draw()" style="width:100%; background:#fee2e2; color:#ef4444; margin-top:10px;">
+Alle Linien löschen
+</button>
+
+<button onclick="exportImage()" style="width:100%; background:#d1fae5; color:#065f46; margin-top:10px;">
+Diagramm exportieren (PNG)
+</button>
+<div style="margin: 5px; font-size: 10px;">Nutze sqrt() für "Wurzel aus"</div>
+</div>
+
+<div id="main">
+<canvas id="canvas" width="650" height="650"></canvas>
+</div>
+
+<script>
+/* =====================
+   Daten
+===================== */
+
+let points = [
+{ x:1, y:1, id:0, color:"#2563eb" },
+{ x:4, y:3, id:1, color:"#2563eb" },
+{ x:-2, y:4, id:2, color:"#2563eb" }
+];
+
+let functions = [
+{ id:0, expr:"x^2", color:"#f59e0b" }
+];
+
+let lines = [];
+let draggingPoint = null;
+let selectedPoint = null;
+let hoverPoint = null;
+
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+/* =====================
+   Sidebar
+===================== */
+
+function updateSidebar() {
+const plist = document.getElementById("point-list");
+plist.innerHTML = "";
+
+points.forEach((p,i)=>{
+plist.innerHTML += `
+<div class="input-group">
+<input type="number" value="${p.x}" step="0.5"
+oninput="points[${i}].x=parseFloat(this.value); draw()">
+<input type="number" value="${p.y}" step="0.5"
+oninput="points[${i}].y=parseFloat(this.value); draw()">
+<input type="color" value="${p.color}"
+oninput="points[${i}].color=this.value; draw()">
+<button onclick="removePoint(${i})">×</button>
+</div>`;
+});
+
+const flist = document.getElementById("function-list");
+flist.innerHTML = "";
+
+functions.forEach((f,i)=>{
+flist.innerHTML += `
+<div class="func-box">
+<div><span class="color-dot" style="background:${f.color}"></span><b>f(x)</b></div>
+<input style="width:370px" value="${f.expr}"
+oninput="functions[${i}].expr=this.value; draw()">
+<input type="color" value="${f.color}"
+oninput="functions[${i}].color=this.value; draw()">
+<button onclick="removeFunction(${i})"
+style="width:100%; background:#fee2e2; color:#ef4444;">Entfernen</button>
+</div>`;
+});
+}
+
+function addPoint(x,y){
+points.push({ x,y,id:Date.now(),color:"#2563eb" });
+updateSidebar(); draw();
+}
+function removePoint(i){ points.splice(i,1); updateSidebar(); draw(); }
+
+function addFunction(){
+functions.push({ id:Date.now(),expr:"x",color:"#f59e0b" });
+updateSidebar(); draw();
+}
+function removeFunction(i){ functions.splice(i,1); updateSidebar(); draw(); }
+
+/* =====================
+   Zeichnen
+===================== */
+
+function draw(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+const center = canvas.width/2;
+const maxVal = Math.max(...points.flatMap(p=>[Math.abs(p.x),Math.abs(p.y)]),6)+2;
+const scale = center/maxVal;
+
+/* Grid */
+ctx.strokeStyle="#e2e8f0"; ctx.lineWidth=1;
+for(let i=-maxVal;i<=maxVal;i++){
+let p=center+i*scale;
+ctx.beginPath(); ctx.moveTo(p,0); ctx.lineTo(p,canvas.height); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(0,p); ctx.lineTo(canvas.width,p); ctx.stroke();
+}
+
+/* Achsen */
+ctx.strokeStyle="#334155"; ctx.lineWidth=2;
+ctx.beginPath(); ctx.moveTo(0,center); ctx.lineTo(canvas.width,center); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(center,0); ctx.lineTo(center,canvas.height); ctx.stroke();
+
+/* Funktionen */
+functions.forEach(f=>{
+try{
+const expr = math.parse(f.expr).compile();
+ctx.strokeStyle=f.color; ctx.lineWidth=2;
+ctx.beginPath(); let first=true;
+for(let x=-maxVal;x<=maxVal;x+=0.05){
+let y=expr.evaluate({x});
+if(first){ ctx.moveTo(center+x*scale, center-y*scale); first=false; }
+else ctx.lineTo(center+x*scale, center-y*scale);
+}
+ctx.stroke();
+}catch{}
+});
+
+/* Linien */
+ctx.strokeStyle="#94a3b8"; ctx.lineWidth=3;
+lines.forEach(l=>{
+const p1=points.find(p=>p.id===l[0]);
+const p2=points.find(p=>p.id===l[1]);
+if(!p1||!p2) return;
+ctx.beginPath();
+ctx.moveTo(center+p1.x*scale,center-p1.y*scale);
+ctx.lineTo(center+p2.x*scale,center-p2.y*scale);
+ctx.stroke();
+});
+
+/* Punkte */
+points.forEach(p=>{
+ctx.fillStyle=p.color;
+ctx.beginPath();
+ctx.arc(center+p.x*scale,center-p.y*scale,8,0,Math.PI*2);
+ctx.fill();
+});
+
+/* Hover-Umrandung */
+if (hoverPoint) {
+    ctx.strokeStyle="#22c55e"; ctx.lineWidth=3;
+    ctx.beginPath();
+    ctx.arc(center+hoverPoint.x*scale, center-hoverPoint.y*scale, 12,0,Math.PI*2);
+    ctx.stroke();
+}
+
+/* Startpunkt */
+if (selectedPoint) {
+    ctx.strokeStyle="#2563eb"; ctx.lineWidth=3;
+    ctx.beginPath();
+    ctx.arc(center+selectedPoint.x*scale, center-selectedPoint.y*scale, 14,0,Math.PI*2);
+    ctx.stroke();
+}
+
+/* Vorschau-Linie */
+if (selectedPoint && hoverPoint && selectedPoint.id !== hoverPoint.id) {
+    ctx.strokeStyle="#94a3b8"; ctx.setLineDash([6,6]); ctx.lineWidth=2;
+    ctx.beginPath();
+    ctx.moveTo(center+selectedPoint.x*scale, center-selectedPoint.y*scale);
+    ctx.lineTo(center+hoverPoint.x*scale, center-hoverPoint.y*scale);
+    ctx.stroke();
+    ctx.setLineDash([]);
+}
+}
+
+/* =====================
+   Maus + Klick
+===================== */
+
+canvas.onmousedown = e => {
+const rect=canvas.getBoundingClientRect();
+const center = canvas.width/2;
+const maxVal = Math.max(...points.flatMap(p=>[Math.abs(p.x),Math.abs(p.y)]),6)+2;
+const scale = center/maxVal;
+const mx = e.clientX-rect.left;
+const my = e.clientY-rect.top;
+
+// Hover-Punkt
+hoverPoint = points.find(p=>Math.hypot(mx-(center+p.x*scale),my-(center-p.y*scale))<15)||null;
+/*
+// Linie klicken zum Löschen
+for (let i=0;i<lines.length;i++){
+    const p1 = points.find(p=>p.id===lines[i][0]);
+    const p2 = points.find(p=>p.id===lines[i][1]);
+    if(!p1||!p2) continue;
+    const dist = pointLineDistance(mx,my, center+p1.x*scale,center-p1.y*scale, center+p2.x*scale,center-p2.y*scale);
+    if(dist<6){
+        lines.splice(i,1);
+        document.getElementById("status").innerText="Linie gelöscht";
+        draw(); return;
+    }
+}
+*/
+// Linie setzen
+if(hoverPoint){
+    if(!selectedPoint){
+        selectedPoint = hoverPoint;
+        document.getElementById("status").innerText="Startpunkt gewählt – Endpunkt anklicken";
+    } else if(selectedPoint.id!==hoverPoint.id){
+        lines.push([selectedPoint.id, hoverPoint.id]);
+        selectedPoint = null;
+        document.getElementById("status").innerText="Linie erzeugt";
+    }
+} else {
+    selectedPoint = null;
+    document.getElementById("status").innerText="Bereit.";
+}
+
+draw();
+};
+
+// Linie-Entfernung Helfer
+function pointLineDistance(px,py,x1,y1,x2,y2){
+    const A=px-x1,B=py-y1,C=x2-x1,D=y2-y1;
+    const dot=A*C+B*D;
+    const len_sq=C*C+D*D;
+    let param = len_sq!==0 ? dot/len_sq : -1;
+    let xx,yy;
+    if(param<0){ xx=x1; yy=y1; }
+    else if(param>1){ xx=x2; yy=y2; }
+    else { xx=x1+param*C; yy=y1+param*D; }
+    const dx=px-xx, dy=py-yy;
+    return Math.sqrt(dx*dx+dy*dy);
+}
+
+/* Dragging */
+window.onmousemove = e => {
+    const rect=canvas.getBoundingClientRect();
+    const center = canvas.width/2;
+    const maxVal = Math.max(...points.flatMap(p=>[Math.abs(p.x),Math.abs(p.y)]),6)+2;
+    const scale = center/maxVal;
+    const mx = e.clientX-rect.left;
+    const my = e.clientY-rect.top;
+
+    // Hover Punkt für Vorschau
+    hoverPoint = points.find(p=>Math.hypot(mx-(center+p.x*scale),my-(center-p.y*scale))<15)||null;
+
+    if(draggingPoint){
+        draggingPoint.x = (mx-center)/scale;
+        draggingPoint.y = (center-my)/scale;
+        updateSidebar();
+    }
+
+    draw();
+};
+
+window.onmouseup = ()=>draggingPoint=null;
+
+// Punkt ziehen
+canvas.addEventListener("mousedown", e => {
+    const rect = canvas.getBoundingClientRect();
+    const center = canvas.width/2;
+    const maxVal = Math.max(...points.flatMap(p=>[Math.abs(p.x),Math.abs(p.y)]),6)+2;
+    const scale = center/maxVal;
+    const mx = e.clientX-rect.left;
+    const my = e.clientY-rect.top;
+
+    draggingPoint = points.find(p=>Math.hypot(mx-(center+p.x*scale),my-(center-p.y*scale))<15)||null;
+});
+
+/* =====================
+   Export
+===================== */
+
+function exportImage(){
+const c=document.createElement("canvas");
+c.width=canvas.width+80; c.height=canvas.height+120;
+const ex=c.getContext("2d");
+ex.fillStyle="#fff"; ex.fillRect(0,0,c.width,c.height);
+ex.font="24px system-ui"; ex.fillStyle="#111";
+ex.fillText("Funktionsdiagramm",40,40);
+ex.drawImage(canvas,40,70);
+const a=document.createElement("a");
+a.download="diagramm.png";
+a.href=c.toDataURL();
+a.click();
+}
+
+updateSidebar(); draw();
+</script>
+</body>
+</html>

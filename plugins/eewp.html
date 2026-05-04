@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>EEWP</title>
+    <style>
+    body {
+  font-family: sans-serif;
+  padding: 20px;
+  transition: background 0.3s, color 0.3s;
+}
+
+body.light {
+  background: #f0f0f0;
+  color: #000;
+}
+
+body.dark {
+  background: #1e1e1e;
+  color: #eee;
+}
+
+h1 {
+  text-align: center;
+}
+
+h5 {
+  text-align: center;
+  color: "red";
+  font-family: monospace;
+}
+
+textarea {
+  width: 100%;
+  height: 150px;
+  margin-bottom: 10px;
+  font-family: monospace;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  resize: vertical;
+}
+
+body.dark textarea {
+  background: #2e2e2e;
+  color: #fff;
+  border: 1px solid #555;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  margin-right: 10px;
+  background-color: #007acc;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+body.dark button {
+  background-color: #444;
+  color: #fff;
+}
+
+button:hover {
+  background-color: #005fa3;
+}
+
+body.dark button:hover {
+  background-color: #666;
+}
+
+#controls {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+        input {
+            background-color: #2e2e2e;
+            border-radius: 5px;
+            border: none;
+            color: white;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+        
+        input:hover {
+            background-color: #4e4e4e;
+            border-radius: 5px;
+            border: 1px solid white;
+            color: white;
+            padding: 5px;
+        }
+        
+        input:focus {
+            background-color: #7e7e7e;
+            border-radius: 5px;
+            border: none;
+            color: white;
+            padding: 5px;
+
+        }
+
+    </style>
+</head>
+<body>
+  <h1>Willkommen im Education-Experiment-Work-Place</h1>
+  <h5> only for HTML, CSS and JS </h5>
+
+  <div id="controls">
+    <button onclick="toggleTheme()">🌗 Theme wechseln</button>
+    <button onclick="runCode()">🔴 Ausführen</button>
+      <button onclick="exportHTML()"> Downloaden</button>
+  </div>
+    <label style="margin: 10px;">Titel:</label>
+    <input id="title" value="projekt" placeholder="Hier Titel deines Projektes eingeben"></input><br>
+  <label for="html">HTML:</label>
+  <textarea id="html" placeholder="Hier HTML eingeben..."></textarea>
+
+  <label for="css">CSS:</label>
+  <textarea id="css" placeholder="Hier CSS eingeben..."></textarea>
+
+  <label for="js">JavaScript:</label>
+  <textarea id="js" placeholder="Hier JavaScript eingeben..."></textarea>
+
+  <div id="notes-container">
+    <label for="notes">🗒️ Notizen (nicht gespeichert):</label>
+    <textarea id="notes" placeholder="Wer das liest ist doof"></textarea>
+  </div>
+
+ <footer>
+     © TPS-Design/Coding 2025
+ </footer>
+    
+  <script>
+    let darkMode = false;
+
+function toggleTheme() {
+  darkMode = !darkMode;
+  document.body.className = darkMode ? 'dark' : 'light';
+  localStorage.setItem('theme', darkMode ? 'dark' : 'light');
+}
+
+window.onload = () => {
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  darkMode = savedTheme === 'dark';
+  document.body.className = savedTheme;
+};
+
+      function runCode() {
+  const html = document.getElementById('html').value;
+  const css = document.getElementById('css').value;
+  const js = document.getElementById('js').value;
+  const title = document.getElementById('title').value;
+
+  const code = `
+    <html>
+      <head><title>${title}</title><style>${css}</style></head>
+      <body>${html}<script>${js}<\/script></body>
+    </html>
+  `;
+
+  const win = window.open('', '_blank', 'width=800,height=600');
+  win.document.open();
+  win.document.write(`
+    <iframe sandbox="allow-scripts" style="width:100%;height:100%;border:none;" srcdoc='${code.replace(/'/g, "&apos;")}'>
+    </iframe>
+  `);
+  win.document.close();
+}
+      
+      function exportHTML() {
+    // 1. Dieselbe Logik zum Sammeln und Zusammenbauen des Codes
+    const html = document.getElementById('html').value;
+    const css = document.getElementById('css').value;
+    const js = document.getElementById('js').value;
+    const title = document.getElementById('title').value;
+
+    const fullCode = `
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <title>${title}</title>
+    <meta charset="UTF-8">
+    <style>${css}</style>
+</head>
+<body>
+    ${html}
+    <script>${js}<\/script>
+</body>
+</html>`;
+
+    // 2. Erstellen eines Blobs mit dem HTML-Inhalt
+    const blob = new Blob([fullCode], { type: 'text/html' });
+
+    // 3. Einen temporären Download-Link erstellen
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'title.html'; // Name der Datei
+
+    // 4. Download auslösen und Link wieder entfernen
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href); // Speicher freigeben
+      }
+
+    </script>
+</body>
+</html>

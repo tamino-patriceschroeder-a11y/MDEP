@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Stoppuhr</title>
+<style>
+body { font-family: sans-serif; text-align: center; scale: 0.5;}
+#stopwatch { font-size: 2em;}
+button { padding: 10px; font-size: 1em; margin: 5px; cursor: pointer; }
+</style>
+</head>
+<body>
+<div id="stopwatch">00:00:00:000</div>
+<button onclick="startStopwatch()">Start</button>
+<button onclick="stopStopwatch()">Stop</button>
+<button onclick="resetStopwatch()">Reset</button>
+
+<script>
+let startTime;
+let intervalId;
+let running = false;
+
+const stopwatchDisplay = document.getElementById('stopwatch');
+
+function formatTime(ms) {
+    let days = Math.floor(ms / (1000 * 60 * 60 * 24));
+    ms %= (1000 * 60 * 60 * 24);
+    let hours = Math.floor(ms / (1000 * 60 * 60));
+    ms %= (1000 * 60 * 60);
+    let minutes = Math.floor(ms / (1000 * 60));
+    ms %= (1000 * 60);
+    let seconds = Math.floor(ms / 1000);
+    let milliseconds = ms % 1000;
+
+    // FÃ¼ll Nullen fÃ¼r eine schÃ¶ne Anzeige
+    days = String(days).padStart(2, '0');
+    hours = String(hours).padStart(2, '0');
+    minutes = String(minutes).padStart(2, '0');
+    seconds = String(seconds).padStart(2, '0');
+    milliseconds = String(milliseconds).padStart(3, '0');
+
+    return `${days}:${hours}:${minutes}:${seconds}:${milliseconds}`;
+}
+
+function updateStopwatch() {
+    const currentTime = new Date().getTime();
+    const elapsedTime = currentTime - startTime;
+    stopwatchDisplay.textContent = formatTime(elapsedTime);
+}
+
+function startStopwatch() {
+    if (!running) {
+        startTime = new Date().getTime(); // Startzeit speichern
+        intervalId = setInterval(updateStopwatch, 10); // Alle 10ms aktualisieren fÃ¼r Millisekunden-Genauigkeit
+        running = true;
+    }
+}
+
+function stopStopwatch() {
+    clearInterval(intervalId);
+    running = false;
+}
+
+function resetStopwatch() {
+    stopStopwatch();
+    stopwatchDisplay.textContent = "00:00:00:000";
+}
+
+</script>
+
+</body>
+</html>
+<script></script></body>
+    </html>
+  

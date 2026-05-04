@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Offline Text-Vergleich (Diff)</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background: #1e1e1e; color: #fff; }
+        .container { max-width: 1200px; margin: auto; background: #2e2e2e; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px white; border: 1px solid #ccc;}
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        textarea { width: 95%; height: 200px; padding: 10px; border: 1px solid #ccc; border-radius: 4px; resize: vertical; font-family: monospace; background-color: #3e3e3e; color: white;}
+        h2 { font-size: 1.2rem; margin-top: 0; }
+        button { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 1rem; }
+        button:hover { background: #0056b3; }
+        #output { white-space: pre-wrap; font-family: monospace; border: 1px solid #ddd; padding: 15px; border-radius: 4px; background: #3c3c3c; line-height: 1.5; color: #fff;}
+        .del { background-color: #ffcccc;  color: #b30000; padding: 2px 0; margin:3px; border-radius: 5px;}
+        .ins { background-color: #ccffcc; color: #006600; font-weight: bold; padding: 2px 0; margin:3px; border-radius: 5px;}
+        .legend { margin-top: 10px; font-size: 0.85rem; color: #666; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Offline Diff Tool</h1>
+    
+    <div class="grid">
+        <div>
+            <h2>Originaler Text (Alt)</h2>
+            <textarea id="textA" placeholder="Alten Text hier einfügen...">Hallo Welt
+Dies ist ein Test.</textarea>
+        </div>
+        <div>
+            <h2>Neuer Text</h2>
+            <textarea id="textB" placeholder="Neuen Text hier einfügen...">Hallo Leute
+Dies ist ein kleiner Test.</textarea>
+        </div>
+    </div>
+
+    <button onclick="computeDiff()">Unterschiede anzeigen</button>
+
+    <h2>Ergebnis:</h2>
+    <div id="output">Klicken Sie auf den Button, um den Vergleich zu starten.</div>
+    
+    <div class="legend">
+        Legende: <span class="del">Entfernt</span> <span class="ins">Hinzugefügt</span>
+    </div>
+</div>
+
+<script>
+    /**
+     * Ein einfacher "Character-based" Diff-Algorithmus (nach Myers Prinzipien vereinfacht),
+     * der komplett ohne externe Abhängigkeiten funktioniert.
+     */
+    function diff(oldStr, newStr) {
+        let out = '';
+        let i = 0, j = 0;
+        
+        // Wir nutzen die integrierte Intl-Segmentierung oder einfaches Splitting
+        // Für diesen Zweck nutzen wir ein Array von Zeichen
+        const a = Array.from(oldStr);
+        const b = Array.from(newStr);
+
+        const matrix = Array(a.length + 1).fill().map(() => Array(b.length + 1).fill(0));
+
+        // Longest Common Subsequence (LCS) Matrix füllen
+        for (let i = 1; i <= a.length; i++) {
+            for (let j = 1; j <= b.length; j++) {
+                if (a[i - 1] === b[j - 1]) matrix[i][j] = matrix[i - 1][j - 1] + 1;
+                else matrix[i][j] = Math.max(matrix[i - 1][j], matrix[i][j - 1]);
+            }
+        }
+
+        // Backtrack um den Diff zu bauen
+        function backtrack(i, j) {
+            if (i > 0 && j > 0 && a[i - 1] === b[j - 1]) {
+                backtrack(i - 1, j - 1);
+                out += escapeHtml(a[i - 1]);
+            } else if (j > 0 && (i === 0 || matrix[i][j - 1] >= matrix[i - 1][j])) {
+                backtrack(i, j - 1);
+                out += '<span class="ins">' + escapeHtml(b[j - 1]) + '</span>';
+            } else if (i > 0 && (j === 0 || matrix[i][j - 1] < matrix[i - 1][j])) {
+                backtrack(i - 1, j);
+                out += '<span class="del">' + escapeHtml(a[i - 1]) + '</span>';
+            }
+        }
+
+        backtrack(a.length, b.length);
+        return out;
+    }
+
+    function escapeHtml(text) {
+        const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+        return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+    }
+
+    function computeDiff() {
+        const valA = document.getElementById('textA').value;
+        const valB = document.getElementById('textB').value;
+        const resultDiv = document.getElementById('output');
+        
+        // Anzeige bei großen Texten (Matrix-Berechnung ist O(N*M))
+        if(valA.length > 2000 || valB.length > 2000) {
+            resultDiv.innerHTML = "Berechne... (bei großen Texten kann dies kurz dauern)";
+        }
+
+        setTimeout(() => {
+            resultDiv.innerHTML = diff(valA, valB);
+        }, 50);
+    }
+</script>
+
+</body>
+</html>

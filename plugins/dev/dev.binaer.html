@@ -1,0 +1,52 @@
+
+    <html>
+      <head><style></style></head>
+      <body><!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Binär Übersetzer</title>
+    <style>
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        textarea { width: 100%; max-width: 600px; height: 100px; margin-bottom: 20px; }
+        .container { width: 100%; max-width: 600px; }
+    </style>
+</head>
+<body>
+
+    <h2>Binär-Übersetzer (Beidseitig)</h2>
+
+    <div class="container">
+        <label>Text:</label><br>
+        <textarea id="textInput" placeholder="Hier Text eingeben..." oninput="convertToBinary()"></textarea>
+
+        <label>Binär (ASCII/UTF-8):</label><br>
+        <textarea id="binaryInput" placeholder="Hier Binärcode eingeben..." oninput="convertToText()"></textarea>
+    </div>
+
+    <script>
+        // Text zu Binär
+        function convertToBinary() {
+            const text = document.getElementById('textInput').value;
+            const output = text.split('').map(char => {
+                return char.charCodeAt(0).toString(2).padStart(8, '0');
+            }).join(' ');
+            document.getElementById('binaryInput').value = output;
+        }
+
+        // Binär zu Text
+        function convertToText() {
+            const binary = document.getElementById('binaryInput').value.replace(/\s/g, '');
+            let text = "";
+            for (let i = 0; i < binary.length; i += 8) {
+                const byte = binary.substr(i, 8);
+                text += String.fromCharCode(parseInt(byte, 2));
+            }
+            document.getElementById('textInput').value = text;
+        }
+    </script>
+
+</body>
+</html><script></script></body>
+    </html>
+  

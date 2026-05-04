@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>DEVELOPER</title>
+    <style>
+        body {
+            margin: 0;
+            background: black;
+            overflow: hidden;
+        }
+        canvas {
+            display: block;
+            cursor: none;
+        }
+        #controls {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            font-family: sans-serif;
+            color: white;
+        }
+        input, label {
+            font-size: 14px;
+        }
+        input[type="text"] {
+            background: #222;
+            border: 1px solid #555;
+            color: #0f0;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="controls" style="display: none;">
+    <div>
+        <label for="farbe">Farbe:</label>
+        <input type="color" value="#00ff00" id="farbe">
+    </div>
+    <div>
+        <label for="zeichen">Zeichenfolge:</label>
+        <input type="text" id="zeichen" value="ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃﾏｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍ" placeholder="z.B. 10">
+    </div>
+    <small style="opacity: 0.7;">Willkommen Developer</small>
+</div>
+
+<canvas id="matrix"></canvas>
+
+<script>
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
+    
+    // Referenzen auf die Inputs
+    const colorInput = document.getElementById('farbe');
+    const charInput = document.getElementById('zeichen');
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const fontSize = 16;
+    let columns = canvas.width / fontSize;
+    let drops = [];
+
+    // Initialisierung der Spalten
+    function initDrops() {
+        columns = canvas.width / fontSize;
+        drops = [];
+        for (let x = 0; x < columns; x++) {
+            drops[x] = Math.random() * -100; // Startet versetzt von oben
+        }
+    }
+    initDrops();
+
+    function dev(){
+            const controls = document.getElementById('controls');
+        controls.style.display = 'block'
+        console.log('Willkommen Developer')
+    }
+    
+    function ved(){
+            const controls = document.getElementById('controls');
+        controls.style.display = 'none'
+        console.log('Auf Wiedersehen Developer')
+    }
+    
+    function draw() {
+        // Trail-Effekt
+        ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Farbe und Font setzen
+        ctx.fillStyle = colorInput.value;
+        ctx.font = fontSize + "px monospace";
+
+        // Aktuelle Zeichen aus dem Input holen
+        // Falls das Feld leer ist, nutzen wir ein Leerzeichen als Fallback
+        const symbols = charInput.value || " ";
+
+        for (let i = 0; i < drops.length; i++) {
+            // Wählt zufällig ein Zeichen aus dem Input-Feld
+            const text = symbols.charAt(Math.floor(Math.random() * symbols.length));
+            
+            // Zeichnen
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+            // Zurücksetzen wenn am Ende des Screens
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                drops[i] = 0;
+            }
+            drops[i]++;
+        }
+    }
+
+    setInterval(draw, 35);
+
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        initDrops(); // Spalten bei Resize neu berechnen
+    });
+
+</script>
+
+</body>
+</html>  

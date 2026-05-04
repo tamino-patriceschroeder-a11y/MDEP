@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: sans-serif; background: #1e1e1e; padding: 15px; border-radius: 8px; margin: 0; color: white;}
+        .card { background: #3e3e3e; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h3 { margin-top: 0; font-size: 14px; color: white; }
+        .progress-container { background: #eee; border-radius: 10px; height: 20px; width: 100%; margin: 10px 0; overflow: hidden; }
+        .progress-bar { background: #4caf50; height: 100%; width: 0%; transition: width 0.3s ease; }
+        .controls { display: flex; gap: 5px; align-items: center; font-size: 12px; }
+        input { width: 50px; padding: 3px; border: 1px solid #ccc; border-radius: 4px; }
+        .stats { margin-top: 5px; font-weight: bold; color: #fff; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h3 id="title">Projekt-Fortschritt</h3>
+    <div class="progress-container">
+        <div id="bar" class="progress-bar"></div>
+    </div>
+    <div class="controls">
+        <input type="number" id="current" value="0" oninput="update()"> / 
+        <input type="number" id="goal" value="100" oninput="update()">
+        <span id="percent">0%</span>
+    </div>
+</div>
+
+<script>
+    const storageKey = "md_progress_data_" + window.location.hash; // Eindeutig pro Einbettung
+
+    function update() {
+        const current = document.getElementById('current').value;
+        const goal = document.getElementById('goal').value;
+        const percent = goal > 0 ? Math.round((current / goal) * 100) : 0;
+        
+        document.getElementById('bar').style.width = percent + "%";
+        document.getElementById('percent').innerText = percent + "%";
+        
+        // Speichern
+        localStorage.setItem(storageKey, JSON.stringify({current, goal}));
+    }
+
+    // Laden beim Start
+    window.onload = () => {
+        const saved = JSON.parse(localStorage.getItem(storageKey));
+        if (saved) {
+            document.getElementById('current').value = saved.current;
+            document.getElementById('goal').value = saved.goal;
+            update();
+        }
+    }
+</script>
+
+</body>
+</html>
+  

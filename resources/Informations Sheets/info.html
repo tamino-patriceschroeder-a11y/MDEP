@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exportiertes Markdown</title>
+    <style>
+    html {
+        background-color: #0e0e0e;
+    }
+
+    header {
+        background: #333;
+        padding: 10px;
+        text-align: center;
+        font-size: 1.5em;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        color: #f0f0f0;
+        /* Hintergrundfarbe des gesamten Browserfensters (die äußere "Umrandung") */
+        background-color: #0e0e0e;
+        /* Die Füllung, die sich innen abhebt */
+        background-color: #1a1a1a;
+        /* Innenabstand für den Inhalt */
+        padding: 20px;
+        /* Der äußere Rand, der die Hintergrundfarbe #0e0e0e durchscheinen lässt */
+        margin: 20px;
+        /* Die sichtbare Linie als Rand */
+        border: 1px solid #555;
+        /* Optional: abgerundete Ecken */
+        border-radius: 8px;
+        /* Optional: Maximale Breite für bessere Lesbarkeit auf großen Bildschirmen */
+        max-width: 900px;
+        /* Zentriert den Body, wenn er eine max-width hat */
+        margin-left: auto;
+        margin-right: auto;
+    }/* Der Rest deines vorhandenen CSS, leicht bereinigt */
+
+    pre {
+        white-space: pre-wrap;
+        background: #1e1e1e;
+        padding: 10px;
+        border-radius: 5px;
+        overflow-x: auto;
+        position: relative;
+        margin: 10px 0;
+    }/* ... alle anderen Styles wie zuvor ... */
+
+    .code-lang {
+        position: absolute;
+        top: 0;
+        left: 0;
+        font-size: 0.8em;
+        font-family: Arial, sans-serif;
+        color: #ccc;
+        padding: 2px 5px;
+        background: #2e2e2e;
+        border-bottom-right-radius: 3px;
+    }
+
+    blockquote {
+        border-left: 3px solid #555;
+        margin: 5px 0;
+        padding-left: 10px;
+        color: #ccc;
+    }
+
+    hr {
+        border: 1px solid #555;
+        margin: 10px 0;
+    }
+
+    ul, ol {
+        margin: 5px 0 5px 20px;
+    }
+
+    li {
+        margin: 3px 0;
+    }
+
+    a {
+        color: #80c0ff;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    ul.checklist {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    ul.checklist li {
+        margin: 5px 0;
+    }
+
+    details {
+        background: #2a2a2a;
+        padding: 5px 10px;
+        border-radius: 5px;
+        margin: 5px 0;
+    }
+
+    summary {
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    details[open] {
+        background: #3a3a3a;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 10px 0;
+        background: #2e2e2e;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: left;
+        border: 1px solid #444;
+        color: #f0f0f0;
+    }
+
+    th {
+        background: #444;
+        font-weight: bold;
+    }
+
+    td {
+        background: #333;
+    }
+
+    tr:nth-child(even) {
+        background: #3a3a3a;
+    }
+
+    tr:hover {
+        background: #555;
+    }
+
+    caption {
+        font-size: 1.2em;
+        font-weight: bold;
+        color: #f0f0f0;
+        margin-bottom: 10px;
+    }
+
+    .info-box {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    .info-box .icon-container {
+        margin-right: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .info-box svg {
+        width: 24px;
+        height: 24px;
+        fill: currentColor;
+    }
+
+    .info-box.info {
+        background-color: #e0f7fa;
+        border-left: 5px solid #00bcd4;
+        color: #00796b;
+    }
+
+    .info-box.info .icon-container svg {
+        fill: #00bcd4;
+    }
+
+    .info-box.warning {
+        background-color: #fff8e1;
+        border-left: 5px solid #ffeb3b;
+        color: #ff6f00;
+    }
+
+    .info-box.warning .icon-container svg {
+        fill: #ffeb3b;
+    }
+
+    .inline {
+        background: #0e0e0e;
+        padding: 2px 4px;
+        border-radius: 3px;
+        font-family: monospace;
+    }
+
+    .overlay {
+        background-color: #232323;
+        touch-action: none;
+        border: 2px solid #1e1e1e;
+        position: absolute;
+        width: 150px;
+        height: 100px;
+        overflow: auto;
+        resize: both;
+        /* Größenveränderbar */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        cursor: move;
+        /* Zeigt Verschiebbarkeit an */
+        user-select: none;
+        z-index: 1000;
+    }
+    </style>
+</head>
+<body>
+    <script>
+    function createOverlay() {
+        const overlay = document.createElement("div");
+        overlay.className = "overlay";
+        //overlay.innerText = "Zieh mich!";
+
+        // Zufällige Startposition
+        overlay.style.top = (Math.random() * 300 + 100) + "px";
+        overlay.style.left = (Math.random() * 300 + 50) + "px";
+
+        document.body.appendChild(overlay);
+        makeElementDraggable(overlay);
+    }
+
+    // Alle Elemente mit der Klasse "overlay" entfernen
+    function removeAllOverlays() {
+        const overlays = document.querySelectorAll(".overlay");
+        overlays.forEach(el => el.remove());
+    }
+
+    // Logik zum Verschieben (Drag & Drop)
+    function makeElementDraggable(elmnt) {
+        let pos1 = 0,
+            pos2 = 0,
+            pos3 = 0,
+            pos4 = 0;
+
+        elmnt.onmousedown = function(e) {
+            e.preventDefault();
+            // Startposition der Maus
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = closeDragElement;
+            document.onmousemove = elementDrag;
+        };
+
+        function elementDrag(e) {
+            e.preventDefault();
+            // Neue Position berechnen
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            // Element verschieben
+            elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+            elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        }
+
+        function closeDragElement() {
+            document.onmouseup = null;
+            document.onmousemove = null;
+        }
+    }
+    </script>
+    <script>
+    function toggleSound(soundId) {
+        // 1. Finde das Audio-Element und den zugehörigen Button anhand der ID
+        const audioPlayer = document.getElementById('audio-' + soundId);
+        const soundButton = document.getElementById('button-' + soundId);
+
+        if (!audioPlayer || !soundButton) {
+            console.error("Audio- oder Button-Element nicht gefunden für ID:", soundId);
+            return;
+        }
+
+        // 2. Prüfe den aktuellen Status des Audio-Players
+        if (audioPlayer.paused) {
+            // Wenn es pausiert ist, starte es und ändere den Button-Text zu 'Stop'
+            audioPlayer.play();
+            soundButton.textContent = 'Stop';
+
+            // Optional: Füge einen Event-Listener hinzu, um den Button automatisch wieder auf 'Play' zu stellen, 
+            // sobald die Wiedergabe beendet ist.
+            audioPlayer.onended = function() {
+                soundButton.textContent = 'Play';
+            };
+
+        } else {
+            // Wenn es gerade spielt, stoppe es, setze die Zeit zurück und ändere den Button-Text zu 'Play'
+            audioPlayer.pause();
+            audioPlayer.currentTime = 0; // Setzt den Sound an den Anfang zurück
+            soundButton.textContent = 'Play';
+        }
+    }
+    </script>
+    <h1>
+        <header style="background: #333; padding: 10px; text-align: center; font-size: 1.5em;">Info Sheet</header>
+    </h1>
+    <br>
+    <h2>Beschreibung:</h2>
+    <br>
+    Der MDE
+    <span>
+        <b title="Beste Qualität für alle und kostenlos">
+            <a style="color: #00fdff; cursor: pointer;" href="resources/info.html">Pro</a>
+        </b>
+    </span>
+     ist ein 
+    <b>100%</b>
+    <b>Kostenloser</b>
+    <span style="cursor: help; color: #00fdff;" title="Extended Markdown Language">
+        <b>EML</b>
+    </span>
+     Editor mit dem Standart Textformatierungen und Erweiterte 
+    <sup>(Extended)</sup>
+     Textformatierungen möglich sind.
+    <br>
+    <br>
+    <details>
+        <summary>
+            <h2>Fakten:</h2>
+        </summary>
+        - 
+        <b>Erstellt von:</b>
+         Tamino-Patrice Schröder
+        <br>
+        - 
+        <b>Erstellt im Jahr:</b>
+         2025
+        <br>
+        - 
+        <b>Basierent auf:</b>
+         HTML/JS/CSS/MD
+        <br>
+        - 
+        <b>Geplante Vollendung:</b>
+        <i>Nie</i>
+        <br>
+        - 
+        <b>Erweiterbar:</b>
+         Ja (siehe Lizenzen)
+        <br>
+        - 
+        <b>Benutzer Freundlichkeit:</b>
+         Hoch
+        <br>
+        - 
+        <b>Besonderheiten:</b>
+         Viele Elemente ohne direkten MD ursprung, Unterstützt erweiterungen in form von HTML/JS/CSS, hat einen Newsletter, 
+        <b>
+            <i>besser als Word XD</i>
+        </b>
+        , Events wie Weihnachts verion und mehr (warte ab)
+        <br>
+        - 
+        <b>Ziel:</b>
+         Premium Qualität, einfache digitalisierung, kostenlos für alle und ohne Werbung (meißtens XD)
+        <br>
+        - 
+        <b>Unterstützt auf:</b>
+         auf jedem Browser fähigem Gerät auch ohne Internet
+        <br>
+        - 
+        <b>Unterstützt:</b>
+         UTF-8, Unicode
+    </details>
+    <br>
+    <details>
+        <summary>
+            <h2>Lizenzen:</h2>
+        </summary>
+        - Copyright: Some rights reservt TPS-Design © 2025, Tamino-Patrice Schröder
+        <br>
+        - CC: 
+        <b>MDEPro</b>
+        <br>
+        <a href="lizenzen/CC-BY-NC-SA-EU.png">
+            <img style="" src="lizenzen/CC-BY-NC-SA-EU.png" alt="Picture">
+        </a>
+        <br>
+        <a href="lizenzen/cc-icons-svg/cc.svg">
+            <img style="" src="lizenzen/cc-icons-svg/cc.svg" alt="Picture">
+        </a>
+        <a href="lizenzen/cc-icons-svg/by.svg">
+            <img style="" src="lizenzen/cc-icons-svg/by.svg" alt="Picture">
+        </a>
+        <a href="lizenzen/cc-icons-svg/nc-eu.svg">
+            <img style="" src="lizenzen/cc-icons-svg/nc-eu.svg" alt="Picture">
+        </a>
+        <a href="lizenzen/cc-icons-svg/sa.svg">
+            <img style="" src="lizenzen/cc-icons-svg/sa.svg" alt="Picture">
+        </a>
+    </details>
+    <h4>Der MDEP ist ein Programm von TPS-Design ©, zu sagen das der MDEP ein code von jemand anderem sei ist illegal... Alle rechte dem Entwickler Vorbehalten (Tamino-Patrice Schröder)</h4>
+    <br>
+
+    <footer style="font-family: Arial, sans-serif; color: #f0f0f0;margin-left: auto;margin-right: auto; text-align: center; font-size: 10px">made with MDEP by TPS-Design ©</footer>
+
+    <!-- 
+    ===== Original Markdown Quelle =====
+    # +[Info Sheet]
+    ## Beschreibung:
+    Der MDE<span><b title="Beste Qualität für alle und kostenlos"><a  style="color: #00fdff; cursor: pointer;" href="resources/info.html">Pro</a></b></span> ist ein **100%** **Kostenloser** <span style="cursor: help; color: #00fdff;" title="Extended Markdown Language">**EML**</span> Editor mit dem Standart Textformatierungen und Erweiterte :{(Extended)} Textformatierungen möglich sind.
+
+    +{
+    ## Fakten:
+    - **Erstellt von:** Tamino-Patrice Schröder
+    - **Erstellt im Jahr:** 2025
+    - **Basierent auf:** HTML/JS/CSS/MD
+    - **Geplante Vollendung:** *Nie*
+    - **Erweiterbar:** Ja (siehe Lizenzen)
+    - **Benutzer Freundlichkeit:** Hoch
+    - **Besonderheiten:** Viele Elemente ohne direkten MD ursprung, Unterstützt erweiterungen in form von HTML/JS/CSS, hat einen Newsletter, ***besser als Word XD***, Events wie Weihnachts verion und mehr (warte ab)
+    - **Ziel:** Premium Qualität, einfache digitalisierung, kostenlos für alle und ohne Werbung (meißtens XD)
+    - **Unterstützt auf:** auf jedem Browser fähigem Gerät auch ohne Internet
+    - **Unterstützt:** UTF-8, Unicode
+    }
+    +{
+    ## Lizenzen:
+    - Copyright: Some rights reservt TPS-Design © 2025, Tamino-Patrice Schröder
+    - CC: **MDEPro**
+    -{lizenzen/CC-BY-NC-SA-EU.png}
+    -{lizenzen/cc-icons-svg/cc.svg}-{lizenzen/cc-icons-svg/by.svg}-{lizenzen/cc-icons-svg/nc-eu.svg}-{lizenzen/cc-icons-svg/sa.svg}}
+
+    ====================================
+    -->
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Hacker Screen</title>
+    <style>
+        body {
+            margin: 0;
+            background: black;
+            overflow: hidden;
+        }
+        canvas {
+            display: block;
+        }
+        /* Menü oben links fixieren */
+        #controls {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="controls" style="display: none;">
+    <input type="color" value="#00ff00" id="farbe">
+    <span style="color: white; font-family: sans-serif;"> Farbe wählen</span>
+</div>
+
+<canvas id="matrix"></canvas>
+
+<script>
+    const canvas = document.getElementById('matrix');
+    const cmd = document.getElementById('controls');
+    const ctx = canvas.getContext('2d');
+    const colorInput = document.getElementById('farbe'); // Referenz auf das Element
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const symbols = "10";
+    const fontSize = 16;
+    const columns = canvas.width / fontSize;
+
+    const drops = [];
+    for (let x = 0; x < columns; x++) {
+        drops[x] = 1;
+    }
+
+    function draw() {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // HOLT DEN AKTUELLEN WERT BEI JEDEM FRAME
+        ctx.fillStyle = colorInput.value; 
+        ctx.font = fontSize + "px monospace";
+
+        for (let i = 0; i < drops.length; i++) {
+            const text = symbols.charAt(Math.floor(Math.random() * symbols.length));
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                drops[i] = 0;
+            }
+            drops[i]++;
+        }
+    }
+
+    setInterval(draw, 35);
+
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    });
+</script>
+
+</body>
+</html>
+<script></script></body>
+    </html>
+  

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Minecraft Clock - Perfect Center</title>
+    <style>
+        /* Zentrierung des Inhalts auf der gesamten Seite */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Courier New', Courier, monospace;
+            transition: background 3s ease-in-out;
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        /* Container für die Uhr und die Texte darunter */
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Regen-Effekt Layer */
+        #rain-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 100;
+            display: none;
+            background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 100%);
+        }
+
+        /* Die Minecraft Uhr */
+        .mc-clock {
+            width: 200px;
+            height: 200px;
+            background-color: #bc9231;
+            border: 8px solid #5e4716;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset -4px -4px 0px #86651d, inset 4px 4px 0px #eec961, 0 15px 35px rgba(0,0,0,0.6);
+        }
+
+        .sky-disk {
+            position: absolute;
+            top: 10px; left: 10px;
+            width: 180px; height: 180px;
+            border-radius: 50%;
+            transition: transform 1s linear, background 3s ease-in-out;
+        }
+
+        .sun, .moon {
+            position: absolute;
+            width: 30px; height: 30px;
+            left: 75px;
+            transition: background-color 3s, box-shadow 3s;
+        }
+        .sun { top: 15px; background-color: #FFFF55; box-shadow: 0 0 15px #FFFF55; }
+        .moon { bottom: 15px; background-color: #DDD; box-shadow: 0 0 10px #FFF; }
+
+        /* Goldene Abdeckung */
+        .overlay {
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%; height: 55%;
+            background-color: #bc9231;
+            border-top: 6px solid #5e4716;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .digital-time {
+            color: #fff;
+            font-size: 26px;
+            text-shadow: 2px 2px #000;
+            font-weight: bold;
+            transition: color 2s;
+        }
+
+        /* Befehlshinweise unter der Uhr */
+        .hint-text {
+            color: rgba(255, 255, 255, 0.4);
+            margin-top: 30px;
+            font-size: 13px;
+            line-height: 1.6;
+            text-align: center;
+            pointer-events: none;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        /* Blitz-Animation */
+        @keyframes flash {
+            0%, 90%, 100% { background: transparent; }
+            92% { background: rgba(255,255,255,0.7); }
+            94% { background: transparent; }
+            96% { background: rgba(255,255,255,0.7); }
+        }
+        .thunder-active { animation: flash 4s infinite; position: fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index: 101; }
+    </style>
+</head>
+<body id="body">
+
+    <div id="rain-overlay"></div>
+    <div id="thunder-layer"></div>
+
+    <div class="main-container">
+        <div class="mc-clock">
+            <div id="sky" class="sky-disk">
+                <div id="sun" class="sun"></div>
+                <div id="moon" class="moon"></div>
+            </div>
+            <div class="overlay">
+                <div id="time-text" class="digital-time">00:00:00</div>
+            </div>
+        </div>
+        
+        <div class="hint-text">
+            made with Backpulver
+        </div>
+    </div>
+
+    <script>
+        let isRaining = false;
+        let isBloodMoon = false;
+        let simulationTime = null;
+        
+        console.log(`wetter('regen')`);
+        console.log(`wetter('sonne')`);
+        console.log(`wetter('gewitter')`);
+        console.log(`blutmond(true/false)`);
+        console.log(`zeitraffer() zum starten`)
+        console.log(`zeitraffer() zum stoppen`)
+        function updateClock() {
+            const now = simulationTime ? new Date(simulationTime) : new Date();
+            const hrs = now.getHours();
+            const mins = now.getMinutes();
+            const secs = now.getSeconds();
+            
+            const sky = document.getElementById('sky');
+            const body = document.getElementById('body');
+            const timeText = document.getElementById('time-text');
+            const moon = document.getElementById('moon');
+
+            const rotation = (((hrs * 60 + mins) / 1440) * 360) + 180;
+            sky.style.transform = `rotate(${rotation}deg)`;
+
+            let skyCol, bodyCol, textCol;
+
+            if (hrs >= 5 && hrs < 8) { 
+                skyCol = "linear-gradient(to bottom, #ff9d52, #4488ff)";
+                bodyCol = "#3d2b52"; textCol = "#ffa07a";
+            } else if (hrs >= 8 && hrs < 18) { 
+                skyCol = isRaining ? "linear-gradient(to bottom, #607d8b, #455a64)" : "linear-gradient(to bottom, #4488ff, #0000AA)";
+                bodyCol = isRaining ? "#455a64" : "#87CEEB";
+                textCol = "#fff";
+            } else if (hrs >= 18 && hrs < 21) { 
+                skyCol = "linear-gradient(to bottom, #0000AA, #ff4500)";
+                bodyCol = "#2c3e50"; textCol = "#ff7f50";
+            } else { 
+                skyCol = isBloodMoon ? "linear-gradient(to bottom, #4a0000, #000000)" : "linear-gradient(to bottom, #000033, #000000)";
+                bodyCol = isBloodMoon ? "#200000" : "#050505";
+                textCol = isBloodMoon ? "#ff0000" : "#4488ff";
+            }
+
+            moon.style.backgroundColor = isBloodMoon ? "#ff0000" : "#DDD";
+            moon.style.boxShadow = isBloodMoon ? "0 0 20px #ff0000" : "0 0 10px #FFF";
+            
+            sky.style.background = skyCol;
+            body.style.background = bodyCol;
+            timeText.style.color = textCol;
+            timeText.innerText = String(hrs).padStart(2,'0')+":"+String(mins).padStart(2,'0')+":"+String(secs).padStart(2,'0');
+        }
+
+        window.wetter = (typ) => {
+            const rain = document.getElementById('rain-overlay');
+            const thunder = document.getElementById('thunder-layer');
+            if(typ === 'regen') {
+                isRaining = true; rain.style.display = 'block';
+                thunder.classList.remove('thunder-active');
+            } else if(typ === 'gewitter') {
+                isRaining = true; rain.style.display = 'block';
+                thunder.classList.add('thunder-active');
+            } else {
+                isRaining = false; rain.style.display = 'none';
+                thunder.classList.remove('thunder-active');
+            }
+            updateClock();
+            return "Wetter: " + typ;
+        };
+
+        window.blutmond = (aktiv) => {
+            isBloodMoon = aktiv;
+            updateClock();
+            return "Blutmond: " + aktiv;
+        };
+
+        let zeitrafferInterval = null;
+        window.zeitraffer = () => {
+            if(zeitrafferInterval) {
+                clearInterval(zeitrafferInterval);
+                simulationTime = null;
+                zeitrafferInterval = null;
+                return "Zeitraffer aus.";
+            }
+            let h = 0, m = 0;
+            zeitrafferInterval = setInterval(() => {
+                m += 15; if(m >= 60) { m = 0; h++; } if(h >= 24) h = 0;
+                let d = new Date(); d.setHours(h, m, 0);
+                simulationTime = d.getTime();
+                updateClock();
+            }, 60);
+            return "Zeitraffer an.";
+        };
+
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
+</body>
+</html>

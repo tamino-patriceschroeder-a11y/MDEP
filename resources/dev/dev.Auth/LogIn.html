@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Login-Authentifizierung</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #1e1e1e, #0e0e0e);
+      padding: 50px;
+      max-width: 500px;
+      margin: auto;
+      border-radius: 15px;
+      box-shadow: 0 0 15px white;
+      color: white;
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 50px;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+      font-size: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-family: Futura;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #aaa;
+      border-radius: 8px;
+      box-sizing: border-box;
+      font-size: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #0078D7;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      font-size: 15px;
+        
+    }
+
+    button:hover {
+      background-color: #005fa3;
+      cursor: pointer;
+    }
+
+    #status-bar {
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      margin-top: 25px;
+      visibility: hidden;
+      border-radius: 8px;
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+      position: relative;
+      font-size: 18px;
+    }
+
+    .loading {
+      background-color: #888;
+    }
+
+    .success {
+      background-color: #28a745;
+    }
+
+    .error {
+      background-color: #dc3545;
+    }
+
+    @keyframes dots {
+      0%   { content: "●"; }
+      33%  { content: "● ●"; }
+      66%  { content: "● ● ●"; }
+      100% { content: "●"; }
+    }
+
+    .dot-animation::after {
+      content: "●";
+      animation: dots 1.5s infinite steps(3);
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Authentifizierung</h2>
+  <div class="input-group">
+    <label for="userId">ID:</label>
+    <input type="text" placeholder="z. B.: 12345-67891" id="userId">
+  </div>
+  <div class="input-group">
+    <label for="password">Passwort:</label>
+    <input type="password" placeholder="z. B.: Kxbh-Ttdf" id="password">
+  </div>
+  <button onclick="authenticate()">Einloggen</button>
+
+  <div id="status-bar" class="dot-animation"></div>
+
+  <script>
+    const validCredentials = [
+      { id: "dev.new", password: "mdep.dev.5591" }
+    ];
+
+    function authenticate() {
+      const id = document.getElementById("userId").value.trim();
+      const pw = document.getElementById("password").value.trim();
+      const statusBar = document.getElementById("status-bar");
+
+      statusBar.style.visibility = "visible";
+      statusBar.className = "loading dot-animation";
+      statusBar.textContent = "Bitte Warten";
+
+      // Nach 4 Sekunden Ergebnis anzeigen
+      setTimeout(() => {
+        const match = validCredentials.some(entry => entry.id === id && entry.password === pw);
+
+        statusBar.classList.remove("dot-animation");
+
+        if (match) {
+          statusBar.textContent = "Authentifizierung erfolgreich";
+          localStorage.setItem('isDeveloper?','true');
+          history.back();
+          statusBar.className = "success";
+        } else {
+          statusBar.textContent = "Authentifizierung gescheitert";
+          statusBar.className = "error";
+        }
+      }, 3500);
+    }
+  </script>
+</body>
+</html>

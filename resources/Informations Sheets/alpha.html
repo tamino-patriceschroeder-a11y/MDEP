@@ -1,0 +1,810 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALPHA</title>
+<style>
+  html {
+    background-color: #0e0e0e; 
+  }
+header { background: #333; padding: 10px; text-align: center; font-size: 1.5em; }
+  body { 
+    font-family: Arial, sans-serif; 
+    color: #f0f0f0; 
+    background-color: #0e0e0e; 
+    background-color: #1a1a1a; 
+    padding: 20px;
+    margin: 20px; 
+    border: 1px solid #555;
+    border-radius: 8px;
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  pre { 
+    white-space: pre-wrap; 
+    background: #1e1e1e; 
+    padding: 10px; 
+    border-radius: 5px; 
+    overflow-x:auto; 
+    position: relative; 
+    margin:10px 0; 
+  }
+  .code-lang { position: absolute; top: 0; left: 0; font-size: 0.8em; font-family: Arial, sans-serif; color: #ccc; padding: 2px 5px; background: #2e2e2e; border-bottom-right-radius: 3px; }
+  blockquote { border-left: 3px solid #555; margin: 5px 0; padding-left: 10px; color: #ccc; }
+  hr { border: 1px solid #555; margin: 10px 0; }
+  ul, ol { margin: 5px 0 5px 20px; }
+  li { margin: 3px 0; }
+  a {
+        color: #00fdff;
+        text-decoration: none;
+        transition: 5s;
+    }
+
+    a:hover {
+        text-decoration: underline;
+        color: #00fd99;
+    }
+  img {
+    max-width: 100%;
+    height: auto;
+}
+  ul.checklist { list-style: none; padding-left: 0; }
+  ul.checklist li { margin: 5px 0; }
+  details { background: #2a2a2a; padding: 5px 10px; border-radius: 5px; margin: 5px 0; }
+  summary { cursor: pointer; font-weight: bold; }
+  details[open] { background: #3a3a3a; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  background: #2e2e2e;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+  button { margin: 5px; padding: 5px 10px; background: #555; color: #f0f0f0; border: none; border-radius: 3px; cursor: pointer; }
+    button:hover { background: #777; }
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #444;
+  color: #f0f0f0;
+}
+
+th {
+  background: #444;
+  font-weight: bold;
+}
+
+td {
+  background: #333;
+}
+
+tr:nth-child(even) {
+  background: #3a3a3a;
+}
+
+tr:hover {
+  background: #555;
+}
+
+caption {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #f0f0f0;
+  margin-bottom: 10px;
+}
+
+.info-box {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        .info-box .icon-container {
+            margin-right: 15px;
+            display: flex; 
+            align-items: center;
+            justify-content: center;
+        }
+        .info-box svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+        .info-box.info {
+            background-color: #e0f7fa;
+            border-left: 5px solid #00bcd4;
+            color: #00796b;
+        }
+
+        .info-box.info .icon-container svg {
+            fill: #00bcd4;
+        }
+        .info-box.warning {
+            background-color: #fff8e1;
+            border-left: 5px solid #ffeb3b;
+            color: #ff6f00;
+        }
+        .info-box.warning .icon-container svg {
+            fill: #ffeb3b;
+        }
+
+.inline {background:#0e0e0e; padding:2px 4px; border-radius:3px; font-family:monospace;}
+
+.overlay {
+    animation: glassAppear 0.3s ease-out;
+    
+    box-shadow: inset 0 0 10px rgba(225, 225, 225, 0.1);
+    /* Wichtig: Hintergrund muss transparent & leicht weißlich sein */
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    
+    /* Verstärkter Blur für den "Milchglas"-Effekt */
+    backdrop-filter: blur(15px); 
+    -webkit-backdrop-filter: blur(15px); /* Safari Support */
+
+    /* Die "Glanzkante": Oben heller als unten simuliert Lichtreflexion */
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    
+    /* Weicherer, diffuser Schatten für Tiefe */
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    
+    /* Rundere Ecken wirken organischer/flüssiger */
+    border-radius: 16px;
+    
+    position: absolute;
+    width: 250px;
+    height: 150px;
+    overflow: hidden;
+    resize: both;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    z-index: 1000;
+}
+
+.overlayft {
+    animation: glassAppear 0.3s ease-out;
+    
+    box-shadow: inset 0 0 10px rgba(225, 225, 225, 0.1);
+    /* Wichtig: Hintergrund muss transparent & leicht weißlich sein */
+    background: linear-gradient(135deg, #1e1e1e, #6e6e6e);
+
+    /* Die "Glanzkante": Oben heller als unten simuliert Lichtreflexion */
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    
+    /* Weicherer, diffuser Schatten für Tiefe */
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    
+    /* Rundere Ecken wirken organischer/flüssiger */
+    border-radius: 16px;
+    
+    position: absolute;
+    width: 250px;
+    height: 150px;
+    overflow: hidden;
+    resize: both;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    z-index: 1000;
+}
+
+@keyframes glassAppear {
+    from { transform: scale(0.1); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+        
+.drag-handle {
+    /* Etwas heller abgesetzt, um die Griffigkeit zu zeigen */
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px 14px;
+    cursor: move;
+    display: flex;
+    justify-content: flex-end; /* X nach rechts schieben */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    user-select: none;
+}
+
+.overlay-content {
+    padding: 15px;
+    flex-grow: 1;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Input Feld Styling für den Glas-Look */
+.overlay-content input {
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    padding: 5px;
+    border-radius: 4px;
+    outline: none;
+}
+
+/* Schließ-Button Styling (Optional) */
+.close-btn {
+    cursor: pointer;
+    opacity: 0.6;
+    transition: 0.2s;
+}
+.close-btn:hover { opacity: 1; color: #ff5f56; }
+
+
+    .popup {
+        display: none;
+        /* Standardmäßig versteckt */
+        position: fixed;
+        /* Bleibt an Ort und Stelle */
+        z-index: 1;
+        /* Über allem anderen */
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+        /* Dunkler Hintergrund */
+    }
+
+.ticker-wrap {
+            width: 100%;
+            overflow: hidden; /* Versteckt den Text außerhalb des Bereichs */
+            color: white;
+            font-family: 'Arial', sans-serif;
+            padding: 10px 0;
+            display: flex;
+        }
+
+        /* Die bewegliche Leiste */
+        .ticker-move {
+            display: flex;
+            white-space: nowrap;
+            padding-left: 100%; /* Startet außerhalb des Bildschirms */
+            animation: ticker-scroll 15s linear infinite;
+        }
+
+        /* Einzelne News-Elemente */
+        .ticker-item {
+            display: inline-block;
+            padding: 0 50px;
+            font-size: 1.2rem;
+        }
+
+        /* Animation: Verschiebt den Text von rechts nach links */
+        @keyframes ticker-scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+        /*///////////////////////////////////////////*/
+        .wave-container {
+    display: inline-block;
+}
+
+.wave-container span {
+    display: inline-block;
+    /* 'ease-in-out' macht die Bewegung weicher, wie im Wiki */
+    animation: wiki-wave 1.2s ease-in-out infinite;
+    /* Der Zeitversatz erzeugt die Wellenform */
+    animation-delay: calc(0.1s * var(--i));
+}
+
+@keyframes wiki-wave {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); } /* Sanftes Auf-Ab */
+}
+        
+        input[type="checkbox"]{
+            background-color: #5e5e5e;
+        }
+        input[type="checkbox"]::activ{
+            background-color: #9e9e9e;
+        }
+        
+        /* Das schwebende Vorschaufenster */
+#wiki-popup {
+    position: absolute;
+    display: none;
+    background: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    padding: 15px;
+    z-index: 1000;
+    width: 250px;
+    border-radius: 8px;
+    font-family: sans-serif;
+    color: #333;
+}
+
+/* Styling für das Wort im Text */
+.wiki-preview {
+    color: #00fdff;
+    cursor: help;
+    border-bottom: 1px dashed #00fdff;
+}
+
+/* Das Overlay deckt alles ab */
+#lock-screen {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: #1a1a1a;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    font-family: sans-serif;
+}
+
+#lock-screen input {
+    padding: 10px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 5px;
+    text-align: center;
+}
+
+/* Versteckt den eigentlichen Inhalt, solange gesperrt */
+.locked {
+    overflow: hidden;
+}
+
+</style></head>
+<body>
+<script>
+function lock() {
+    // 1. Prüfen, ob das Passwort-Tag existiert
+    const pwTag = document.getElementById('password');
+    if (!pwTag) return; // Falls kein §{} genutzt wurde, passiert nichts
+
+    const correctPassword = atob(pwTag.innerText.trim());
+
+    // 2. Seite optisch sperren
+    document.body.style.overflow = 'hidden';
+    
+    // 3. Overlay erstellen
+    const overlay = document.createElement('div');
+    overlay.setAttribute('style', `
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: #1a1a1a; color: white; z-index: 99999;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        font-family: sans-serif;
+    `);
+    overlay.id = 'lock-screen';
+    
+    overlay.innerHTML = `
+        <div style="text-align: center;">
+            <h2 style="margin-bottom: 20px;">Inhalt geschützt</h2>
+            <input type="password" id="pw-input" placeholder="Passwort eingeben..." 
+                   style="padding: 12px; border-radius: 8px; border: none; text-align: center; font-size: 16px;">
+            <p id="error" style="color: #ff4444; margin-top: 15px; display: none;">Falsches Passwort!</p>
+        </div>
+    `;
+    
+    document.body.appendChild(overlay);
+
+    const input = document.getElementById('pw-input');
+    const errorMsg = document.getElementById('error');
+
+    // 4. Eingabe prüfen
+    input.focus();
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            if (input.value === correctPassword) {
+                overlay.remove();
+                document.body.style.overflow = '';
+            } else {
+                errorMsg.style.display = 'block';
+                input.value = '';
+                // Kleiner visueller Effekt bei Fehler
+                input.style.border = '2px solid #ff4444';
+            }
+        }
+    });
+}
+/*
+function Style() {
+    const StSh = document.getElementById('password');
+    if (StSh){
+        document.head.appendChild(<link);
+    }
+}
+*/
+function createOverlay() {
+    const overlay = document.createElement("div");
+    overlay.className = "overlay";
+
+    overlay.innerHTML = `
+        <div class="drag-handle">
+            <span class="close-btn" onclick="this.parentElement.parentElement.remove()">✕</span>
+        </div>
+        <div class="overlay-content">
+            <input style="border: none; background-color: transparent; color: white;"></input>
+        </div>
+    `;
+
+    overlay.style.top = (Math.random() * 200 + 50) + "px";
+    overlay.style.left = (Math.random() * 200 + 50) + "px";
+    document.body.appendChild(overlay);
+    
+    makeElementDraggable(overlay, overlay.querySelector(".drag-handle"));
+    overlay.style.zIndex = 1000 + document.querySelectorAll('.overlay').length;
+}
+
+function createOverlayft() {
+    const overlay = document.createElement("div");
+    overlay.className = "overlayft";
+
+    overlay.innerHTML = `
+        <div class="drag-handle">
+            <span class="close-btn" onclick="this.parentElement.parentElement.remove()">✕</span>
+        </div>
+        <div class="overlay-content">
+            <input style="border: none; background-color: transparent; color: white;"></input>
+        </div>
+    `;
+
+    overlay.style.top = (Math.random() * 200 + 50) + "px";
+    overlay.style.left = (Math.random() * 200 + 50) + "px";
+    document.body.appendChild(overlay);
+    
+    makeElementDraggable(overlay, overlay.querySelector(".drag-handle"));
+    overlay.style.zIndex = 1000 + document.querySelectorAll('.overlay').length;
+}
+
+function createDevOverlay() {
+    const overlay = document.createElement("div");
+    overlay.className = "overlay";
+    
+    const originalLog = console.log;
+    const originalError = console.error;
+    const originalWarn = console.warn;
+
+    const hookConsole = (originalFn, color) => {
+        return function(...args) {
+            const message = args.map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+            ).join(' ');
+            logToUI('[System] ' + message, color);
+            originalFn.apply(console, args);
+        };
+    };
+
+    console.log = hookConsole(originalLog, '#888');
+    console.error = hookConsole(originalError, '#f44747');
+    console.warn = hookConsole(originalWarn, '#ffca28');
+
+    Object.assign(overlay.style, {
+        position: "absolute",
+        width: "400px",
+        background: "#1e1e1e",
+        border: "1px solid rgba(255, 255, 255, 0.1)",
+        borderRadius: "8px",
+        boxShadow: "0 8px 32px rgba(0, 0, 0, 0.5)",
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column"
+    });
+
+    overlay.innerHTML = `
+        <div class="drag-handle" style="background: #333; padding: 10px; cursor: move; display: flex; justify-content: flex-end; align-items: center;">
+            <span style="color: #888; font-family: sans-serif; font-size: 12px; margin-right: auto; pointer-events: none;">JS Konsole 2026</span>
+            <span class="close-btn" style="color: white; cursor: pointer; font-family: sans-serif; font-weight: bold;">✕</span>
+        </div>
+        <div class="overlay-content" style="display: flex; flex-direction: column; height: 300px;">
+            <div class="console-output" style="flex: 1; overflow-y: auto; padding: 10px; color: #d4d4d4; font-family: monospace; font-size: 13px; line-height: 1.4;">
+                <div style="color: #666; border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 10px;">-- Konsole gestartet --</div>
+            </div>
+            <div class="input-bar" style="display: flex; background: #252526; padding: 10px; border-top: 1px solid #333;">
+                <span style="color: #569cd6; font-family: monospace; margin-right: 8px;">&gt;</span>
+                <input class="js-input" type="text" placeholder="Code..." style="background: transparent; border: none; color: #d4d4d4; outline: none; flex: 1; font-family: monospace; font-size: 14px;">
+                <button class="send-btn" style="background: #007acc; color: white; border: none; padding: 4px 10px; cursor: pointer; border-radius: 3px; font-family: sans-serif; font-size: 12px; margin-left: 8px;">Run</button>
+            </div>
+        </div>
+    `;
+
+    const input = overlay.querySelector(".js-input");
+    const output = overlay.querySelector(".console-output");
+    const sendBtn = overlay.querySelector(".send-btn");
+    const closeBtn = overlay.querySelector(".close-btn");
+
+    closeBtn.onclick = () => overlay.remove();
+
+    function executeCommand() {
+        const cmd = input.value.trim();
+        if (!cmd) return;
+        logToUI(cmd, '#569cd6');
+        try {
+            let cleanCmd = cmd.replace(/^(let|const|var)s+/, '');
+            const result = window.eval(cleanCmd);
+            if (result !== undefined) {
+                logToUI(JSON.stringify(result) || String(result), '#b5cea8');
+            }
+        } catch (err) {
+            logToUI(err.message, '#f44747');
+        }
+        input.value = '';
+        output.scrollTop = output.scrollHeight;
+    }
+
+    function logToUI(msg, color) {
+        const div = document.createElement('div');
+        div.style.marginBottom = '5px';
+        div.style.borderLeft = '3px solid ' + color;
+        div.style.paddingLeft = '8px';
+        div.style.color = color;
+        div.style.whiteSpace = 'pre-wrap';
+        div.style.wordBreak = 'break-all';
+        div.textContent = msg;
+        output.appendChild(div);
+    }
+
+    sendBtn.addEventListener('click', executeCommand);
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') executeCommand();
+    });
+
+    overlay.style.top = (Math.random() * 200 + 50) + "px";
+    overlay.style.left = (Math.random() * 200 + 50) + "px";
+    document.body.appendChild(overlay);
+    
+    makeElementDraggable(overlay, overlay.querySelector(".drag-handle"));
+    overlay.style.zIndex = 1000 + document.querySelectorAll('.overlay').length;
+}
+
+function createWhiteboardOverlay() {
+    var overlay = document.createElement("div");
+    overlay.className = "overlay whiteboard-overlay";
+
+    Object.assign(overlay.style, {
+        position: "absolute",
+        width: "550px",
+        height: "450px",
+        background: "#ffffff",
+        border: "2px solid #333",
+        borderRadius: "8px",
+        boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+        minWidth: "350px",
+        minHeight: "250px"
+    });
+
+    overlay.innerHTML = `
+        <div class="drag-handle" style="background: #333; color: white; padding: 8px 12px; cursor: move; display: flex; justify-content: space-between; align-items: center; user-select: none; gap: 10px;">
+            <div class="toolbar" style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-family: sans-serif; font-size: 11px; font-weight: bold; margin-right: 5px;">Whiteboard</span>
+                <input type="color" class="color-picker" value="#333333" style="width: 24px; height: 24px; border: none; padding: 0; background: none; cursor: pointer;">
+                <button class="eraser-btn" style="background: #555; border: none; color: white; padding: 3px 7px; border-radius: 4px; cursor: pointer; font-size: 14px;">🧽</button>
+                <div style="display: flex; align-items: center; gap: 4px; background: #444; padding: 2px 6px; border-radius: 4px;">
+                    <input type="number" class="thickness-input" min="1" max="50" value="3" style="width: 35px; background: transparent; border: none; color: white; font-family: monospace; font-size: 12px; outline: none;">
+                </div>
+                <button class="svg-btn" style="background: #27ae60; border: none; color: white; padding: 3px 7px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold;">SVG</button>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <button class="clear-btn" style="background: #e74c3c; color: white; border: none; padding: 4px 10px; cursor: pointer; border-radius: 3px; font-size: 10px;">Clear</button>
+                <span class="close-btn" style="cursor: pointer; font-weight: bold; padding: 0 5px; font-size: 16px;">✕</span>
+            </div>
+        </div>
+        <div style="flex: 1; position: relative; background: #fafafa; overflow: hidden;">
+            <canvas class="whiteboard-canvas" style="display: block; cursor: crosshair;"></canvas>
+            <div class="resizer-handle" style="position: absolute; bottom: 0; right: 0; width: 20px; height: 20px; cursor: nwse-resize; background: linear-gradient(135deg, transparent 50%, #333 50%); z-index: 10;"></div>
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    var canvas = overlay.querySelector(".whiteboard-canvas");
+    var ctx = canvas.getContext("2d");
+    var colorPicker = overlay.querySelector(".color-picker");
+    var thicknessInput = overlay.querySelector(".thickness-input");
+    var eraserBtn = overlay.querySelector(".eraser-btn");
+    var svgBtn = overlay.querySelector(".svg-btn");
+    var resizer = overlay.querySelector(".resizer-handle");
+    var clearBtn = overlay.querySelector(".clear-btn");
+    var closeBtn = overlay.querySelector(".close-btn");
+
+    var isEraser = false;
+    var paths = [];
+    var currentPath = null;
+    var drawing = false;
+
+    overlay.querySelector(".toolbar").onmousedown = function(e) { e.stopPropagation(); };
+    clearBtn.onmousedown = function(e) { e.stopPropagation(); };
+    closeBtn.onmousedown = function(e) { e.stopPropagation(); };
+
+    function resizeCanvas() {
+        var parent = canvas.parentElement;
+        var tempImage = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        canvas.width = parent.clientWidth;
+        canvas.height = parent.clientHeight;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.putImageData(tempImage, 0, 0);
+    }
+
+    resizer.onmousedown = function(e) {
+        e.preventDefault(); e.stopPropagation();
+        var startX = e.clientX, startY = e.clientY;
+        var startW = overlay.offsetWidth, startH = overlay.offsetHeight;
+        
+        function onMM(mE) {
+            overlay.style.width = (startW + mE.clientX - startX) + "px";
+            overlay.style.height = (startH + mE.clientY - startY) + "px";
+            resizeCanvas();
+        }
+        function onMU() {
+            document.removeEventListener("mousemove", onMM);
+            document.removeEventListener("mouseup", onMU);
+        }
+        document.addEventListener("mousemove", onMM);
+        document.addEventListener("mouseup", onMU);
+    };
+
+    function getPos(e) {
+        var rect = canvas.getBoundingClientRect();
+        var clientX = e.clientX;
+        var clientY = e.clientY;
+        if (e.touches && e.touches.length > 0) {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+        }
+        return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+
+    function startDrawing(e) {
+        drawing = true;
+        var p = getPos(e);
+        ctx.beginPath();
+        var color = isEraser ? "#fafafa" : colorPicker.value;
+        var size = thicknessInput.value;
+        ctx.strokeStyle = color;
+        ctx.lineWidth = size;
+        ctx.moveTo(p.x, p.y);
+        currentPath = { color: color, size: size, points: [p] };
+    }
+
+    function draw(e) {
+        if (!drawing) return;
+        var p = getPos(e);
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+        currentPath.points.push(p);
+    }
+
+    function stopDrawing() {
+        if (drawing && currentPath) { paths.push(currentPath); }
+        drawing = false;
+    }
+
+    canvas.addEventListener("mousedown", startDrawing);
+    window.addEventListener("mousemove", draw);
+    window.addEventListener("mouseup", stopDrawing);
+
+    eraserBtn.onclick = function() {
+        isEraser = !isEraser;
+        eraserBtn.style.background = isEraser ? "#007acc" : "#555";
+    };
+
+    svgBtn.onclick = function() {
+        var svgLines = "";
+        for (var i = 0; i < paths.length; i++) {
+            var p = paths[i];
+            var d = "";
+            for (var j = 0; j < p.points.length; j++) {
+                d += (j === 0 ? "M " : " L ") + p.points[j].x + " " + p.points[j].y;
+            }
+            svgLines += '<path d="' + d + '" fill="none" stroke="' + p.color + '" stroke-width="' + p.size + '" stroke-linecap="round" stroke-linejoin="round" />\n';
+        }
+        var svgContent = '<svg xmlns="http://www.w3.org" width="' + canvas.width + '" height="' + canvas.height + '"><rect width="100%" height="100%" fill="#fafafa"/>' + svgLines + '</svg>';
+        var blob = new Blob([svgContent], {type: "image/svg+xml"});
+        var url = URL.createObjectURL(blob);
+        var link = document.createElement("a");
+        link.href = url;
+        link.download = "whiteboard.svg";
+        link.click();
+    };
+
+    clearBtn.onclick = function() { ctx.clearRect(0, 0, canvas.width, canvas.height); paths = []; };
+    closeBtn.onclick = function() { overlay.remove(); };
+
+    resizeCanvas();
+    overlay.style.top = "100px";
+    overlay.style.left = "100px";
+    makeElementDraggable(overlay, overlay.querySelector(".drag-handle"));
+}
+
+function makeElementDraggable(elmnt, handle) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    handle.onmousedown = function(e) {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmousemove = elementDrag;
+        document.onmouseup = closeDragElement;
+        elmnt.style.boxShadow = "0 12px 48px rgba(0, 0, 0, 0.7)";
+        elmnt.style.borderColor = "rgba(255, 255, 255, 0.3)";
+    };
+    function elementDrag(e) {
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+    }
+    function closeDragElement() {
+        document.onmousemove = null;
+        document.onmouseup = null;
+        elmnt.style.boxShadow = "0 8px 32px rgba(0, 0, 0, 0.5)";
+        elmnt.style.borderColor = "rgba(255, 255, 255, 0.1)";
+    }
+}
+setTimeout(lock,100);
+
+function toggleSound(soundId) {
+  // 1. Finde das Audio-Element und den zugehörigen Button anhand der ID
+  const audioPlayer = document.getElementById('audio-' + soundId);
+  const soundButton = document.getElementById('button-' + soundId);
+
+  if (!audioPlayer || !soundButton) {
+    console.error("Audio- oder Button-Element nicht gefunden für ID:", soundId);
+    return;
+  }
+
+  // 2. Prüfe den aktuellen Status des Audio-Players
+  if (audioPlayer.paused) {
+    // Wenn es pausiert ist, starte es und ändere den Button-Text zu 'Stop'
+    audioPlayer.play();
+    soundButton.textContent = 'Stop';
+
+    // Optional: Füge einen Event-Listener hinzu, um den Button automatisch wieder auf 'Play' zu stellen, 
+    // sobald die Wiedergabe beendet ist.
+    audioPlayer.onended = function() {
+      soundButton.textContent = 'Play';
+    };
+
+  } else {
+    // Wenn es gerade spielt, stoppe es, setze die Zeit zurück und ändere den Button-Text zu 'Play'
+    audioPlayer.pause();
+    audioPlayer.currentTime = 0; // Setzt den Sound an den Anfang zurück
+    soundButton.textContent = 'Play';
+  }
+}
+</script>
+<h1><header style="padding: 10px; text-align: center; font-size: 1.5em;"><span style="color:#00fdff;">ALPHA</span></header></h1><br><hr><br><b>Alpha</b> Funktionen oder Programme sind:<ul><li>kurz vor dervollendung</li><li>fast immer voll funktionsfähig</li><li>Ausgereift</li><li>Mehrfach überarbeitet</li><li>noch nicht perfekt aber sehr knapp davor</li></ul><br><hr><br><b>Alpha</b> Tests stehen kurz vor der vollendung und sind desshalb auch relativ sicher zu nutzen<br><hr><br><b>Es wird keine Haftung übernommen</b><br><br>
+
+<footer style="font-family: Arial, sans-serif; color: #f0f0f0;margin-left: auto;margin-right: auto; text-align: center; font-size: 10px">made with <a class="mail" href="mailto:mdep-tps.design@gmx.de?subject=Footer&">MDEP</a> by TPS-Design ©</footer>
+
+<!-- 
+===== Original Markdown Quelle =====
+# +[$#00fdff(ALPHA)]
+---
+**Alpha** Funktionen oder Programme sind:
+- kurz vor dervollendung
+- fast immer voll funktionsfähig
+- Ausgereift
+- Mehrfach überarbeitet
+- noch nicht perfekt aber sehr knapp davor
+---
+**Alpha** Tests stehen kurz vor der vollendung und sind desshalb auch relativ sicher zu nutzen
+---
+**Es wird keine Haftung übernommen**
+
+
+====================================
+-->
+</body>
+</html>

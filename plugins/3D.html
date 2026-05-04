@@ -1,0 +1,145 @@
+
+    <html>
+      <head><title>projekt</title><style></style></head>
+      <body><!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>3D Canvas Editor</title>
+    <style>
+        body { background: #1a1a1a; color: white; font-family: sans-serif; display: flex; margin: 0; height: 100vh; }
+        #sidebar { width: 300px; background: #252525; padding: 20px; overflow-y: auto; border-right: 1px solid #444; }
+        canvas { flex-grow: 1; cursor: move; }
+        .input-group { margin-bottom: 15px; border-bottom: 1px solid #444; padding-bottom: 10px; }
+        input { width: 50px; background: #333; color: white; border: 1px solid #555; padding: 5px; }
+        button { cursor: pointer; padding: 5px 10px; background: #00ffcc; border: none; color: #1a1a1a; font-weight: bold; }
+        button.delete { background: #ff4444; color: white; margin-left: 5px; }
+        .node-item { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+<div id="sidebar">
+    <h3>3D Punkt Editor</h3>
+    <div class="input-group">
+        <input type="number" id="newX" step="0.1" value="0">
+        <input type="number" id="newY" step="0.1" value="0">
+        <input type="number" id="newZ" step="0.1" value="0">
+        <button onclick="addNode()">Hinzufügen</button>
+    </div>
+    <div id="nodeList"></div>
+</div>
+
+<canvas id="editorCanvas"></canvas>
+
+<script>
+    const canvas = document.getElementById('editorCanvas');
+    const ctx = canvas.getContext('2d');
+    let nodes = [
+        {x: -1, y: -1, z: -1}, {x: 1, y: -1, z: -1},
+        {x: 1, y: 1, z: -1}, {x: -1, y: 1, z: -1}
+    ];
+    let mouseX = 0, mouseY = 0;
+
+    // Canvas Größe anpassen
+    function resize() {
+        canvas.width = window.innerWidth - 300;
+        canvas.height = window.innerHeight;
+    }
+    window.onresize = resize;
+    resize();
+
+    // Maus-Rotation
+    window.addEventListener('mousemove', (e) => {
+        if(e.buttons === 1) { // Nur rotieren wenn linke Maustaste gedrückt
+            mouseX = (e.clientX - 300 - canvas.width / 2) * 0.01;
+            mouseY = (e.clientY - canvas.height / 2) * 0.01;
+        }
+    });
+
+    function addNode() {
+        const x = parseFloat(document.getElementById('newX').value);
+        const y = parseFloat(document.getElementById('newY').value);
+        const z = parseFloat(document.getElementById('newZ').value);
+        nodes.push({x, y, z});
+        updateSidebar();
+    }
+
+    function removeNode(index) {
+        nodes.splice(index, 1);
+        updateSidebar();
+    }
+
+    function updateSidebar() {
+        const container = document.getElementById('nodeList');
+        container.innerHTML = '';
+        nodes.forEach((n, i) => {
+            container.innerHTML += `
+                <div class="node-item">
+                    P${i}: [${n.x}, ${n.y}, ${n.z}]
+                    <button class="delete" onclick="removeNode(${i})">X</button>
+                </div>`;
+        });
+    }
+
+    function rotate(node, angleX, angleY) {
+        let {x, y, z} = node;
+        let cosY = Math.cos(angleY), sinY = Math.sin(angleY);
+        let x1 = x * cosY - z * sinY;
+        let z1 = x * sinY + z * cosY;
+        let cosX = Math.cos(angleX), sinX = Math.sin(angleX);
+        let y2 = y * cosX - z1 * sinX;
+        let z2 = y * sinX + z1 * cosX;
+        return {x: x1, y: y2, z: z2};
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Achsen zur Orientierung zeichnen
+        ctx.strokeStyle = '#444';
+        ctx.beginPath(); ctx.moveTo(canvas.width/2, 0); ctx.lineTo(canvas.width/2, canvas.height); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(0, canvas.height/2); ctx.lineTo(canvas.width, canvas.height/2); ctx.stroke();
+
+        const projected = nodes.map(n => {
+            const r = rotate(n, mouseY, mouseX);
+            const scale = 500 / (500 + r.z * 200);
+            return {
+                x: r.x * 150 * scale + canvas.width / 2,
+                y: r.y * 150 * scale + canvas.height / 2,
+                z: r.z
+            };
+        });
+
+        // Punkte zeichnen
+        projected.forEach((p, i) => {
+            const size = 8 * (1 - p.z * 0.5); // Größe basierend auf Tiefe
+            ctx.fillStyle = i === nodes.length - 1 ? '#00ffcc' : '#ffffff';
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, Math.max(2, size), 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillText("P"+i, p.x + 10, p.y);
+        });
+
+        // Linien automatisch zwischen aufeinanderfolgenden Punkten ziehen (Pfad-Modus)
+        if (projected.length > 1) {
+            ctx.strokeStyle = 'rgba(0, 255, 204, 0.5)';
+            ctx.beginPath();
+            ctx.moveTo(projected[0].x, projected[0].y);
+            for(let i=1; i<projected.length; i++) {
+                ctx.lineTo(projected[i].x, projected[i].y);
+            }
+            ctx.stroke();
+        }
+
+        requestAnimationFrame(draw);
+    }
+
+    updateSidebar();
+    draw();
+</script>
+</body>
+</html>
+<script></script></body>
+    </html>
+  

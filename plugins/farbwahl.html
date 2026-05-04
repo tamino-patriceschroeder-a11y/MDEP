@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Color Picker Tool</title>
+  <style>
+      html{
+          background-color: #0f0f0f;
+      }
+    body {
+      font-family: Arial, sans-serif;
+      background: #1e1e1e;
+      padding: 30px;
+      text-align: center;
+      border-radius: 50px;
+      color: white;
+      border-radius: 10px;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    input[type="color"] {
+      width: 150px;
+      height: 150px;
+      border: none;
+      cursor: pointer;
+    }
+    .code-box {
+      margin-top: 20px;
+      font-size: 18px;
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      display: inline-block;
+      box-shadow: 0 0 5px rgba(0,0,0,0.2);
+      color: black;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎨 Farbwahl & Code-Anzeige</h1>
+  <input type="color" id="colorPicker" value="#000000">
+  <div class="code-box" id="colorCode">
+    HEX: #000<br>
+    RGB: rgb(0, 0, 0)
+  </div>
+
+  <script>
+    const picker = document.getElementById('colorPicker');
+    const codeBox = document.getElementById('colorCode');
+
+    picker.addEventListener('input', function() {
+      const hex = picker.value;
+      const r = parseInt(hex.substr(1,2), 16);
+      const g = parseInt(hex.substr(3,2), 16);
+      const b = parseInt(hex.substr(5,2), 16);
+      codeBox.innerHTML = `HEX: ${hex}<br>RGB: rgb(${r}, ${g}, ${b})`;
+    });
+  </script>
+<footer>© TPS-Design 2025</footer>
+</body>
+</html>
+<script></script></body>
+    </html>
+  

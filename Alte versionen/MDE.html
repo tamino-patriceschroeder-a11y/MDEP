@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MD→HTML Editor</title>
+<style>
+  body { margin: 0; font-family: Arial, sans-serif; background: #1e1e1e; color: #f0f0f0; }
+  header { background: #333; padding: 10px; text-align: center; font-size: 1.5em; }
+  #editorContainer { display: flex; height: calc(100vh - 50px); }
+  .pane {
+    flex: 1; 
+    margin: 5px; 
+    padding: 10px; 
+    background: #2e2e2e; 
+    border-radius: 5px; 
+    overflow-y: auto; 
+  }
+  #markdownEditor { outline: none; white-space: pre-wrap; }
+  pre { white-space: pre-wrap; background: #1e1e1e; padding: 10px; border-radius: 5px; position: relative; margin:10px 0; overflow-x:auto; }
+  .code-lang { position: absolute; top: 0; left: 0; font-size: 0.8em; font-family: Arial, sans-serif; color: #ccc; padding: 2px 5px; background: #2e2e2e; border-bottom-right-radius: 3px; }
+  blockquote { border-left: 3px solid #555; margin: 5px 0; padding-left: 10px; color: #ccc; }
+  hr { border: 1px solid #555; margin: 10px 0; }
+  ul, ol { margin: 5px 0 5px 20px; }
+  li { margin: 3px 0; }
+  a { color: #80c0ff; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  img { max-width: 100%; }
+  button { margin: 5px; padding: 5px 10px; background: #555; color: #f0f0f0; border: none; border-radius: 3px; cursor: pointer; }
+  button:hover { background: #777; }
+
+  /* Checkliste */
+  ul.checklist { list-style: none; padding-left: 0; }
+  ul.checklist li { margin: 5px 0; }
+
+  /* Ausklappbare Bereiche */
+  details { background: #2a2a2a; padding: 5px 10px; border-radius: 5px; margin: 5px 0; }
+  summary { cursor: pointer; font-weight: bold; }
+  details[open] { background: #3a3a3a; }
+</style>
+</head>
+<body>
+
+<header>MD→HTML Editor</header>
+
+<div id="editorContainer">
+  <div class="pane" id="markdownEditor" contenteditable="true" spellcheck="false">
+# Willkommen beim Markdown Editor
+### Alle Markdown Texte werden automatisch zu HTML-Text
+> Schreibe hier dein Markdown...
+
++{
+Ausklappbarer Titel
+Hier steht der ausklappbare Inhalt.
+}
+  </div>
+  <div class="pane" id="htmlPreview"></div>
+</div>
+
+<div style="text-align:center; margin:10px;">
+  <button id="exportBtn">Als HTML exportieren</button>
+</div>
+
+<script>
+// Blockquote Parser für verschachtelte Zitate
+function parseBlockquotes(md) {
+  const lines = md.split('\n');
+  const result = [];
+  let buffer = [];
+  let prevDepth = 0;
+
+  function flushBuffer(depth) {
+    if (buffer.length === 0) return;
+    let content = buffer.map(line => line.replace(/^>+ ?/, '')).join('<br>');
+    for (let i = 0; i < depth; i++) {
+      content = `<blockquote>${content}</blockquote>`;
+    }
+    result.push(content);
+    buffer = [];
+  }
+
+  for (let line of lines) {
+    const match = line.match(/^(>+)\s?(.*)$/);
+    if (match) {
+      const depth = match[1].length;
+      if (depth !== prevDepth) {
+        flushBuffer(prevDepth);
+        prevDepth = depth;
+      }
+      buffer.push(line);
+    } else {
+      flushBuffer(prevDepth);
+      prevDepth = 0;
+      result.push(line);
+    }
+  }
+  flushBuffer(prevDepth);
+  return result.join('\n');
+}
+
+// Markdown zu HTML Converter
+function markdownToHTML(md) {
+  md = parseBlockquotes(md);
+
+  function escapeHTML(str) {
+    return str.replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;")
+              .replace(/"/g, "&quot;")
+              .replace(/'/g, "&#39;");
+  }
+
+  // Codeblöcke ```Sprache
+  let html = md.replace(/```(\w*)\n([\s\S]*?)```/g, (match, lang, code) => {
+    const langDiv = lang ? `<div class="code-lang">${lang}</div>` : '';
+    const escapedCode = escapeHTML(code);
+    return `<pre>${langDiv}<code>${escapedCode}</code></pre>`;
+  });
+
+  // Trennlinie ---
+  html = html.replace(/^---$/gm, '<hr />');
+
+  // Überschriften
+  html = html
+    .replace(/^### (.*)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.*)$/gm, '<h2>$1</h2>')
+    .replace(/^# (.*)$/gm, '<h1>$1</h1>');
+
+  // Fett/Kursiv
+  html = html.replace(/\*\*\*(.*?)\*\*\*/g, '<b><i>$1</i></b>');
+  html = html.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+  html = html.replace(/\*(.*?)\*/g, '<i>$1</i>');
+  html = html.replace(/~(.*?)~/g, '<s>$1</s>');
+
+  // Inline-Code
+  html = html.replace(/`(.*?)`/g, '<code>$1</code>');
+
+  // Links
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+
+  // Bilder
+  html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
+
+  // Listen: nummeriert & unnummeriert
+  html = html.replace(/^( {0,2}- )(.+)$/gm, '<li>$2</li>').replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>');
+  html = html.replace(/^( {0,2}\d+\. )(.+)$/gm, '<li>$2</li>').replace(/(<li>.*<\/li>)/gs, '<ol>$1</ol>');
+
+  // Checklisten
+  html = html.replace(/^- \[ \] (.+)$/gm, '<li><input type="checkbox"> $1</li>');
+  html = html.replace(/^- \[x\] (.+)$/gm, '<li><input type="checkbox" checked> $1</li>');
+  html = html.replace(/(<li><input type="checkbox".*<\/li>)/gs, '<ul class="checklist">$1</ul>');
+
+  // Ausklappbare Bereiche +{ ... }
+  html = html.replace(/\+\{\n([\s\S]*?)\n\}/g, (match, content) => {
+    const lines = content.trim().split('\n');
+    const summary = lines.shift();
+    const details = lines.join('<br>');
+    return `<details><summary>${summary}</summary>${details}</details>`;
+  });
+
+  // Zeilenumbruch
+  html = html.replace(/\n/g, '<br />');
+
+  return html;
+}
+
+const editor = document.getElementById('markdownEditor');
+const preview = document.getElementById('htmlPreview');
+const exportBtn = document.getElementById('exportBtn');
+
+function updatePreview() {
+  preview.innerHTML = markdownToHTML(editor.innerText);
+}
+
+editor.addEventListener('input', updatePreview);
+updatePreview();
+
+// HTML Export
+exportBtn.addEventListener('click', () => {
+  const htmlContent = `
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Exportiertes Markdown</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #0e0e0e; color: #f0f0f0; padding: 20px; }
+  pre { white-space: pre-wrap; background: #1e1e1e; padding: 10px; border-radius: 5px; overflow-x:auto; position: relative; margin:10px 0; }
+  .code-lang { position: absolute; top: 0; left: 0; font-size: 0.8em; font-family: Arial, sans-serif; color: #ccc; padding: 2px 5px; background: #2e2e2e; border-bottom-right-radius: 3px; }
+  blockquote { border-left: 3px solid #555; margin: 5px 0; padding-left: 10px; color: #ccc; }
+  hr { border: 1px solid #555; margin: 10px 0; }
+  ul, ol { margin: 5px 0 5px 20px; }
+  li { margin: 3px 0; }
+  a { color: #80c0ff; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  img { max-width: 100%; }
+  ul.checklist { list-style: none; padding-left: 0; }
+  ul.checklist li { margin: 5px 0; }
+  details { background: #2a2a2a; padding: 5px 10px; border-radius: 5px; margin: 5px 0; }
+  summary { cursor: pointer; font-weight: bold; }
+  details[open] { background: #3a3a3a; }
+  footer { font-family: monospace; font-size: 15px; margin-top: 20px; }
+</style>
+</head>
+<body>
+${preview.innerHTML}
+
+<footer>© TPS-Design</footer>
+</body>
+</html>
+`;
+
+  const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'export.html';
+  a.click();
+  URL.revokeObjectURL(url);
+});
+</script>
+
+</body>
+</html>

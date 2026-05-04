@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Reflex Rush – Hover Edition</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      color: white;
+      font-family: sans-serif;
+      text-align: center;
+    }
+    #start-screen, #game-screen, #result-screen {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    #start-btn {
+      position: absolute;
+      width: 75px;
+      height: 45px;
+      font-size: 25px;
+      border-radius: 10px;
+      background-color: #fff;
+      margin-top: 100px
+    }
+    #dot {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background: white;
+      border-radius: 50%;
+      display: none;
+    }
+    #countdown {
+      font-size: 4em;
+    }
+    
+    .wasDiv{
+          border: 1px solid #ccc;
+          border-radius: 10px;
+          background-color: #3e3e3e;
+          padding: 5px;
+    }
+      
+    button {
+        margin: 5px;
+        padding: 5px 10px;
+        background: #555;
+        color: #f0f0f0;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background: #777;
+    }
+    
+  </style>
+</head>
+<body>
+
+  <div id="start-screen">
+    <h1>Reflex Rush – Hover Edition</h1>
+    <br><button onclick="was()" style="">Was ist das</button>
+    <button style="margin-top: 200px;padding: 5px 10px;background: #555;color: #f0f0f0;border: none;border-radius: 3px;cursor: pointer;" id="start-btn">Start</button>
+  </div>
+
+    <div id="wasDiv" class="wasDiv" style="display: none;">
+        <h2>Reflex Rush</h2>
+        <span>in <b>Reflex Rush</b> geht es darum mit deinem Mauszeiger so schnell wie möglich über die erscheinenden Punkte zu <b>hovern</b>, das heißt du musst sie nur mit dem mauszeiger berühren und nicht klicken.<br> Ziel ist es So schnell wie möglich zu sein um den Besten Score zu erlangen und nebenbei seine Reflexe zu verbessern</span>
+  </div>
+
+  <div id="game-screen" style="display:none;">
+    <div id="countdown"></div>
+    <div id="dot"></div>
+  </div>
+
+  <div id="result-screen" style="display:none;">
+    <h2>Dein Ergebnis</h2>
+    <p id="hits"></p>
+    <ul id="speeds"></ul>
+    <p id="average"></p>
+    <p id="score"></p>
+      <button onclick="location.reload();">Neustart</button>
+  </div>
+
+  <script>
+    const wasDiv = document.getElementById("wasDiv");
+    
+    const startBtn = document.getElementById("start-btn");
+    const startScreen = document.getElementById("start-screen");
+    const gameScreen = document.getElementById("game-screen");
+    const resultScreen = document.getElementById("result-screen");
+    const countdown = document.getElementById("countdown");
+    const dot = document.getElementById("dot");
+
+    let hits = 0;
+    let times = [];
+    let round = 0;
+    let startTime;
+
+    startBtn.onclick = () => {
+      startScreen.style.display = "none";
+      gameScreen.style.display = "flex";
+      startCountdown();
+    };
+
+    function startCountdown() {
+      let count = 3;
+      countdown.textContent = count;
+      const interval = setInterval(() => {
+        count--;
+        if (count > 0) {
+          countdown.textContent = count;
+        } else if (count === 0) {
+          countdown.textContent = "START";
+        } else {
+          clearInterval(interval);
+          countdown.textContent = "";
+          nextRound();
+        }
+      }, 1000);
+    }
+
+    function showDot() {
+  const x = Math.random() * (window.innerWidth - 20);
+  const y = Math.random() * (window.innerHeight - 20);
+  dot.style.left = `${x}px`;
+  dot.style.top = `${y}px`;
+  dot.style.display = "block";
+  startTime = performance.now();
+
+  let reacted = false;
+
+  dot.onmouseenter = () => {
+    if (!reacted) {
+      reacted = true;
+      const reaction = performance.now() - startTime;
+      times.push(reaction);
+      hits++;
+      dot.style.display = "none";
+    }
+  };
+
+  setTimeout(() => {
+    if (!reacted) {
+      times.push(null); // verpasst
+      dot.style.display = "none";
+    }
+    nextRound();
+  }, 2000);
+}
+
+
+    function nextRound() {
+      round++;
+      if (round < 10) {
+        setTimeout(showDot, 500);
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      gameScreen.style.display = "none";
+      resultScreen.style.display = "flex";
+      document.getElementById("hits").textContent = `Getroffene Punkte: ${hits}`;
+      const list = document.getElementById("speeds");
+      list.innerHTML = "";
+      let validTimes = times.filter(t => t !== null);
+      validTimes.forEach((t, i) => {
+        const li = document.createElement("li");
+        li.textContent = `${i + 1}: ${Math.round(t)} ms`;
+        list.appendChild(li);
+      });
+      const avg = validTimes.length ? validTimes.reduce((a, b) => a + b, 0) / validTimes.length : 0;
+      document.getElementById("average").textContent = `Durchschnitt: ${Math.round(avg)} ms`;
+      const score = hits * (1000 / (avg || 1));
+      document.getElementById("score").textContent = `Score: ${score.toFixed(2)}`;
+    }
+    
+    function was() {
+    // Variable innerhalb der Funktion abrufen, um aktuellen Stand zu haben
+    let knopf = sessionStorage.getItem('pressed');
+    let wasDiv = document.getElementById('wasDiv'); // Sicherstellen, dass das Element existiert
+
+    if (knopf === null || knopf === "false") {
+        wasDiv.style.display = 'block';
+        sessionStorage.setItem("pressed", "true");
+    } else {
+        wasDiv.style.display = 'none';
+        sessionStorage.setItem("pressed", "false");
+    }
+}
+
+  </script>
+</body>
+</html>

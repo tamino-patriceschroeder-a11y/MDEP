@@ -1,0 +1,101 @@
+
+    <html>
+      <head><title>scredder</title><style></style></head>
+      <body><!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Der ultimative Papierzerkleinerer 2025</title>
+    <style>
+        body { font-family: 'Courier New', Courier, monospace; background: #222; color: #fff; display: flex; flex-direction: column; align-items: center; padding: 50px; }
+        .shredder-container { width: 400px; position: relative; border: 10px solid #444; background: #333; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        textarea { width: 100%; height: 100px; background: #eee; color: #000; border: none; padding: 10px; box-sizing: border-box; resize: none; }
+        .shred-btn { background: #e74c3c; color: white; border: none; padding: 10px 20px; cursor: pointer; margin-top: 10px; width: 100%; font-weight: bold; }
+        .shred-btn:hover { background: #c0392b; }
+        
+        /* Animation des Schredderns */
+        #output-area { position: relative; height: 150px; overflow: hidden; margin-top: 20px; border-top: 5px solid #111; background: #000; width: 100%; display: none; }
+        .paper-strip { position: absolute; background: white; color: black; font-size: 10px; width: 20px; line-height: 12px; animation: fall 3s forwards linear; overflow: hidden; white-space: pre; }
+        @keyframes fall {
+            0% { transform: translateY(-100%); opacity: 1; }
+            100% { transform: translateY(200%); opacity: 0; }
+        }
+        
+        .controls { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+        .download-btn { background: #3498db; color: white; border: none; padding: 8px 12px; cursor: pointer; font-size: 0.8em; }
+    </style>
+</head>
+<body>
+
+    <h1>📄 Digitaler Schredder</h1>
+    
+    <div class="shredder-container">
+        <textarea id="textInput" placeholder="Geheimtext hier eingeben..."></textarea>
+        <button class="shred-btn" onclick="shredText()">JETZT SCHREDDERN!</button>
+        <div id="output-area"></div>
+    </div>
+
+    <div class="controls">
+        <button class="download-btn" onclick="downloadShredded('triplet')">Download (Alle 3 Zeichen Leerzeichen)</button>
+        <button class="download-btn" onclick="downloadShredded('shuffle')">Download (Totaler Buchstabensalat)</button>
+        <button class="download-btn" onclick="downloadShredded('columns')">Download (3 Spalten-Dateien)</button>
+    </div>
+
+<script>
+    function shredText() {
+        const input = document.getElementById('textInput').value;
+        if (!input) return alert("Gib erst Text ein!");
+
+        const output = document.getElementById('output-area');
+        output.innerHTML = '';
+        output.style.display = 'block';
+
+        // Erstelle "Papierstreifen" für die Animation
+        for (let i = 0; i < 20; i++) {
+            let strip = document.createElement('div');
+            strip.className = 'paper-strip';
+            strip.style.left = (i * 20) + 'px';
+            strip.style.animationDelay = (Math.random() * 1) + 's';
+            strip.innerText = input.substring(i * 5, i * 5 + 20); 
+            output.appendChild(strip);
+        }
+    }
+
+    function downloadFile(content, filename) {
+        const blob = new Blob([content], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    function downloadShredded(type) {
+        const text = document.getElementById('textInput').value;
+        if (!text) return alert("Nichts zum Herunterladen da!");
+
+        if (type === 'triplet') {
+            // Alle 3 Zeichen ein Leerzeichen
+            let result = text.match(/.{1,3}/g).join(' ');
+            downloadFile(result, 'geschreddert_salat.txt');
+        } 
+        else if (type === 'shuffle') {
+            // Alles durcheinander würfeln
+            let result = text.split('').sort(() => 0.5 - Math.random()).join('');
+            downloadFile(result, 'geschreddert_chaos.txt');
+        } 
+        else if (type === 'columns') {
+            // In 3 Spalten aufteilen
+            for (let i = 0; i < 3; i++) {
+                let columnText = text.split('').filter((_, index) => index % 3 === i).join('');
+                downloadFile(columnText, `schredder_spalte_${i+1}.txt`);
+            }
+        }
+    }
+</script>
+</body>
+</html>
+<script></script></body>
+    </html>
+  

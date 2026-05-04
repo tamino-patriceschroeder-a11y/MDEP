@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste</title>
+    <style>
+    html {
+        background-color: #0e0e0e;
+    }
+
+    header {
+        background: #333;
+        padding: 10px;
+        text-align: center;
+        font-size: 1.5em;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        color: #f0f0f0;
+        background-color: #0e0e0e;
+        background-color: #1a1a1a;
+        padding: 20px;
+        margin: 20px;
+        border: 1px solid #555;
+        border-radius: 8px;
+        max-width: 1000px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    pre {
+        white-space: pre-wrap;
+        background: #1e1e1e;
+        padding: 10px;
+        border-radius: 5px;
+        overflow-x: auto;
+        position: relative;
+        margin: 10px 0;
+    }
+
+    .code-lang {
+        position: absolute;
+        top: 0;
+        left: 0;
+        font-size: 0.8em;
+        font-family: Arial, sans-serif;
+        color: #ccc;
+        padding: 2px 5px;
+        background: #2e2e2e;
+        border-bottom-right-radius: 3px;
+    }
+
+    blockquote {
+        border-left: 3px solid #555;
+        margin: 5px 0;
+        padding-left: 10px;
+        color: #ccc;
+    }
+
+    hr {
+        border: 1px solid #555;
+        margin: 10px 0;
+    }
+
+    ul, ol {
+        margin: 5px 0 5px 20px;
+    }
+
+    li {
+        margin: 3px 0;
+    }
+
+    a {
+        color: #80c0ff;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    ul.checklist {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    ul.checklist li {
+        margin: 5px 0;
+    }
+
+    details {
+        background: #2a2a2a;
+        padding: 5px 10px;
+        border-radius: 5px;
+        margin: 5px 0;
+    }
+
+    summary {
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    details[open] {
+        background: #3a3a3a;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 10px 0;
+        background: #2e2e2e;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    button {
+        margin: 5px;
+        padding: 5px 10px;
+        background: #555;
+        color: #f0f0f0;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background: #777;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: left;
+        border: 1px solid #444;
+        color: #f0f0f0;
+    }
+
+    th {
+        background: #444;
+        font-weight: bold;
+    }
+
+    td {
+        background: #333;
+    }
+
+    tr:nth-child(even) {
+        background: #3a3a3a;
+    }
+
+    tr:hover {
+        background: #555;
+    }
+
+    caption {
+        font-size: 1.2em;
+        font-weight: bold;
+        color: #f0f0f0;
+        margin-bottom: 10px;
+    }
+
+    .info-box {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    .info-box .icon-container {
+        margin-right: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .info-box svg {
+        width: 24px;
+        height: 24px;
+        fill: currentColor;
+    }
+
+    .info-box.info {
+        background-color: #e0f7fa;
+        border-left: 5px solid #00bcd4;
+        color: #00796b;
+    }
+
+    .info-box.info .icon-container svg {
+        fill: #00bcd4;
+    }
+
+    .info-box.warning {
+        background-color: #fff8e1;
+        border-left: 5px solid #ffeb3b;
+        color: #ff6f00;
+    }
+
+    .info-box.warning .icon-container svg {
+        fill: #ffeb3b;
+    }
+
+    .inline {
+        background: #0e0e0e;
+        padding: 2px 4px;
+        border-radius: 3px;
+        font-family: monospace;
+    }
+
+    .overlay {
+        background-color: #232323;
+        touch-action: none;
+        border: 2px solid #1e1e1e;
+        position: absolute;
+        width: 150px;
+        height: 100px;
+        overflow: auto;
+        resize: both;
+        /* Größenveränderbar */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        cursor: move;
+        /* Zeigt Verschiebbarkeit an */
+        user-select: none;
+        z-index: 1000;
+    }
+    </style>
+</head>
+<body>
+    <script>
+    function createOverlay() {
+        const overlay = document.createElement("div");
+        overlay.className = "overlay";
+        //overlay.innerText = "Zieh mich!";
+
+        // Zufällige Startposition
+        overlay.style.top = (Math.random() * 300 + 100) + "px";
+        overlay.style.left = (Math.random() * 300 + 50) + "px";
+
+        document.body.appendChild(overlay);
+        makeElementDraggable(overlay);
+    }
+
+    // Alle Elemente mit der Klasse "overlay" entfernen
+    function removeAllOverlays() {
+        const overlays = document.querySelectorAll(".overlay");
+        overlays.forEach(el => el.remove());
+    }
+
+    // Logik zum Verschieben (Drag & Drop)
+    function makeElementDraggable(elmnt) {
+        let pos1 = 0,
+            pos2 = 0,
+            pos3 = 0,
+            pos4 = 0;
+
+        elmnt.onmousedown = function(e) {
+            e.preventDefault();
+            // Startposition der Maus
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = closeDragElement;
+            document.onmousemove = elementDrag;
+        };
+
+        function elementDrag(e) {
+            e.preventDefault();
+            // Neue Position berechnen
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            // Element verschieben
+            elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+            elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        }
+
+        function closeDragElement() {
+            document.onmouseup = null;
+            document.onmousemove = null;
+        }
+    }
+    </script>
+    <script>
+    function toggleSound(soundId) {
+        // 1. Finde das Audio-Element und den zugehörigen Button anhand der ID
+        const audioPlayer = document.getElementById('audio-' + soundId);
+        const soundButton = document.getElementById('button-' + soundId);
+
+        if (!audioPlayer || !soundButton) {
+            console.error("Audio- oder Button-Element nicht gefunden für ID:", soundId);
+            return;
+        }
+
+        // 2. Prüfe den aktuellen Status des Audio-Players
+        if (audioPlayer.paused) {
+            // Wenn es pausiert ist, starte es und ändere den Button-Text zu 'Stop'
+            audioPlayer.play();
+            soundButton.textContent = 'Stop';
+
+            // Optional: Füge einen Event-Listener hinzu, um den Button automatisch wieder auf 'Play' zu stellen, 
+            // sobald die Wiedergabe beendet ist.
+            audioPlayer.onended = function() {
+                soundButton.textContent = 'Play';
+            };
+
+        } else {
+            // Wenn es gerade spielt, stoppe es, setze die Zeit zurück und ändere den Button-Text zu 'Play'
+            audioPlayer.pause();
+            audioPlayer.currentTime = 0; // Setzt den Sound an den Anfang zurück
+            soundButton.textContent = 'Play';
+        }
+    }
+    </script>
+    <table style="width:100%;border-collapse:collapse;border:1px solid #ccc;">
+        <thead>
+            <tr style="background:#f2f2f2;">
+                <th style="border:1px solid #ccc;padding:8px;text-align:left;">Syntax</th>
+                <th style="border:1px solid #ccc;padding:8px;text-align:left;">Beschreibung</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="border:1px solid #ccc;padding:8px;">Anzahl</td>
+                <td style="border:1px solid #ccc;padding:8px;">zählt Wörter in einem eingegebenen Text</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #ccc;padding:8px;">Code</td>
+                <td style="border:1px solid #ccc;padding:8px;">HTML/JS/CSS Preview</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #ccc;padding:8px;">Countdown</td>
+                <td style="border:1px solid #ccc;padding:8px;">Zählt auf ein angegebenes Datum runter</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #ccc;padding:8px;">Counter</td>
+                <td style="border:1px solid #ccc;padding:8px;">
+
+
+
+
+                                                                                                    Zähler der sich beim drücken von 
+                                                                                                    
+                                                                                
+                                                            
+                                        
+                    <code class="inline">+</code>
+
+
+
+
+                                                                                                     oder
+                                                                                                    
+                                                                                
+                                                            
+                                        
+                    <code class="inline">-</code>
+
+
+
+
+                                                                                                     hoch oder runter geht
+                                                                                                
+                                                                            
+                                                        
+                                    
+                </td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #ccc;padding:8px;">EEWP</td>
+                <td style="border:1px solid #ccc;padding:8px;">HTML/JS/CSS Preview</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #ccc;padding:8px;">Farbe</td>
+                <td style="border:1px solid #ccc;padding:8px;">Verschiedene Farbpaletten mit Hex Farbcode</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #ccc;padding:8px;">Farbwahl</td>
+                <td style="border:1px solid #ccc;padding:8px;">Auch Color Picker genannt</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #ccc;padding:8px;">Fortschritt</td>
+                <td style="border:1px solid #ccc;padding:8px;">
+
+
+
+
+                                                                                                    Zeigt einen Balken den man füllen und leeren kann, Fortschritt wird im 
+                                                                                                    
+                                                                                
+                                                            
+                                        
+                    <b>Browser</b>
+
+
+
+
+                                                                                                     gespeichert
+                                                                                                
+                                                                            
+                                                        
+                                    
+                </td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #ccc;padding:8px;">Iframe</td>
+                <td style="border:1px solid #ccc;padding:8px;">
+
+
+
+
+                                                                                                    Kann 
+                                                                                                    
+                                                                                
+                                                            
+                                        
+                    <b>manche Webseiten</b>
+
+
+
+
+                                                                                                     wie Wikipedia anzeigen ohne ein neuen Tab öffnen zu müssen
+                                                                                                
+                                                                            
+                                                        
+                                    
+                </td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #ccc;padding:8px;">Kontrast</td>
+                <td style="border:1px solid #ccc;padding:8px;">Zeigt an ob der Kontrast zwischen 2 Farben gut genug ist</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #ccc;padding:8px;">Link</td>
+                <td style="border:1px solid #ccc;padding:8px;">hilft Markdown Links einfacher zu erstellen</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #ccc;padding:8px;">Math</td>
+                <td style="border:1px solid #ccc;padding:8px;">Koordinatensystem Editor</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #ccc;padding:8px;">Notizen</td>
+                <td style="border:1px solid #ccc;padding:8px;">
+
+
+
+
+                                                                                                    Ein Notizblock der im 
+                                                                                                    
+                                                                                
+                                                            
+                                        
+                    <b>Browser</b>
+
+
+
+
+                                                                                                     gespeichert wird
+                                                                                                
+                                                                            
+                                                        
+                                    
+                </td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #ccc;padding:8px;">Passwort</td>
+                <td style="border:1px solid #ccc;padding:8px;">Generiert Passwörter und zeigt wie sicher sie sind</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #ccc;padding:8px;">Pointer</td>
+                <td style="border:1px solid #ccc;padding:8px;">Mini Reflex Game</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #ccc;padding:8px;">Rechner</td>
+                <td style="border:1px solid #ccc;padding:8px;">Taschenrechner (Basic)</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #ccc;padding:8px;">Reflex</td>
+                <td style="border:1px solid #ccc;padding:8px;">Ein Reflex Tester der auf dei Millisekunde misst</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #ccc;padding:8px;">Schach</td>
+                <td style="border:1px solid #ccc;padding:8px;">2 Player Schach</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #ccc;padding:8px;">Snake</td>
+                <td style="border:1px solid #ccc;padding:8px;">Das OG Game schlecht hin</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #ccc;padding:8px;">Sort</td>
+                <td style="border:1px solid #ccc;padding:8px;">Sortiert eingegebenden Text A->Z oder Z->A. Und es Kann dingen suchen & ersetzten</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #ccc;padding:8px;">Tabelle</td>
+                <td style="border:1px solid #ccc;padding:8px;">Hilft Tabellen zu erstellen</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #ccc;padding:8px;">Tier</td>
+                <td style="border:1px solid #ccc;padding:8px;">Tamagochi</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #ccc;padding:8px;">Timer</td>
+                <td style="border:1px solid #ccc;padding:8px;">selbsterklärend</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #ccc;padding:8px;">Uhr</td>
+                <td style="border:1px solid #ccc;padding:8px;">Wer nicht weiß was das bedeutet darf sich von mir gehauen fühlen</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #ccc;padding:8px;">Themen</td>
+                <td style="border:1px solid #ccc;padding:8px;">Zufallsgenerator für Themen</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #ccc;padding:8px;">Zeichnen</td>
+                <td style="border:1px solid #ccc;padding:8px;">Zeichnung Tool mit PNG export</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #ccc;padding:8px;">Zufall</td>
+                <td style="border:1px solid #ccc;padding:8px;">Zufallsgenerator</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #ccc;padding:8px;">8-Ball</td>
+                <td style="border:1px solid #ccc;padding:8px;">Stelle eine frage und er antwortet dir</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #ccc;padding:8px;">3D</td>
+                <td style="border:1px solid #ccc;padding:8px;">Tool zum erstellen von einfachen Drahtmodellen (Digital)</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #ccc;padding:8px;">Liste</td>
+                <td style="border:1px solid #ccc;padding:8px;">Zeigt diese Liste</td>
+            </tr>
+        </tbody>
+    </table>
+    <br>
+    <div class="info-box warning">
+        <div class="icon-container">
+            <svg xmlns="www.w3.org" viewBox="0 0 24 24">
+                <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+            </svg>
+        </div>
+        <span class="text">Manche PlugIns sind im Editor etwas zu eng und man kann sie nicht richtig Nutzen, im Exportierten dokument haben sie allerdings genug platz um mit ihnen arbeiten zu können</span>
+    </div>
+    <footer style="font-family: Arial, sans-serif; color: #f0f0f0;margin-left: auto;margin-right: auto; text-align: center; font-size: 10px">
+
+
+
+
+                                        made with 
+                                        
+                                
+                        
+                
+        <a class="mail" href="mailto:mdep-tps.design@gmx.de?subject=Footer&">MDEP</a>
+
+
+
+
+                                         by TPS-Design ©
+                                    
+                            
+                    
+            
+    </footer>
+
+    <!-- 
+                    ===== Original Markdown Quelle =====
+                    <table style="width:100%;border-collapse:collapse;border:1px solid #ccc;"><thead><tr style="background:#f2f2f2;"><th style="border:1px solid #ccc;padding:8px;text-align:left;">Syntax</th><th style="border:1px solid #ccc;padding:8px;text-align:left;">Beschreibung</th></tr></thead><tbody><tr><td style="border:1px solid #ccc;padding:8px;">Anzahl</td><td style="border:1px solid #ccc;padding:8px;">zählt Wörter in einem eingegebenen Text</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">Code</td><td style="border:1px solid #ccc;padding:8px;">HTML/JS/CSS Preview</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">Countdown</td><td style="border:1px solid #ccc;padding:8px;">Zählt auf ein angegebenes Datum runter</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">Counter</td><td style="border:1px solid #ccc;padding:8px;">Zähler der sich beim drücken von '+' oder'-' hoch oder runter geht</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">EEWP</td><td style="border:1px solid #ccc;padding:8px;">HTML/JS/CSS Preview</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">Farbe</td><td style="border:1px solid #ccc;padding:8px;">Verschiedene Farbpaletten mit Hex Farbcode</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">Farbwahl</td><td style="border:1px solid #ccc;padding:8px;">Auch Color Picker genannt</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">Fortschritt</td><td style="border:1px solid #ccc;padding:8px;">Zeigt einen Balken den man füllen und leeren kann, Fortschritt wird im **Browser** gespeichert</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">Iframe</td><td style="border:1px solid #ccc;padding:8px;">Kann **manche Webseiten** wie Wikipedia anzeigen ohne ein neuen Tab öffnen zu müssen</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">Kontrast</td><td style="border:1px solid #ccc;padding:8px;">Zeigt an ob der Kontrast zwischen 2 Farben gut genug ist</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">Link</td><td style="border:1px solid #ccc;padding:8px;">hilft Markdown Links einfacher zu erstellen</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">Notizen</td><td style="border:1px solid #ccc;padding:8px;">Ein Notizblock der im **Browser** gespeichert wird</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">Passwort</td><td style="border:1px solid #ccc;padding:8px;">Generiert Passwörter und zeigt wie sicher sie sind</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">Pointer</td><td style="border:1px solid #ccc;padding:8px;">Mini Reflex Game</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">Rechner</td><td style="border:1px solid #ccc;padding:8px;">Taschenrechner (Basic)</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">Schach</td><td style="border:1px solid #ccc;padding:8px;">2 Player Schach</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">Stoppuhr</td><td style="border:1px solid #ccc;padding:8px;">selbsterklärend</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">Tabelle</td><td style="border:1px solid #ccc;padding:8px;">Hilft Tabellen zu erstellen</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">Tier</td><td style="border:1px solid #ccc;padding:8px;">Tamagochi</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">Timer</td><td style="border:1px solid #ccc;padding:8px;">selbsterklärend</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">Zeichnen</td><td style="border:1px solid #ccc;padding:8px;">Zeichnung Tool mit PNG export</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">Zufall</td><td style="border:1px solid #ccc;padding:8px;">Zufallsgenerator</td></tr><tr><td style="border:1px solid #ccc;padding:8px;">Liste</td><td style="border:1px solid #ccc;padding:8px;">Zeigt diese Liste</td></tr></tbody></table>
+
+                    ====================================
+                    -->
+</body>
+</html>

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Hacker Typer Pro 2025</title>
+    <style>
+        body {
+            background-color: black;
+            color: #00FF00; /* Standard Grün */
+            font-family: 'monospace', Courier, monospace;
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            cursor: none;
+        }
+        #menu {
+            background: #111;
+            padding: 10px;
+            border-bottom: 1px solid #333;
+            gap: 20px;
+            align-items: center;
+            font-size: 14px;
+            z-index: 100;
+        }
+        #console {
+            flex-grow: 1;
+            padding: 20px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-y: auto;
+            outline: none;
+        }
+        input, button { background: #222; color: #00FF00; border: 1px solid #444; padding: 5px; cursor: pointer; }
+        .cursor { animation: blink 1s infinite; border-left: 8px solid currentColor; margin-left: 2px; }
+        @keyframes blink { 50% { opacity: 0; } }
+        
+/* Bluescreen */
+#fakeBSOD {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #0000AA;
+    color: white;
+    font-family: Consolas, monospace;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 9999;
+    animation: glitch 0.15s infinite;
+}
+
+.bsod-content {
+    text-align: center;
+    transform: scale(1.2);
+}
+
+/* Glitch Effekt */
+@keyframes glitch {
+    0% { transform: translate(0,0); }
+    20% { transform: translate(-2px,1px); }
+    40% { transform: translate(2px,-1px); }
+    60% { transform: translate(-1px,2px); }
+    80% { transform: translate(1px,-2px); }
+    100% { transform: translate(0,0); }
+}
+
+/* Blackscreen */
+#blackScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    display: none;
+    z-index: 10000;
+}
+
+
+    </style>
+</head>
+<body onclick="document.getElementById('console').focus()">
+    <div id="menu" style="display: none;">
+        <div>
+            <label>Datei:</label>
+            <input type="file" id="fileInput" accept=".txt,.js,.py,.html,.css,.cpp">
+        </div>
+        <div>
+            <label>Textfarbe:</label>
+            <input type="color" id="colorPicker" value="#00FF00">
+        </div>
+        <div>
+            <button id="autoBtn">Auto-Writer: AUS</button>
+            <label>Speed:</label>
+            <input type="range" id="speedRange" min="0" max="100" value="50">
+        </div>
+    </div>
+
+    <div id="console" tabindex="0"></div>
+    <!-- Fake Bluescreen -->
+<div id="fakeBSOD">
+    <div class="bsod-content">
+        <h1>:(</h1>
+        <p>Es ist ein Problem aufgetreten. Das System wird neu gestartet.</p>
+        <p>Error Code: CRITICAL_PROCESS_DIED</p>
+        <p>Collecting crash dump... <span id="bsodPercent">0%</span></p>
+    </div>
+</div>
+
+<!-- Blackscreen nach BSOD -->
+<div id="blackScreen"></div>
+
+
+
+    <script>
+        const consoleElem = document.getElementById('console');
+        const fileInput = document.getElementById('fileInput');
+        const autoBtn = document.getElementById('autoBtn');
+        const speedRange = document.getElementById('speedRange');
+        const menu = document.getElementById('menu');
+
+        function dev(){
+            menu.style.display = 'flex';
+        }
+        
+        function ved(){
+            menu.style.display = 'none';
+        }
+        
+        function auto(){
+            startAuto();
+        }
+        
+        let sourceCode = `run: html;
+run css
+default = JavaScript 
+goTo H:/files/main/window/J.7489/screen/start.exe 
+delete start.exe
+
+load === http://ckerha.dev/io/new/virus-99826.7263.exe
+
+([Bypass]) #Firefall 
+locate.data.password.setInterval = true 
+if (locate.date === true){
+    alert='Hacking succesfull'
+}
+else{
+    ***repeat***}
+
+-------------------------------
+
+ --- TARGET ---
+
+delete.main; 
+delete.files; 
+delete.securex10;
+delete.user = iServ/go/true/user/admin.use;
+clear:firewall 
+goTo shutdown;
+
+IP: 5509.6745:2543:5554r; 
+PORT: 5554r; 
+COM: mgg/==#;
+REG: 77435.54633.53612:::66503;
+---------------------------------
+[BOOT] ShadowOS Kernel v12.4.991 geladen
+[BOOT] Initialisiere Systemmodule...
+[OK]  128 Prozesse gestartet
+[OK]  Netzwerkadapter: ONLINE
+[OK]  Firewall: AKTIV
+
+[ALERT] Unbekannte Netzwerkaktivität erkannt
+[SCAN]  Starte DeepVector-Analyse...
+[SCAN]  Prüfe eingehende Pakete...
+[WARN]  Paket 4412: Signatur unbekannt
+[WARN]  Paket 4413: Signatur unbekannt
+[FAIL]  Paket 4414: Zugriff verweigert (Code: Δ-442)
+
+[NET]   Öffne Trace-Kanal...
+[TRACE] Remote-Endpunkt: 77.244.19.88
+[TRACE] Latenz: 3.22ms
+[TRACE] Protokoll: UNKNOWN (Level-7)
+
+[AUTH]  Remote-Handshake eingeleitet...
+[AUTH]  Empfange Schlüssel...
+[AUTH]  Schlüssel ungültig (Mismatch: 0x000442A1)
+[AUTH]  Remote-System erzwingt Override
+
+[SECURITY] *** FIREWALL-KOMPROMITTIERUNG ERKANNT ***
+[SECURITY] Versuche Gegenmaßnahmen...
+[SECURITY] Gegenmaßnahmen fehlgeschlagen
+[SECURITY] Remote-Override akzeptiert
+
+[SYSTEM]  Externe Prozesse werden gestartet...
+[SYSTEM]  Prozess 9912: "ghost_injector" → AKTIV
+[SYSTEM]  Prozess 9913: "shadowmap_rebuilder" → AKTIV
+[SYSTEM]  Prozess 9914: "kernel_patch_vX" → AKTIV
+
+[INTRUSION]  Entschlüssele eingehenden Datenstrom...
+[STREAM] ███░░░░░░░░░░░░░░░░░░░░░  12%
+[STREAM] ███████░░░░░░░░░░░░░░░░░  34%
+[STREAM] ██████████████░░░░░░░░░░  61%
+[STREAM] ████████████████████████  100%
+[OK] Datenstrom entschlüsselt
+
+[PAYLOAD]  Unbekannte Module erkannt:
+          → /tmp/ghostnode.dll
+          → /sys/core/override.map
+          → /usr/local/shadow/patch_Δ442.bin
+
+[PAYLOAD]  Module werden ausgeführt...
+[EXEC] ghostnode.dll → Läuft...
+[EXEC] override.map → Läuft...
+[EXEC] patch_Δ442.bin → Läuft...
+
+[ALERT] *** SYSTEMKONTROLLE WIRD ÜBERNOMMEN ***
+[ALERT] Eingabegeräte: ÜBERSCHRIEBEN
+[ALERT] Bildschirm: ÜBERSCHRIEBEN
+[ALERT] Benutzerrechte: HERABGESTUFT (Level 0)
+
+[SYS]   Kernel-Neukonfiguration gestartet...
+[SYS]   Schreibe neue Systemwerte...
+[SYS]   14%... 22%... 41%... 67%... 88%...
+[SYS]   *** KERNEL PATCH ABGESCHLOSSEN ***
+
+[REMOTE]  Externes Kommando empfangen:
+          → "INITIATE FULL SYSTEM SYNC"
+
+[SYNC]  Starte Vollabgleich...
+[SYNC]  Prüfe lokale Dateien...
+[SYNC]  441 Dateien modifiziert
+[SYNC]  22 Dateien gelöscht
+[SYNC]  1 Datei hinzugefügt: "shadow_core.sys"
+
+[CRITICAL] *** SYSTEMÜBERNAHME ABGESCHLOSSEN ***
+[CRITICAL] Remote-Instanz hat volle Kontrolle
+
+[TIMER]  Starte Countdown für Systemneustart:
+         10...
+         9...
+         8...
+         7...
+         6...
+         5...
+         4...
+         3...
+         2...
+         1...
+
+[REBOOT] System wird neu gestartet...
+[REBOOT] ...
+[REBOOT] ...
+[ERROR] Neustart blockiert durch Remote-Instanz
+[ERROR] Benutzerinteraktion gesperrt
+
+[FINAL] *** WARNUNG: EXTERNE KONTROLLE AKTIV ***
+[FINAL] Bitte warten...
+_____________________________________
+TERMINATE SECURITY SYSTEM
+_____________________________________
+[SYS_INIT] :: Booting ShadowKernel v3.9.22
+[OK] Memory clusters synced (12.884.221 nodes)
+
+[NETSCAN] :: Initialisiere DeepTrace-Modul...
+[NETSCAN] :: Scanne Ports 1–65535...
+[WARN]  14 verdächtige Endpunkte erkannt
+[TRACE] -> Endpoint 192.168.77.14: ResponseDelay=4.22ms
+[TRACE] -> Endpoint 192.168.77.15: ResponseDelay=4.19ms
+
+[AUTH] :: Starte QuantumHash-Handshake...
+[AUTH] :: Generiere Salt-Sequence: 9F-A2-11-CE-88-4B
+[AUTH] :: Verifiziere RemoteKey...
+[FAIL] RemoteKey mismatch (Δ=0.0004421)
+
+[OVERRIDE] :: Erzwinge manuellen Zugriff
+[OVERRIDE] :: Sende Override-Paket (size=4.221kb)
+[OK] Override akzeptiert
+
+[INTRUSION] :: Öffne SecureShell-Tunnel (Mode: Ghost)
+[INTRUSION] :: Entschlüssele Datenstrom...
+[STREAM]  █████░░░░░░░░░░░░░░░░░░░  18%
+[STREAM]  ████████████░░░░░░░░░░░  47%
+[STREAM]  ████████████████████░░░  92%
+[OK] Datenstrom entschlüsselt
+
+[EXTRACT] :: Lese Kernel-Registry...
+[EXTRACT] :: Finde Schlüssel: /core/sysmap/ghostnode
+[EXTRACT] :: Exportiere Payload → ghostnode.tmp
+
+[SHUTDOWN] :: Beende Session...
+[SHUTDOWN] :: Lösche temporäre Artefakte...
+[OK] Vorgang abgeschlossen (T=4.221s)
+`;
+
+        
+        let index = 0;
+        let isAutoRunning = false;
+        let autoInterval;
+
+        // Farbauswahl
+        colorPicker.oninput = (e) => {
+            document.body.style.color = e.target.value;
+            const uiElems = document.querySelectorAll('input, button');
+            uiElems.forEach(el => el.style.color = e.target.value);
+        };
+
+        // Datei laden
+        fileInput.onchange = function(e) {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                sourceCode = ev.target.result;
+                index = 0;
+                consoleElem.innerText = "";
+            };
+            reader.readAsText(e.target.files[0]);
+        };
+
+        // Schreib-Logik
+        function writeNext() {
+            if (index >= sourceCode.length) index = 0;
+            const charsPerStep = isAutoRunning ? 1 : 3;
+            consoleElem.innerText += sourceCode.slice(index, index + charsPerStep);
+            index += charsPerStep;
+            consoleElem.scrollTop = consoleElem.scrollHeight;
+        }
+
+        // Manueller Modus
+        window.onkeydown = (e) => {
+            if (!isAutoRunning && e.key.length === 1 || e.key === "Enter") {
+                writeNext();
+            }
+        };
+
+        // Auto-Writer Modus
+        autoBtn.onclick = () => {
+            isAutoRunning = !isAutoRunning;
+            autoBtn.innerText = isAutoRunning ? "Auto-Writer: AN" : "Auto-Writer: AUS";
+            if (isAutoRunning) {
+                startAuto();
+
+            } else {
+                clearInterval(autoInterval);
+            }
+        };
+
+        function startAuto() {
+            clearInterval(autoInterval);
+            // Je höher der Range-Wert, desto kleiner der Delay (schneller)
+            const delay = 100 - speedRange.value; 
+            autoInterval = setInterval(writeNext, delay);
+        }
+
+        speedRange.oninput = () => {
+            if (isAutoRunning) startAuto();
+        };
+
+    </script>
+<script>
+    function triggerBSOD() {
+        const bsod = document.getElementById("fakeBSOD");
+        const percent = document.getElementById("bsodPercent");
+        const black = document.getElementById("blackScreen");
+
+        bsod.style.display = "flex";
+
+        let p = 0;
+        const interval = setInterval(() => {
+            p += Math.floor(Math.random() * 10) + 5;
+            if (p > 100) p = 100;
+            percent.textContent = p + "%";
+
+            if (p >= 100) {
+                clearInterval(interval);
+
+                // 1 Sekunde warten, dann Bluescreen ausblenden
+                setTimeout(() => {
+                    bsod.style.display = "none";
+
+                    // Blackscreen für 3 Sekunden anzeigen
+                    black.style.display = "block";
+
+                    setTimeout(() => {
+                        black.style.display = "none";
+                    }, 3000);
+
+                }, 800);
+            }
+        }, 200);
+    }
+
+    // B drücken → 1 Sekunde später BSOD
+    window.addEventListener("keydown", (e) => {
+        if (e.key.toLowerCase() === "b") {
+            setTimeout(() => {
+                triggerBSOD();
+            }, 1000);
+        }
+    });
+</script>
+</body>
+</html>

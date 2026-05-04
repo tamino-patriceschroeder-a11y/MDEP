@@ -1,0 +1,196 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exportiertes Markdown</title>
+<style>
+  html {
+    background-color: #0e0e0e; 
+  }
+header { background: #333; padding: 10px; text-align: center; font-size: 1.5em; }
+  body { 
+    font-family: Arial, sans-serif; 
+    color: #f0f0f0; 
+    
+    /* Hintergrundfarbe des gesamten Browserfensters (die äußere "Umrandung") */
+    background-color: #0e0e0e; 
+
+    /* Die Füllung, die sich innen abhebt */
+    background-color: #1a1a1a; 
+    
+    /* Innenabstand für den Inhalt */
+    padding: 20px;
+    
+    /* Der äußere Rand, der die Hintergrundfarbe #0e0e0e durchscheinen lässt */
+    margin: 20px; 
+    
+    /* Die sichtbare Linie als Rand */
+    border: 1px solid #555;
+    
+    /* Optional: abgerundete Ecken */
+    border-radius: 8px;
+
+    /* Optional: Maximale Breite für bessere Lesbarkeit auf großen Bildschirmen */
+    max-width: 900px;
+    /* Zentriert den Body, wenn er eine max-width hat */
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  /* Der Rest deines vorhandenen CSS, leicht bereinigt */
+  pre { 
+    white-space: pre-wrap; 
+    background: #1e1e1e; 
+    padding: 10px; 
+    border-radius: 5px; 
+    overflow-x:auto; 
+    position: relative; 
+    margin:10px 0; 
+  }
+  /* ... alle anderen Styles wie zuvor ... */
+  .code-lang { position: absolute; top: 0; left: 0; font-size: 0.8em; font-family: Arial, sans-serif; color: #ccc; padding: 2px 5px; background: #2e2e2e; border-bottom-right-radius: 3px; }
+  blockquote { border-left: 3px solid #555; margin: 5px 0; padding-left: 10px; color: #ccc; }
+  hr { border: 1px solid #555; margin: 10px 0; }
+  ul, ol { margin: 5px 0 5px 20px; }
+  li { margin: 3px 0; }
+  a { color: #80c0ff; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  img { max-width: 100%; }
+  ul.checklist { list-style: none; padding-left: 0; }
+  ul.checklist li { margin: 5px 0; }
+  details { background: #2a2a2a; padding: 5px 10px; border-radius: 5px; margin: 5px 0; }
+  summary { cursor: pointer; font-weight: bold; }
+  details[open] { background: #3a3a3a; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  background: #2e2e2e;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #444;
+  color: #f0f0f0;
+}
+
+th {
+  background: #444;
+  font-weight: bold;
+}
+
+td {
+  background: #333;
+}
+
+tr:nth-child(even) {
+  background: #3a3a3a;
+}
+
+tr:hover {
+  background: #555;
+}
+
+caption {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #f0f0f0;
+  margin-bottom: 10px;
+}
+
+.info-box {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        .info-box .icon-container {
+            margin-right: 15px;
+            display: flex; 
+            align-items: center;
+            justify-content: center;
+        }
+        .info-box svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+        .info-box.info {
+            background-color: #e0f7fa;
+            border-left: 5px solid #00bcd4;
+            color: #00796b;
+        }
+
+        .info-box.info .icon-container svg {
+            fill: #00bcd4;
+        }
+        .info-box.warning {
+            background-color: #fff8e1;
+            border-left: 5px solid #ffeb3b;
+            color: #ff6f00;
+        }
+        .info-box.warning .icon-container svg {
+            fill: #ffeb3b;
+        }
+
+.inline {background:#0e0e0e; padding:2px 4px; border-radius:3px; font-family:monospace;}
+</style></head>
+<body>
+<header style="background: #333; padding: 10px; text-align: center; font-size: 1.5em;">16.1.1</header><br><h2>Bugfixes</h2><ul><li>Zeilenumbrüche in Info- und Warnboxen ermöglicht</li><li> Fetter Text in Startanzeige wirklich fett gemacht durch</li></ul><br><hr><br><h2>Erweiterungen:</h2><ul><li>Code blöcke und Inline Code von ` zu ' geändert</li></ul><br><hr><ul><li>PlugIns hinzugefügt: (siehe Beispiele)</li></ul><ol><li><code class="inline">countdown</code> selbst erklärent</li><li><code class="inline">iframe</code> kann bestimmte Webseiten Live anzeigen (aus sicherheitsgründen funktionieren nicht alle Webseiten) <b>Aber Wikipedia funktioniert</b></li><li><code class="inline">kontrast</code> zeigt an welche farben sich gut von einanderer abheben</li><li><code class="inline">link</code> zeigt an wie ein link zu einem MD link werden kann</li><li><code class="inline">timer</code> selbst erklärent</li><li><code class="inline">anzahl</code> zählt wörter und zeichen eines eingegebenen Textes</li><li><code class="inline">farbe</code> zeigt eine auswahl an zusammen passenden Farben mit Hex Farbcodes</li></ol><br><hr><br><ul><li><code class="inline">Fehler Melden</code>und<code class="inline">Feedback geben</code> button unter Versions Nummer hinzugefügt</li><li>Startansicht wurde um <code class="inline">Codeblock</code> und <code class="inline">Zitat</code> erweitert</li><li>Video element einfügbar durch # und {<code class="inline">name des Videos</code>}</li><li><sup>Hochgestellter</sup> <code class="inline">: {}</code> und <sub>Runtergestellter</sub> <code class="inline">. {}</code> Text wurde hinzu gefügt</li></ul><br><hr><br><h2>Gelöschte Features:</h2><ul><li>Das PlugIn <code class="inline">log</code> wurde entfernt</li></ul><br><hr><br><h2>Beispiele:</h2><br><iframe src="plugins/countdown.html" style="width: 500px; height: 400px;"></iframe><br><iframe src="plugins/iframe.html" style="width: 500px; height: 400px;"></iframe><br><iframe src="plugins/kontrast.html" style="width: 500px; height: 400px;"></iframe><br><iframe src="plugins/link.html" style="width: 500px; height: 400px;"></iframe><br><iframe src="plugins/timer.html" style="width: 500px; height: 400px;"></iframe><br><iframe src="plugins/anzahl.html" style="width: 500px; height: 400px;"></iframe><br><hr><br><h2>Mailadresen:</h2><br><blockquote><a class="mail" href="mailto:tps.design+coding-mdep-error@icloud.com?subject=Fehlermeldung&amp;">Fehler Melden</a><br><a class="mail" href="mailto:tps.design+coding-mdep-fdbc@icloud.com?subject=Feedback&amp;">Feedback geben</a><br><a class="mail" href="mailto:tps.design+coding-mdep-fw@icloud.com?subject=Feature-Wünschen&amp;">Feature Wunsch Mitteilen</a></blockquote><br>
+
+<footer style="font-family: Arial, sans-serif; color: #f0f0f0; background-color: #0e0e0e; padding: 20px; margin: 20px; border: 1px solid #555;border-radius: 8px;max-width: 900px;margin-left: auto;margin-right: auto; text-align: center;">made with MDEP by TPS-Design ©</footer>
+
+<!-- 
+===== Original Markdown Quelle =====
++[16.1.1]
+## Bugfixes
+- Zeilenumbrüche in Info- und Warnboxen ermöglicht
+-  Fetter Text in Startanzeige wirklich fett gemacht durch
+---
+## Erweiterungen:
+- Code blöcke und Inline Code von ` zu ' geändert
+---
+- PlugIns hinzugefügt: (siehe Beispiele)
+1. 'countdown' selbst erklärent
+2. 'iframe' kann bestimmte Webseiten Live anzeigen (aus sicherheitsgründen funktionieren nicht alle Webseiten) **Aber Wikipedia funktioniert**
+3. 'kontrast' zeigt an welche farben sich gut von einanderer abheben
+4. 'link' zeigt an wie ein link zu einem MD link werden kann
+5. 'timer' selbst erklärent
+6. 'anzahl' zählt wörter und zeichen eines eingegebenen Textes
+7. 'farbe' zeigt eine auswahl an zusammen passenden Farben mit Hex Farbcodes
+---
+</ol>
+- 'Fehler Melden' button unter Versions Nummer hinzugefügt
+- Startansicht wurde um 'Codeblock' und 'Zitat' erweitert
+- Video element einfügbar durch # und {'name des Videos'}
+- :{Hochgestellter} ': {}' und .{Runtergestellter} '. {}' Text wurde hinzu gefügt
+---
+## Gelöschte Features:
+- Das PlugIn 'log' wurde entfernt
+---
+## Beispiele:
+§[countdown]
+§[iframe]
+§[kontrast]
+§[link]
+§[timer]
+§[anzahl]
+---
+## Mailadresen:
+><a class="mail" href="mailto:tps.design+coding-mdep-error@icloud.com?subject=Fehlermeldung&">Fehler Melden</a>
+><a class="mail" href="mailto:tps.design+coding-mdep-fdbc@icloud.com?subject=Feedback&">Feedback geben</a>
+><a class="mail" href="mailto:tps.design+coding-mdep-fw@icloud.com?subject=Feuture Wünschen&">Feature Wunsch Mitteilen</a>
+
+====================================
+-->
+</body>
+</html>

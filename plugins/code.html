@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Editor</title>
+    <style>
+        /* CSS Variablen für Dark Mode */
+        :root {
+            --bg-main: #1e1e1e;
+            --bg-secondary: #252526;
+            --text-color: #d4d4d4;
+            --border-color: #3c3c3c;
+            --title-bg: #333;
+            --title-text: #ddd;
+            --button-bg: #007acc;
+            --button-hover-bg: #005f99;
+            --button-text: white;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-main);
+            color: var(--text-color);
+        }
+
+        /* Export Button Bar */
+        #export-bar {
+            padding: 5px;
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            gap: 5px;
+        }
+
+        .export-btn {
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .export-btn:hover {
+            background-color: var(--button-hover-bg);
+        }
+
+        /* Haupt-Container für das Layout (Feste Verhältnisse) */
+        #main-container {
+            display: flex;
+            height: calc(100vh - 40px); /* Höhe angepasst wegen Export-Bar */
+            width: 100%;
+            padding: 5px;
+            box-sizing: border-box;
+            gap: 5px; /* Abstand zwischen den Hauptbereichen */
+        }
+
+        /* Container für die Editoren links */
+        #editor-container {
+            display: flex;
+            flex-direction: column;
+            flex: 60%; /* Nimmt 60% der Breite ein */
+            gap: 5px;
+        }
+
+        /* Container für die Vorschau rechts */
+        #result-container {
+            flex: 40%; /* Nimmt 40% der Breite ein */
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Obere Reihe (HTML/CSS) und Untere Reihe (JS) */
+        .code-row {
+            display: flex;
+            flex: 1; /* Beide Reihen teilen sich den vertikalen Platz gleichmäßig */
+            gap: 5px;
+        }
+
+        /* Einzelne Editor- und Ergebnisbereiche */
+        .editor-area {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            padding: 25px 10px 10px;
+            font-family: monospace;
+            font-size: 14px;
+            border: 1px solid var(--border-color);
+            resize: none;
+            background-color: var(--bg-secondary);
+            color: var(--text-color);
+            spellcheck: false; /* Autokorrektur deaktivieren */
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: 1px solid var(--border-color);
+            background-color: #fff; /* Standard-Hintergrund für die Vorschau */
+            padding: 25px 0 0;
+            box-sizing: border-box;
+        }
+
+        .editor-title {
+            position: absolute;
+            font-size: 12px;
+            background: var(--title-bg);
+            padding: 4px 8px;
+            margin: 5px;
+            color: var(--title-text);
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Export Bar --> <!--
+    <div id="export-bar">
+        <button class="export-btn" onclick="exportCode('html')">Export HTML</button>
+        <button class="export-btn" onclick="exportCode('css')">Export CSS</button>
+        <button class="export-btn" onclick="exportCode('js')">Export JS</button>
+       <button class="export-btn" onclick="exportCode('full')">Export Full HTML File</button>
+    </div>-->
+    <div id="main-container">
+        <!-- LINKER BEREICH (Editoren, 60% Breite) -->
+        <div id="editor-container">
+            <!-- OBERE REIHE (HTML/CSS, teilt sich vertikal 50/50 mit JS-Reihe) -->
+            <div class="code-row" id="top-row">
+                <div class="editor-area">
+                    <span class="editor-title">HTML</span>
+                    <textarea id="html-code" onkeyup="updateOutput()" spellcheck="false"><div class="one">Willkommen</div>
+<div class="left">lol</div><div class="right"><button onclick="start()">Klick Mich</button></div></textarea>
+                </div>
+                <div class="editor-area">
+                    <span class="editor-title">CSS</span>
+                    <textarea id="css-code" onkeyup="updateOutput()" spellcheck="false">html {background-color: #00000f; padding: 5px;}
+body {border-radius: 5px; background-color:#1e1e1e; font-family: Arial; padding: 10px; color: #fff;}
+.one {border-radius: 5px; border: 1px solid #5e5e5e; background-color: #2e2e2e; padding: 5px; text-align: center; font-size: 20px; margin: 5px;}
+
+.right {border-radius: 5px; border: 1px solid #5e5e5e; background-color: #2e2e2e; padding: 5px; text-align: center; font-size: 20px; margin: 5px;}
+
+.left {border-radius: 5px; border: 1px solid #5e5e5e; background-color: #2e2e2e; padding: 5px; text-align: center; font-size: 20px; margin: 5px;}
+
+button {color: #fff; background-color: #4e4e4e; border-radius: 5px; border: 1px dashed #ccc;}</textarea>
+                </div>
+            </div>
+
+            <!-- UNTERE REIHE (JS) -->
+            <div class="code-row" id="bottom-row">
+                 <div class="editor-area">
+                    <span class="editor-title">JavaScript</span>
+                    <textarea id="js-code" onkeyup="updateOutput()" spellcheck="false">function start() {
+location.reload()
+}</textarea>
+                </div>
+            </div>
+            <button onclick="exportHtml()">HTML exportieren</button>
+        </div>
+        
+        <!-- RECHTER BEREICH (Vorschau, 40% Breite) -->
+        <div id="result-container">
+            <div class="editor-area">
+                <span class="editor-title">Vorschau</span>
+                <iframe id="output-frame" src="about:blank"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Live-Vorschau Logik (Robuste Version) ---
+        function updateOutput() {
+            const htmlCode = document.getElementById('html-code').value;
+            const cssCode = document.getElementById('css-code').value;
+            const jsCode = document.getElementById('js-code').value;            const outputFrame = document.getElementById('output-frame');
+
+            const iframeDoc = outputFrame.contentDocument;
+            iframeDoc.open();
+            iframeDoc.write(`
+                <html>
+                <head>
+                    <style id="iframe-style"></style>
+                </head>
+                <body>
+                </body>
+                </html>
+            `);
+            iframeDoc.close();
+
+            iframeDoc.getElementById('iframe-style').innerHTML = cssCode;
+            iframeDoc.body.innerHTML = htmlCode;
+
+            const scriptTag = iframeDoc.createElement('script');
+            try {
+                scriptTag.textContent = jsCode;
+                iframeDoc.body.appendChild(scriptTag);
+            } catch (e) {
+                console.error("Fehler beim Ausführen des JavaScript im iFrame:", e);
+            }
+        }
+        
+        function exportHtml() {
+    // 1. Dieselbe Logik zum Sammeln und Zusammenbauen des Codes
+    const html = document.getElementById('html-code').value;
+            const css = document.getElementById('css-code').value;
+            const js = document.getElementById('js-code').value;
+    const fullCode = `
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <style>${css}</style>
+</head>
+<body>
+    ${html}
+    <script>${js}<\/script>
+</body>
+</html>`;
+
+    // 2. Erstellen eines Blobs mit dem HTML-Inhalt
+    const blob = new Blob([fullCode], { type: 'text/html' });
+
+    // 3. Einen temporären Download-Link erstellen
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'code-projekt.html'; // Name der Datei
+
+    // 4. Download auslösen und Link wieder entfernen
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href); // Speicher freigeben
+}
+
+        window.onload = updateOutput;
+    </script>
+</body>
+</html>

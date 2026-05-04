@@ -1,0 +1,124 @@
+/* === Neon Cyberpunk Theme === */
+body {
+  margin: 0;
+  font-family: "Orbitron", sans-serif; /* futuristische Schrift */
+  background: #0a0a0f; /* tiefes Schwarzblau */
+  color: #e0ffe0;      /* helles Neon-Grün */
+}
+
+header {
+  background: #111122;
+  color: #ff00ff; /* Neon-Pink */
+  padding: 10px;
+  text-align: center;
+  font-size: 1.5em;
+  text-shadow: 0 0 8px #ff00ff;
+  border-bottom: 3px solid #00ffff; /* Neon-Cyan */
+}
+
+.pane {
+  background: #1a1a2e;
+  color: #e0ffe0;
+  margin: 5px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #00ffff;
+  box-shadow: 0 0 10px #00ffff;
+}
+
+a {
+  color: #00ffff;
+  text-shadow: 0 0 6px #00ffff;
+}
+a:hover {
+  color: #ff00ff;
+  text-shadow: 0 0 10px #ff00ff;
+}
+
+button {
+  background: #111122;
+  color: #00ffff;
+  border: 1px solid #ff00ff;
+  border-radius: 3px;
+  cursor: pointer;
+  text-shadow: 0 0 6px #00ffff;
+}
+button:hover {
+  background: #ff00ff;
+  color: #0a0a0f;
+  box-shadow: 0 0 12px #ff00ff;
+}
+
+pre, table, details, footer {
+  background: #0a0a0f;
+  color: #e0ffe0;
+  border: 1px solid #00ffff;
+  border-radius: 5px;
+  box-shadow: 0 0 8px #00ffff;
+}
+
+blockquote {
+  border-left: 4px solid #ff00ff;
+  color: #e0ffe0;
+  background: #111122;
+  padding-left: 10px;
+  text-shadow: 0 0 6px #ff00ff;
+}
+
+hr {
+  border: 1px solid #00ffff;
+}
+
+th {
+  background: #111122;
+  color: #ff00ff;
+  text-shadow: 0 0 6px #ff00ff;
+}
+td {
+  background: #1a1a2e;
+}
+tr:nth-child(even) {
+  background: #0a0a0f;
+}
+tr:hover {
+  background: #222244;
+  box-shadow: 0 0 10px #00ffff;
+}
+
+caption {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #00ffff;
+  text-shadow: 0 0 8px #00ffff;
+  margin-bottom: 10px;
+}
+
+details[open] { background: #000000; }
+    .code-lang { position: absolute; top: 0; left: 0; font-size: 0.8em; font-family: Arial, sans-serif; color: #fff; padding: 2px 5px; background: #000000; border-bottom-right-radius: 3px; }
+    .inline {background:#00fffb; padding:2px 4px; border-radius:3px; font-family:monospace; color: #000;}
+
+/* Info Boxes */
+.info-box {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border-left: 5px solid #ff00ff;
+  background: #111122;
+  color: #e0ffe0;
+  box-shadow: 0 0 12px #00ffff;
+}
+.info-box .icon-container svg {
+  fill: #00ffff;
+}
+.info-box.info {
+  background-color: #1a1a2e;
+  border-left-color: #00ffff;
+}
+.info-box.warning {
+  background-color: #222244;
+  border-left-color: #ff00ff;
+  color: #ff80ff;
+}
+-

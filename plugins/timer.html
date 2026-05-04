@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Präsentations-Timer</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #1e1e1e; scale: 2;}
+        .timer-container { text-align: center; border-radius: 10px; background-color: #9e9e9e; padding: 10px;}
+        #display { font-size: 4em; font-weight: bold; margin-bottom: 10px; color: #333;}
+        button { padding: 10px 20px; font-size: 1em; margin: 5px; cursor: pointer; }
+        #minutesInput { width: 50px; padding: 5px; }
+    </style>
+</head>
+<body>
+    <div class="timer-container">
+        <input type="number" id="minutesInput" placeholder="Minuten" value="10">
+        <button onclick="startTimer()">Starten</button>
+        <div id="display">--:--</div>
+        <button onclick="resetTimer()">Zurücksetzen</button>
+    </div>
+
+    <script>
+        let countdown;
+        const display = document.getElementById('display');
+        const minutesInput = document.getElementById('minutesInput');
+
+        function startTimer() {
+            const minutes = parseInt(minutesInput.value);
+            if (isNaN(minutes) || minutes <= 0) return;
+
+            clearInterval(countdown);
+            let secondsLeft = minutes * 60;
+
+            countdown = setInterval(() => {
+                secondsLeft--;
+                if (secondsLeft < 0) {
+                    clearInterval(countdown);
+                    display.textContent = "Fertig!";
+                    return;
+                }
+                displayTimeLeft(secondsLeft);
+            }, 1000);
+        }
+
+        function displayTimeLeft(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const remainderSeconds = seconds % 60;
+            const output = `${mins}:${remainderSeconds < 10 ? '0' : ''}${remainderSeconds}`;
+            display.textContent = output;
+        }
+
+        function resetTimer() {
+            clearInterval(countdown);
+            display.textContent = "00:00";
+        }
+    </script>
+</body>
+</html>
+<script></script></body>
+    </html>
+  

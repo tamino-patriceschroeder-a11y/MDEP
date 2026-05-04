@@ -1,0 +1,126 @@
+/* === Steampunk Theme === */
+body {
+  margin: 0;
+  font-family: "Georgia", serif;
+  background: #2b1d0e; /* dunkles Holzbraun */
+  color: #f5e6c4;      /* warmes Pergament */
+  }
+
+
+header {
+  background: #4a2c16; /* dunkles Holz */
+  color: #d4af37;      /* goldener Akzent */
+  padding: 10px;
+  text-align: center;
+  font-size: 1.5em;
+  border-bottom: 3px solid #b87333; /* Kupferkante */
+}
+
+.ffooter {
+  background: #4a2c16; /* dunkles Holz */
+  color: #d4af37;      /* goldener Akzent */
+  padding: 10px;
+  text-align: center;
+  font-size: 1.5em;
+  border-bottom: 3px solid #b87333; /* Kupferkante */
+}
+
+.pane {
+  background: #3a2412;
+  color: #f5e6c4;
+  margin: 5px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #b87333; /* Kupferrahmen */
+}
+
+a {
+  color: #d4af37; /* Gold */
+}
+a:hover {
+  color: #ffdf80; /* helleres Gold */
+  text-decoration: underline;
+}
+
+button {
+  background: #b87333; /* Kupfer */
+  color: #2b1d0e;
+  border: 1px solid #d4af37;
+  border-radius: 3px;
+  cursor: pointer;
+}
+button:hover {
+  background: #d4af37; /* Gold */
+  color: #2b1d0e;
+}
+
+/**/
+    details[open] { background: #44290e; }
+    .code-lang { position: absolute; top: 0; left: 0; font-size: 0.8em; font-family: Arial, sans-serif; color: #ccc; padding: 2px 5px; background: #b87333; border-bottom-right-radius: 3px; }
+    .inline {background: #7c3c08;
+        padding:2px 4px; border-radius:3px; font-family:monospace;}
+    /**/
+
+pre, table, details {
+  background: #2b1d0e;
+  color: #f5e6c4;
+  border: 1px solid #b87333;
+  border-radius: 5px;
+}
+
+blockquote {
+  border-left: 4px solid #d4af37;
+  color: #f5e6c4;
+  background: #3a2412;
+  padding-left: 10px;
+}
+
+hr {
+  border: 1px solid #b87333;
+}
+
+th {
+  background: #4a2c16;
+  color: #d4af37;
+}
+td {
+  background: #3a2412;
+}
+tr:nth-child(even) {
+  background: #2b1d0e;
+}
+tr:hover {
+  background: #5c3a1f;
+}
+
+caption {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #d4af37;
+  margin-bottom: 10px;
+}
+
+/* Info Boxes */
+.info-box {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border-left: 5px solid #b87333;
+  background: #3a2412;
+  color: #f5e6c4;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+}
+.info-box .icon-container svg {
+  fill: #d4af37;
+}
+.info-box.info {
+  background-color: #4a2c16;
+  border-left-color: #d4af37;
+}
+.info-box.warning {
+  background-color: #5c3a1f;
+  border-left-color: #ffbf00;
+  color: #ffdf80;
+}

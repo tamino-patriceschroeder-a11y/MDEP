@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MD→HTML Editor</title>
+<style>
+  body { margin: 0; font-family: Arial, sans-serif; background: #1e1e1e; color: #f0f0f0; }
+  header { background: #333; padding: 10px; text-align: center; font-size: 1.5em; }
+  #editorContainer { display: flex; height: calc(100vh - 50px); }
+  .pane {
+    flex: 1; 
+    margin: 5px; 
+    padding: 10px; 
+    background: #2e2e2e; 
+    border-radius: 5px; 
+    overflow-y: auto; 
+  }
+  #markdownEditor { outline: none; white-space: pre-wrap; }
+  pre { white-space: pre-wrap; background: #1e1e1e; padding: 10px; border-radius: 5px; position: relative; margin:10px 0; overflow-x:auto; }
+  .code-lang { position: absolute; top: 0; left: 0; font-size: 0.8em; font-family: Arial, sans-serif; color: #ccc; padding: 2px 5px; background: #2e2e2e; border-bottom-right-radius: 3px; }
+  blockquote { border-left: 3px solid #555; margin: 5px 0; padding-left: 10px; color: #ccc; }
+  hr { border: 1px solid #555; margin: 10px 0; }
+  ul, ol { margin: 5px 0 5px 20px; }
+  li { margin: 3px 0; }
+  a { color: #80c0ff; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  img { max-width: 100%; }
+  button { margin: 5px; padding: 5px 10px; background: #555; color: #f0f0f0; border: none; border-radius: 3px; cursor: pointer; }
+    button:hover { background: #777; }
+
+  /* Checkliste */
+  ul.checklist { list-style: none; padding-left: 0; }
+  ul.checklist li { margin: 5px 0; }
+
+  /* Ausklappbare Bereiche */
+  details { background: #2a2a2a; padding: 5px 10px; border-radius: 5px; margin: 5px 0; }
+  summary { cursor: pointer; font-weight: bold; }
+    details[open] { background: #3a3a3a; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  background: #2e2e2e;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #444;
+  color: #f0f0f0;
+}
+
+th {
+  background: #444;
+  font-weight: bold;
+}
+
+td {
+  background: #333;
+}
+
+tr:nth-child(even) {
+  background: #3a3a3a;
+}
+
+tr:hover {
+  background: #555;
+}
+
+caption {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #f0f0f0;
+  margin-bottom: 10px;
+}
+    
+.warn {
+       background-color: #ff6a00; border: 1px solid white; padding: 10px; margin-top: 10px; font-size: 0.9em;
+    }
+.warn:hover {
+       background-color: #ff9300; border: 1px solid white; padding: 10px; margin-top: 10px; font-size: 0.9em;
+    }
+    
+.info {
+       background-color: #00a3d7; border: 1px solid white; padding: 10px; margin-top: 10px; font-size: 0.9em;
+    }
+.info:hover {
+       background-color: #53d5fd; border: 1px solid white; padding: 10px; margin-top: 10px; font-size: 0.9em;
+    }
+    
+</style>
+</head>
+<body>
+
+<header>MD→HTML Editor</header>
+
+<div id="editorContainer">
+  <div class="pane" id="markdownEditor" contenteditable="true" spellcheck="false"># Überschrift
+## Überschrift 2
+### Überschrift 3
+> Zitat
+```Sprache
+
+Code
+```
+**Fetter text**
+*Kursiver Text*
+***Fettkursiv Text***
+`inline Code`
+[links](example.com)
+- [ ] leere Checkboxen
+- [x] Ausgefüllte Checkboxen
+$#0fdff0{Farbiger Text}
+$"Comic Sans MS"{Andere Schriftarten}
+- listen
+!{Warnboxen}
+i{Info Boxen}
+  </div>
+  <div class="pane" id="htmlPreview"></div>
+</div>
+
+<div style="text-align:center; margin:10px;">
+  <button id="exportBtn">Als HTML exportieren</button>
+</div>
+
+<script>
+// Blockquote Parser für verschachtelte Zitate
+function parseBlockquotes(md) {
+  const lines = md.split('\n');
+  const result = [];
+  let buffer = [];
+  let prevDepth = 0;
+
+  function flushBuffer(depth) {
+    if (buffer.length === 0) return;
+    let content = buffer.map(line => line.replace(/^>+ ?/, '')).join('<br>');
+    for (let i = 0; i < depth; i++) {
+      content = `<blockquote>${content}</blockquote>`;
+    }
+    result.push(content);
+    buffer = [];
+  }
+
+  for (let line of lines) {
+    const match = line.match(/^(>+)\s?(.*)$/);
+    if (match) {
+      const depth = match[1].length;
+      if (depth !== prevDepth) {
+        flushBuffer(prevDepth);
+        prevDepth = depth;
+      }
+      buffer.push(line);
+    } else {
+      flushBuffer(prevDepth);
+      prevDepth = 0;
+      result.push(line);
+    }
+  }
+  flushBuffer(prevDepth);
+  return result.join('\n');
+}
+
+// Markdown zu HTML Converter
+function markdownToHTML(md) {
+  md = parseBlockquotes(md);
+
+  function escapeHTML(str) {
+    return str.replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;")
+              .replace(/"/g, "&quot;")
+              .replace(/'/g, "&#39;");
+  }
+
+  let html = md.replace(/```(\w*)\n([\s\S]*?)```/g, (match, lang, code) => {
+    const langDiv = lang ? `<div class="code-lang">${lang}</div>` : '';
+    const escapedCode = escapeHTML(code);
+    return `<pre>${langDiv}<code>${escapedCode}</code></pre>`;
+  });
+
+  // Trennlinie ---
+  html = html.replace(/^---$/gm, '<hr />');
+
+  // Überschriften
+  html = html
+    .replace(/^### (.*)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.*)$/gm, '<h2>$1</h2>')
+    .replace(/^# (.*)$/gm, '<h1>$1</h1>');
+
+  // Fett/Kursiv
+  html = html.replace(/\*\*\*(.*?)\*\*\*/g, '<b><i>$1</i></b>');
+  html = html.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+  html = html.replace(/\*(.*?)\*/g, '<i>$1</i>');
+  html = html.replace(/~(.*?)~/g, '<s>$1</s>');
+
+  // Inline-Code (dezenter Style)
+  html = html.replace(/`(.*?)`/g, '<code style="background:#1e1e1e; padding:2px 4px; border-radius:3px; font-family:monospace;">$1</code>');
+
+  // Links
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+
+  // Bilder
+  html = html.replace(/#\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
+
+  // Checklisten
+  html = html.replace(/^- \[ \](.+)$/gm, '<li><input type="checkbox"> $1</li>');
+  html = html.replace(/^- \[x\](.+)$/gm, '<li><input type="checkbox" checked> $1</li>');
+  html = html.replace(/(<li><input type="checkbox".*<\/li>)/gs, '<ul class="checklist">$1</ul>');
+
+  // Ausklappbare Bereiche (flexibler Regex)
+  html = html.replace(/\+\{\s*([\s\S]*?)\s*\}/g, (match, content) => {
+    const lines = content.trim().split('\n');
+    const summary = lines.shift();
+    const details = lines.join('<br>');
+    return `<details><summary>${summary}</summary>${details}</details>`;
+  });
+
+  // Farbsyntax $#xxxxxx{...}
+  html = html.replace(/\$\#([0-9A-Fa-f]{6})\{([^}]+)\}/g, '<span style="color:#$1;">$2</span>');
+
+  // Schriftartsyntax $"Arial"{...}
+  html = html.replace(/\$"([^"]+)"\{([^}]+)\}/g, '<span style="font-family:\'$1\';">$2</span>');
+
+  // Listen (gruppiert)
+  html = html.replace(/(?:^|\n)(?:- .+(?:\n- .+)*)/g, block => {
+    const items = block.trim().split('\n').map(line => `<li>${line.replace(/^- /,'')}</li>`).join('');
+    return `<ul>${items}</ul>`;
+  });
+  html = html.replace(/(?:^|\n)(?:\d+\. .+(?:\n\d+\. .+)*)/g, block => {
+    const items = block.trim().split('\n').map(line => `<li>${line.replace(/^\d+\. /,'')}</li>`).join('');
+    return `<ol>${items}</ol>`;
+  });
+
+  // Warnbox
+  html = html.replace(/\!\{\s*([\s\S]*?)\s*\}/g, '<div class="warn">⚠️<b>Warnung</b><br>$1</div>');
+    
+  // Infobox
+  html = html.replace(/\i\{\s*([\s\S]*?)\s*\}/g, '<div class="info"><b>Info</b><br>$1</div>');
+    
+  // Zeilenumbruch
+  html = html.replace(/\n/g, '<br />');
+
+  return html;
+}
+
+const editor = document.getElementById('markdownEditor');
+const preview = document.getElementById('htmlPreview');
+const exportBtn = document.getElementById('exportBtn');
+
+function updatePreview() {
+  preview.innerHTML = markdownToHTML(editor.innerText);
+}
+
+editor.addEventListener('input', updatePreview);
+updatePreview();
+
+// HTML Export
+exportBtn.addEventListener('click', () => {
+  const mdSource = editor.innerText; // Original Markdown
+  const htmlContent = `
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exportiertes Markdown</title>
+<style>
+  html {
+    background-color: #0e0e0e; 
+  }
+
+  body { 
+    font-family: Arial, sans-serif; 
+    color: #f0f0f0; 
+    
+    /* Hintergrundfarbe des gesamten Browserfensters (die äußere "Umrandung") */
+    background-color: #0e0e0e; 
+
+    /* Die Füllung, die sich innen abhebt */
+    background-color: #1a1a1a; 
+    
+    /* Innenabstand für den Inhalt */
+    padding: 20px;
+    
+    /* Der äußere Rand, der die Hintergrundfarbe #0e0e0e durchscheinen lässt */
+    margin: 20px; 
+    
+    /* Die sichtbare Linie als Rand */
+    border: 1px solid #555;
+    
+    /* Optional: abgerundete Ecken */
+    border-radius: 8px;
+
+    /* Optional: Maximale Breite für bessere Lesbarkeit auf großen Bildschirmen */
+    max-width: 900px;
+    /* Zentriert den Body, wenn er eine max-width hat */
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  /* Der Rest deines vorhandenen CSS, leicht bereinigt */
+  pre { 
+    white-space: pre-wrap; 
+    background: #1e1e1e; 
+    padding: 10px; 
+    border-radius: 5px; 
+    overflow-x:auto; 
+    position: relative; 
+    margin:10px 0; 
+  }
+  /* ... alle anderen Styles wie zuvor ... */
+  .code-lang { position: absolute; top: 0; left: 0; font-size: 0.8em; font-family: Arial, sans-serif; color: #ccc; padding: 2px 5px; background: #2e2e2e; border-bottom-right-radius: 3px; }
+  blockquote { border-left: 3px solid #555; margin: 5px 0; padding-left: 10px; color: #ccc; }
+  hr { border: 1px solid #555; margin: 10px 0; }
+  ul, ol { margin: 5px 0 5px 20px; }
+  li { margin: 3px 0; }
+  a { color: #80c0ff; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  img { max-width: 100%; }
+  ul.checklist { list-style: none; padding-left: 0; }
+  ul.checklist li { margin: 5px 0; }
+  details { background: #2a2a2a; padding: 5px 10px; border-radius: 5px; margin: 5px 0; }
+  summary { cursor: pointer; font-weight: bold; }
+  details[open] { background: #3a3a3a; }
+  footer { font-family: monospace; font-size: 15px; margin-top: 20px; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  background: #2e2e2e;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #444;
+  color: #f0f0f0;
+}
+
+th {
+  background: #444;
+  font-weight: bold;
+}
+
+td {
+  background: #333;
+}
+
+tr:nth-child(even) {
+  background: #3a3a3a;
+}
+
+tr:hover {
+  background: #555;
+}
+
+caption {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #f0f0f0;
+  margin-bottom: 10px;
+}
+</style></head>
+<body>
+${preview.innerHTML}
+
+<footer>© TPS-Design</footer>
+
+<!-- 
+===== Original Markdown Quelle =====
+${mdSource}
+====================================
+-->
+</body>
+</html>
+`;
+
+  const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'export.html';
+  a.click();
+  URL.revokeObjectURL(url);
+});
+</script>
+
+</body>
+</html>

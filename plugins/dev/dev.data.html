@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Browser- und GerÃ¤teinformationen mit LocalStorage</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; }
+        table { border-collapse: collapse; width: 600px; margin-top: 10px; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .localStorageSection { margin-top: 30px; }
+    </style>
+<script>
+// PrÃ¼fen, ob der Wert im Local Storage existiert
+let meinWert = localStorage.getItem('devoloper');
+
+if (meinWert === null) {
+  console.error('Du hast nicht die richtigen rechte für diese Datei')
+  window.location.href = './404+r.html';
+} if (meinWert === 'Tamino') {
+  console.log('Willkommen Tamino');
+} else {
+    console.error('Du hast nicht die richtigen rechte für diese Datei')
+  window.location.href = '../error/404+r.html';
+}
+</script>
+</head>
+<body>
+    <h1>Informationen Ã¼ber Ihren Browser und Ihr GerÃ¤t</h1>
+
+    <h2>Systeminformationen</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Eigenschaft</th>
+                <th>Wert</th>
+            </tr>
+        </thead>
+        <tbody id="infoTableBody">
+            <!-- Systemdaten werden hier durch JavaScript eingefÃ¼gt -->
+        </tbody>
+    </table>
+
+    <div class="localStorageSection">
+        <h2>Local Storage Daten fÃ¼r diese Domain</h2>
+        <p id="localStorageStatus">Local Storage ist leer oder nicht verfÃ¼gbar.</p>
+        <table id="localStorageTable" style="display: none;">
+             <thead>
+                <tr>
+                    <th>SchlÃ¼ssel (Key)</th>
+                    <th>Wert (Value)</th>
+                </tr>
+            </thead>
+            <tbody id="localStorageTableBody">
+                <!-- Local Storage Daten werden hier durch JavaScript eingefÃ¼gt -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // --- Systeminformationen ---
+        function addInfoRow(property, value, targetBodyId) {
+            const tbody = document.getElementById(targetBodyId);
+            const row = tbody.insertRow();
+            const cell1 = row.insertCell(0);
+            const cell2 = row.insertCell(1);
+            cell1.textContent = property;
+            // Begrenzt lange UserAgents fÃ¼r bessere Lesbarkeit
+            cell2.textContent = (property === 'Browser Name/UserAgent' && value.length > 100) ? value.substring(0, 100) + '...' : value;
+        }
+
+        addInfoRow('Browser Name/UserAgent', navigator.userAgent, 'infoTableBody');
+        addInfoRow('Plattform/OS', navigator.platform, 'infoTableBody');
+        addInfoRow('Browser Sprache', navigator.language, 'infoTableBody');
+        addInfoRow('Bildschirmbreite (px)', screen.width, 'infoTableBody');
+        addInfoRow('BildschirmhÃ¶he (px)', screen.height, 'infoTableBody');
+        addInfoRow('Farbtiefe (Bits)', screen.colorDepth, 'infoTableBody');
+
+        // --- Local Storage Informationen ---
+        function loadLocalStorageData() {
+            if (typeof(Storage) !== "undefined" && localStorage.length > 0) {
+                document.getElementById('localStorageStatus').style.display = 'none';
+                document.getElementById('localStorageTable').style.display = 'table';
+                const tbody = document.getElementById('localStorageTableBody');
+                
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    const value = localStorage.getItem(key);
+                    const row = tbody.insertRow();
+                    const cell1 = row.insertCell(0);
+                    const cell2 = row.insertCell(1);
+                    cell1.textContent = key;
+                    // Zeigt den Wert an, begrenzt auf 200 Zeichen fÃ¼r Lesbarkeit
+                    cell2.textContent = value.length > 200 ? value.substring(0, 200) + '...' : value;
+                }
+            }
+        }
+
+        // FÃ¼hrt die Funktion aus, sobald das Skript geladen ist
+        loadLocalStorageData();
+    </script>
+</body>
+</html><script></script></body>
+    </html>
+  

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Reflex-Tester</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #1a1a1a; /* Dunkles Design */
+            color: white;
+            overflow: hidden;
+        }
+
+        #box {
+            width: 80vw;
+            max-width: 500px;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.1s, transform 0.05s;
+            text-align: center;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+            user-select: none;
+        }
+
+        /* Zustands-Farben */
+        .idle { background-color: #3498db; }    /* Blau */
+        .waiting { background-color: #e74c3c; } /* Rot */
+        .ready { background-color: #2ecc71; }   /* Grün */
+
+        h1 { margin-bottom: 10px; }
+        .instruction { font-size: 1.2rem; opacity: 0.8; margin-bottom: 20px; }
+        
+        .stats {
+            margin-top: 30px;
+            font-size: 1.5rem;
+            background: rgba(255,255,255,0.1);
+            padding: 15px 30px;
+            border-radius: 10px;
+        }
+
+        .best-label { color: #f1c40f; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h1>Reflex-Tester</h1>
+    <p class="instruction">Beliebige Taste drücken oder Mausklick (auch Rechtsklick)!</p>
+    
+    <div id="box" class="idle">
+        <span style="font-size: 2rem;">START</span>
+    </div>
+
+    <div class="stats">
+        Zeit: <span id="time">0</span> ms | 
+        <span class="best-label">Bestzeit:</span> <span id="best">--</span> ms
+    </div>
+
+    <script>
+        const box = document.getElementById('box');
+        const timeDisplay = document.getElementById('time');
+        const bestDisplay = document.getElementById('best');
+
+        let startTime;
+        let timeoutId;
+        let gameState = 'IDLE'; 
+        let bestTime = Infinity;
+
+        // Zentrale Funktion für die Interaktion
+        function handleTrigger(e) {
+            // Verhindert Standard-Aktionen (z.B. Rechtsklick-Menü oder Scrollen bei Leertaste)
+            if(e) e.preventDefault();
+
+            if (gameState === 'IDLE') {
+                startTest();
+            } else if (gameState === 'WAITING') {
+                tooEarly();
+            } else if (gameState === 'READY') {
+                finishTest();
+            }
+        }
+
+        // Event-Listener für MAUS (alle Tasten)
+        window.addEventListener('mousedown', (e) => {
+            handleTrigger(e);
+        });
+
+        // Event-Listener für TASTATUR (alle Tasten)
+        window.addEventListener('keydown', (e) => {
+            // Nur auslösen, wenn Taste nicht gehalten wird
+            if (!e.repeat) {
+                handleTrigger(e);
+            }
+        });
+
+        // Verhindert das Kontextmenü beim Rechtsklick auf der Box
+        window.oncontextmenu = function(e) {
+            e.preventDefault();
+            return false;
+        };
+
+        function startTest() {
+            gameState = 'WAITING';
+            box.className = 'waiting';
+            box.innerHTML = '<span style="font-size: 2rem;">Warten auf GRÜN...</span>';
+            
+            const randomDelay = Math.floor(Math.random() * 3000) + 1500;
+            
+            timeoutId = setTimeout(() => {
+                gameState = 'READY';
+                box.className = 'ready';
+                box.innerHTML = '<span style="font-size: 3rem;">JETZT!</span>';
+                startTime = Date.now();
+            }, randomDelay);
+        }
+
+        function finishTest() {
+            const reactionTime = Date.now() - startTime;
+            gameState = 'IDLE';
+            box.className = 'idle';
+            box.innerHTML = `<span style="font-size: 2rem;">${reactionTime} ms</span><br><span>Nochmal?</span>`;
+            
+            timeDisplay.textContent = reactionTime;
+
+            if (reactionTime < bestTime) {
+                bestTime = reactionTime;
+                bestDisplay.textContent = bestTime;
+            }
+        }
+
+        function tooEarly() {
+            clearTimeout(timeoutId);
+            gameState = 'IDLE';
+            box.className = 'idle';
+            box.innerHTML = '<span style="font-size: 1.5rem;">ZU FRÜH!</span><br><span>Erneut versuchen</span>';
+            timeDisplay.textContent = '---';
+        }
+    </script>
+</body>
+</html>

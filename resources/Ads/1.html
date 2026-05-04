@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Banner Test</title>
+    <style>
+        /* Design des Banners */
+        #fake-ad-overlay {
+            display: none; /* Standardmäßig aus, JS blendet es ein */
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            background: #fff;
+            border: 2px solid #ff0000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            font-family: Arial, sans-serif;
+            z-index: 9999;
+            padding: 15px;
+        }
+
+        .ad-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+        }
+
+        .close-btn {
+            cursor: pointer;
+            font-weight: bold;
+            color: #888;
+            border: none;
+            background: none;
+        }
+
+        .ad-content h3 { margin: 0 0 10px 0; color: #d9534f; font-size: 16px; }
+        .ad-content p { font-size: 13px; color: #333; margin: 0 0 15px 0; }
+
+        .fake-button {
+            background: #5cb85c;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Das Banner Markup -->
+    <div id="fake-ad-overlay">
+        <div class="ad-header">
+            <span>Anzeige</span>
+            <button class="close-btn" onclick="closeBanner()">[X]</button>
+        </div>
+        <div class="ad-content">
+            <h3>Herzlichen Glückwunsch!</h3>
+            <p>Sie wurden als einer von 2025 Gewinnern ausgewählt. Klicken Sie hier für Ihren Preis!</p>
+            <button class="fake-button" onclick="alert('Dein Preis ist: 1.000.000.000.000.000 T-Coins, sie entsprechen 0,00 €'), closeBanner()">Jetzt beanspruchen</button>
+        </div>
+    </div>
+
+    <script>
+        const adId = "ad1"; // Eindeutiger Key für den LocalStorage
+        const banner = document.getElementById('fake-ad-overlay');
+
+        // 1. Prüfen, ob der Banner bereits weggeklickt wurde
+        window.onload = function() {
+            if (!localStorage.getItem(adId)) {
+                banner.style.display = 'block';
+            }
+        };
+
+        // 2. Funktion zum Schließen und Speichern im LocalStorage
+        function closeBanner() {
+            banner.style.display = 'none';
+            localStorage.setItem(adId, 'true'); // Speichert: "Wurde gesehen"
+            console.log("Banner geschlossen und Status im LocalStorage gespeichert.");
+        }
+    </script>
+
+</body>
+</html>

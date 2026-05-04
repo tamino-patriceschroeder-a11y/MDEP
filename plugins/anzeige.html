@@ -1,0 +1,128 @@
+
+    <html>
+      <head><style></style></head>
+      <body><!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anzeige</title>
+    <style>
+        body { font-family: 'Arial', sans-serif; background: #1a1a1a; color: white; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        
+        /* Das Meter */
+        .meter-container { position: relative; width: 300px; height: 150px; border: 5px solid #444; border-bottom: none; border-radius: 150px 150px 0 0; background: linear-gradient(90deg, green, yellow, orange, red); overflow: hidden; margin-bottom: 20px; box-shadow: 0 0 20px rgba(255,0,0,0.3); }
+        
+        .needle { position: absolute; bottom: 0; left: 50%; width: 4px; height: 130px; background: white; transform-origin: bottom center; transform: rotate(-90deg); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 10; }
+        .needle-center { position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 20px; height: 20px; background: white; border-radius: 50%; z-index: 11; }
+
+        /* Beschriftung */
+        .h1 { margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; color: #ff4444;}
+
+        /* Menü */
+        .controls { background: #333; padding: 20px; border-radius: 10px; width: 300px; display: flex; flex-direction: column; gap: 10px; }
+        label { font-size: 0.8rem; color: #bbb; }
+        input { padding: 8px; border-radius: 5px; border: none; background: #444; color: white; }
+        
+        .current-val-display { text-align: center; font-size: 1.5rem; font-weight: bold; margin: 10px 0; color: #00ff00; }
+        
+        details {
+        background: #2a2a2a;
+        padding: 5px 10px;
+        border-radius: 5px;
+        margin: 5px 0;
+        text-align: center;
+    }
+
+    summary {
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    details[open] {
+        background: #3a3a3a;
+        text-align: center;
+    }
+    </style>
+</head>
+<body>
+
+    <h1><input style="text-align: center; font-size: 30px;" value="Anzeige" id="name"></input></h1>
+
+    <div class="meter-container">
+        <div class="needle" id="needle"></div>
+        <div class="needle-center"></div>
+    </div>
+
+    <div class="current-val-display" id="display">0</div>
+
+<details><summary>KONTROLLE</summary>
+    <div class="controls">
+        <label>Von (Min):</label>
+        <input type="number" id="minInput" value="0" oninput="updateRange()">
+        
+        <label>Bis (Max):</label>
+        <input type="number" id="maxInput" value="100" oninput="updateRange()">
+        
+        <label>Aktueller Wert</label>
+        <input type="range" id="slider" min="0" max="100" value="0" oninput="syncValue(this.value)">
+        <input type="number" id="manualInput" value="0" oninput="syncValue(this.value)">
+    </div>
+</details>
+
+    <script>
+        const needle = document.getElementById('needle');
+        const display = document.getElementById('display');
+        const slider = document.getElementById('slider');
+        const manualInput = document.getElementById('manualInput');
+        const minInput = document.getElementById('minInput');
+        const maxInput = document.getElementById('maxInput');
+
+        function updateRange() {
+            const min = parseFloat(minInput.value) || 0;
+            const max = parseFloat(maxInput.value) || 100;
+            
+            slider.min = min;
+            slider.max = max;
+            
+            // Wert korrigieren falls außerhalb
+            if (parseFloat(manualInput.value) < min) syncValue(min);
+            if (parseFloat(manualInput.value) > max) syncValue(max);
+            
+            updateNeedle();
+        }
+
+        function syncValue(val) {
+            slider.value = val;
+            manualInput.value = val;
+            display.innerText = val;
+            updateNeedle();
+        }
+
+        function updateNeedle() {
+            const min = parseFloat(minInput.value) || 0;
+            const max = parseFloat(maxInput.value) || 100;
+            const current = parseFloat(manualInput.value) || 0;
+
+            // Prozentuale Berechnung für die Drehung (-90deg bis +90deg)
+            const percentage = (current - min) / (max - min);
+            const rotation = (percentage * 180) - 90;
+
+            // Begrenzung der Nadel
+            const safeRotation = Math.max(-90, Math.min(90, rotation));
+            needle.style.transform = `rotate(${safeRotation}deg)`;
+
+            // Farbe des Textes ändern je nach Level
+            if (percentage > 0.8) display.style.color = 'red';
+            else if (percentage > 0.4) display.style.color = 'orange';
+            else display.style.color = '#00ff00';
+        }
+
+        // Initialisierung
+        updateNeedle();
+    </script>
+</body>
+</html>
+<script></script></body>
+    </html>
+  

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taschenrechner mit Tastatureingabe</title>
+    <style>
+    body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #0e0e0e;
+    margin: 0;
+}
+
+.calculator {
+    display: grid;
+    grid-template-columns: repeat(4, 100px);
+    grid-gap: 10px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    background-color: #1e1e1e;
+}
+
+#display {
+    grid-column: span 4;
+    height: 50px;
+    font-size: 2em;
+    text-align: right;
+    padding: 0 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    background-color: #3e3e3e;
+    color: white;
+}
+
+button {
+    height: 60px;
+    font-size: 1.5em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #e0e0e0;
+}
+
+button:hover {
+    background-color: #d4d4d4;
+}
+
+.operator {
+    background-color: #ff9500;
+    color: white;
+}
+
+.operator:hover {
+    background-color: #e68a00;
+}
+
+.cle-btn {
+    background-color: #ff3b30;
+    color: white;
+}
+
+.cle-btn:hover {
+    background-color: #e6352b;
+}
+        
+.end-btn {
+    grid-column: span 4; /* 'C' Taste Ã¼ber die gesamte Breite */
+    background-color: #e68a00;
+    color: white;
+}
+
+.end-btn:hover {
+    background-color: #e68a0a;
+}
+</style>
+</head>
+<body>
+    <div class="calculator">
+        <!-- Anzeige -->
+        <input type="text" id="display" readonly>
+        
+        <!-- Tasten-Layout -->
+        <button onclick="appendValue('7')">7</button>
+        <button onclick="appendValue('8')">8</button>
+        <button onclick="appendValue('9')">9</button>
+        <button onclick="appendValue('/')" class="operator">/</button>
+        
+        <button onclick="appendValue('4')">4</button>
+        <button onclick="appendValue('5')">5</button>
+        <button onclick="appendValue('6')">6</button>
+        <button onclick="appendValue('*')" class="operator">*</button>
+        
+        <button onclick="appendValue('1')">1</button>
+        <button onclick="appendValue('2')">2</button>
+        <button onclick="appendValue('3')">3</button>
+        <button onclick="appendValue('-')" class="operator">-</button>
+        
+        <button onclick="appendValue('0')">0</button>
+        <button onclick="appendValue('.')">.</button>
+        
+        <button onclick="clearDisplay()" class="cle-btn">C</button>
+        <button onclick="appendValue('+')" class="operator">+</button>
+<button onclick="calculate()" class="end-btn">=</button>
+        
+    </div>
+</body>
+</html>
+<script>const display = document.getElementById('display');
+
+// Funktion fÃ¼r Klicks auf Bildschirmtasten (onclick im HTML)
+function appendValue(value) {
+    display.value += value;
+}
+
+// Funktion zum Berechnen des Ergebnisses
+function calculate() {
+    try {
+        // eval() ist einfach, aber in realen Anwendungen unsicher.
+        // FÃ¼r diesen einfachen Rechner ist es ausreichend.
+        display.value = eval(display.value);
+    } catch (e) {
+        display.value = 'Error';
+    }
+}
+
+// Funktion zum LÃ¶schen der Anzeige
+function clearDisplay() {
+    display.value = '';
+}
+
+// Event-Listener fÃ¼r physische Tastatureingaben
+document.addEventListener('keydown', (event) => {
+    const key = event.key;
+
+    // Erlaubte Tasten: Zahlen, Operatoren, Enter, Backspace, Escape
+    if (/[0-9\.\+\-\*\/]/.test(key)) {
+        event.preventDefault(); // Verhindert Standardverhalten
+        appendValue(key);
+    } else if (key === 'Enter') {
+        event.preventDefault();
+        calculate();
+    } else if (key === 'Backspace') {
+        event.preventDefault();
+        display.value = display.value.slice(0, -1);
+    } else if (key === 'Escape' || key === 'C' || key === 'c') {
+        event.preventDefault();
+        clearDisplay();
+    }
+});</script></body>
+    </html>
+  

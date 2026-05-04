@@ -1,0 +1,226 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Richtlinien</title>
+<style>
+  html {
+    background-color: #0e0e0e; 
+  }
+header { background: #333; padding: 10px; text-align: center; font-size: 1.5em; }
+  body { 
+    font-family: Arial, sans-serif; 
+    color: #f0f0f0; 
+    background-color: #0e0e0e; 
+    background-color: #1a1a1a; 
+    padding: 20px;
+    margin: 20px; 
+    border: 1px solid #555;
+    border-radius: 8px;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  pre { 
+    white-space: pre-wrap; 
+    background: #1e1e1e; 
+    padding: 10px; 
+    border-radius: 5px; 
+    overflow-x:auto; 
+    position: relative; 
+    margin:10px 0; 
+  }
+  .code-lang { position: absolute; top: 0; left: 0; font-size: 0.8em; font-family: Arial, sans-serif; color: #ccc; padding: 2px 5px; background: #2e2e2e; border-bottom-right-radius: 3px; }
+  blockquote { border-left: 3px solid #555; margin: 5px 0; padding-left: 10px; color: #ccc; }
+  hr { border: 1px solid #555; margin: 10px 0; }
+  ul, ol { margin: 5px 0 5px 20px; }
+  li { margin: 3px 0; }
+  a { color: #80c0ff; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  img {
+    max-width: 100%;
+    height: auto;
+}
+  ul.checklist { list-style: none; padding-left: 0; }
+  ul.checklist li { margin: 5px 0; }
+  details { background: #2a2a2a; padding: 5px 10px; border-radius: 5px; margin: 5px 0; }
+  summary { cursor: pointer; font-weight: bold; }
+  details[open] { background: #3a3a3a; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  background: #2e2e2e;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+  button { margin: 5px; padding: 5px 10px; background: #555; color: #f0f0f0; border: none; border-radius: 3px; cursor: pointer; }
+    button:hover { background: #777; }
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #444;
+  color: #f0f0f0;
+}
+
+th {
+  background: #444;
+  font-weight: bold;
+}
+
+td {
+  background: #333;
+}
+
+tr:nth-child(even) {
+  background: #3a3a3a;
+}
+
+tr:hover {
+  background: #555;
+}
+
+caption {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #f0f0f0;
+  margin-bottom: 10px;
+}
+
+.info-box {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        .info-box .icon-container {
+            margin-right: 15px;
+            display: flex; 
+            align-items: center;
+            justify-content: center;
+        }
+        .info-box svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+        .info-box.info {
+            background-color: #e0f7fa;
+            border-left: 5px solid #00bcd4;
+            color: #00796b;
+        }
+
+        .info-box.info .icon-container svg {
+            fill: #00bcd4;
+        }
+        .info-box.warning {
+            background-color: #fff8e1;
+            border-left: 5px solid #ffeb3b;
+            color: #ff6f00;
+        }
+        .info-box.warning .icon-container svg {
+            fill: #ffeb3b;
+        }
+
+.inline {background:#0e0e0e; padding:2px 4px; border-radius:3px; font-family:monospace;}
+
+.overlay {
+            background-color: #232323;
+            touch-action: none;
+            border: 2px solid #1e1e1e;
+            position: absolute;
+            width: 150px;
+            height: 100px;
+            overflow: auto;
+            resize: both; /* Größenveränderbar */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: move; /* Zeigt Verschiebbarkeit an */
+            user-select: none;
+            z-index: 1000;
+        }
+</style></head>
+<body>
+<h1><header style="background: #333; padding: 10px; text-align: center; font-size: 1.5em;">Richtlinien</header></h1><br>Schön das sie sich entschlossen haben sich die Richtlinien durch zu lesen...<br><br><h2>1. Bitte beachten sie die CC Lizenz (siehe <code class="inline">Resources/infon.html</code>)</h2><br><hr><br><h2>2. As-Is:</h2><br>Es wird keine Haftung für Daten Verlust, Funktionalität, Richtigkeit und ähnliches übernommen<br><hr><br><h2>3. Nutzerbedingungen:</h2><br>Die Erstellung/Speicherung von Inhalten gegen das geltende Recht Deutschlands ist verboten, unteranderem:<ul><li>Hassrede</li><li>Urheberrechtsverletzungen</li><li>Datenschutzrechtsverletzungen</li></ul><br><br>Das Kommerzielle Nutzen des MDEP ist untersagt insofern es keine explizierte genemigung des Entwicklers gibt.<br><hr><br><h2>4. Datenschutzrichtlinien:</h2><br>Es werden keine Daten online gespeichert, der Browser Interne Speicher <code class="inline">localStorage</code> wird nur genutzt um z.B.: die aktivierung verschidener erweiterungen zu gewährleisten. Bilder/Videos/etc. werden nirgendwo gespeichert sondern <b>nur</b> aus den Ordner <code class="inline">Bilder</code>/<code class="inline">Video</code>/<code class="inline">...</code> entnommen.<br><hr><br><h2>5. Lizenzen:</h2><br>die CC Lizenz erlaubt das bearbeiten des MDEP unter der nennung des Original Entwicklers und den selben Lizenz bedingungen, bei der Bearbeitung einer Bearbeitung des MDEP ist immer der Entwickler des MDEP zu nennen.<br><br>Das Entfernen/Verändern/... des Footers einer Exportierten datei ist untersagt.<br><hr><br>So einfach kann es sein, das wars, danke fürs Nutzen des MDEP und das Lesen der Richtlinien<br>wenn du jetzt mit dem MDEP arbeiten willst, drücke den Knopf.
+
+<button onclick="starteQuiz()">LASS MICH ENTLICH SCHREIBEN</button>
+
+    <script>
+        const fragen = [
+            { frage: "Es wird keine Haftung für Daten Verlust, Funktionalität und ... übernommen?", antwort: "Richtigkeit" },
+            { frage: "Verboten sind z.B.: Urheberrechtsverletzungen, Datenschutzrechtsverletzungen und", antwort: "hassrede" },
+            { frage: "Daten werden online gespeichert... Ja oder Nein", antwort: "nein" },
+            { frage: "Darf man mit dem MDEP geld verdienenen?", antwort: "nein" },
+            { frage: "Darf man den Footer ändern? Ja oder Nein", antwort: "nein" }
+        ];
+
+        function zufallsZahl(max) {
+            // Gibt eine zufällige Ganzzahl von 0 bis max-1 zurück
+            return Math.floor(Math.random() * max);
+        }
+
+        function starteQuiz() {
+            const zufallsIndex = zufallsZahl(fragen.length);
+            const aktuelleFrageObjekt = fragen[zufallsIndex];
+
+            let userAntwort = prompt(aktuelleFrageObjekt.frage + "\n\n(Gib deine Antwort ein und klicke OK)");
+
+            if (userAntwort !== null && userAntwort.toLowerCase().trim() === aktuelleFrageObjekt.antwort.toLowerCase()) {
+                alert("Richtig! Nagut, dann darfst du jetzt mit dem MDEPro arbeiten!");
+                localStorage.setItem("richltinien_a","true")
+
+window.location.href = '../../MDEP.html';
+
+            } else if (userAntwort !== null) {
+                alert("FALSCH... Die richtige Antwort war: " + aktuelleFrageObjekt.antwort);
+            } else {
+                alert("Guckst du grade ernsthaft nochmal nach?!");
+            }
+        }
+    </script>
+
+
+<footer style="font-family: Arial, sans-serif; color: #f0f0f0;margin-left: auto;margin-right: auto; text-align: center; font-size: 10px">made with <a class="mail" href="mailto:mdep-tps.design@gmx.de?subject=Footer&">MDEP</a> by TPS-Design ©</footer>
+
+<!-- 
+===== Original Markdown Quelle =====
+# +[Richtlinien]
+Schön das sie sich entschlossen haben sich die Richtlinien durch zu lesen...
+
+## 1. Bitte beachten sie die CC Lizenz (siehe 'Resources/infon.html')
+---
+## 2. As-Is:
+Es wird keine Haftung für Daten Verlust, Funktionalität, Richtigkeit und ähnliches übernommen
+---
+## 3. Nutzerbedingungen:
+Die Erstellung/Speicherung von Inhalten gegen das geltende Recht Deutschlands ist verboten, unteranderem:
+- Hassrede
+- Urheberrechtsverletzungen
+- Datenschutzrechtsverletzungen
+
+Das Kommerzielle Nutzen des MDEP ist untersagt insofern es keine explizierte genemigung des Entwicklers gibt.
+---
+## 4. Datenschutzrichtlinien:
+Es werden keine Daten online gespeichert, der Browser Interne Speicher 'localStorage' wird nur genutzt um z.B.: die aktivierung verschidener erweiterungen zu gewährleisten. Bilder/Videos/etc. werden nirgendwo gespeichert sondern **nur** aus den Ordner 'Bilder'/'Video'/'...' entnommen.
+---
+## 5. Lizenzen:
+die CC Lizenz erlaubt das bearbeiten des MDEP unter der nennung des Original Entwicklers und den selben Lizenz bedingungen, bei der Bearbeitung einer Bearbeitung des MDEP ist immer der Entwickler des MDEP zu nennen.
+
+Das Entfernen/Verändern/... des Footers einer Exportierten datei ist untersagt.
+---
+So einfach kann es sein, das wars, danke fürs Nutzen des MDEP und das Lesen der Richtlinien
+
+====================================
+-->
+</body>
+</html>

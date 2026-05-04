@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        :root { --primary: #6366f1; --bg: #ffffff; --text: #1f2937; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #1e1e1e; padding: 12px; margin: 0; color: var(--text); }
+        .card { background: white; border-radius: 12px; padding: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid #e5e7eb;}
+        .toolbar { margin-bottom: 16px; display: flex; gap: 8px; }
+        
+        table { border-collapse: collapse; width: 100%; border: 1px solid #e5e7eb; border-radius: 4px; overflow: hidden; }
+        th { background: #f9fafb; border-bottom: 2px solid #e5e7eb; }
+        td, th { border: 1px solid #e5e7eb; padding: 4px; }
+        input { border: 1px solid transparent; width: 100%; outline: none; padding: 6px; border-radius: 4px; font-size: 13px; box-sizing: border-box; }
+        input:focus { border-color: var(--primary); background: #f5f3ff; }
+
+        button { 
+            background: var(--primary); color: white; border: none; padding: 8px 14px; 
+            border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 12px; transition: all 0.2s;
+        }
+        button.secondary { background: #4b5563; }
+        
+        .output-wrapper { margin-top: 15px; display: none; }
+        textarea { 
+            width: 100%; height: 80px; font-family: monospace; font-size: 12px; 
+            background: #111827; color: #10b981; border-radius: 6px; padding: 10px; 
+            box-sizing: border-box; border: none; word-break: break-all;
+        }
+        .label { font-size: 11px; font-weight: bold; color: #6b7280; margin-bottom: 4px; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="toolbar">
+        <button onclick="addRow()">+ Zeile</button>
+        <button onclick="addColumn()">+ Spalte</button>
+        <button class="secondary" onclick="exportHTML()">HTML generieren (Einzeiler)</button>
+    </div>
+<div style="border: 1px solid black; border-radius: 10px; padding: 2.5px; display: flex;">
+    <table id="dataTable">
+        <thead id="h"><tr><th><input type="text" value="Titel 1"></th><th><input type="text" value="Titel 2"></th></tr></thead>
+        <tbody id="b"><tr><td><input type="text" value="Zelle"></td><td><input type="text" value="Zelle"></td></tr></tbody>
+    </table>
+    </div>
+    <div id="wrapper" class="output-wrapper">
+        <div class="label">Minifizierter Code (Keine Zeilenumbrüche):</div>
+        <textarea id="res" readonly></textarea>
+    </div>
+</div>
+
+<script>
+    function addRow() {
+        const c = document.getElementById('h').rows[0].cells.length;
+        const r = document.getElementById('b').insertRow();
+        for (let i = 0; i < c; i++) r.insertCell().innerHTML = '<input type="text" value="">';
+    }
+
+    function addColumn() {
+        const h = document.getElementById('h').rows[0];
+        const th = document.createElement('th');
+        th.innerHTML = '<input type="text" value="Neu">';
+        h.appendChild(th);
+        Array.from(document.getElementById('b').rows).forEach(r => {
+            r.insertCell().innerHTML = '<input type="text" value="">';
+        });
+    }
+
+    function exportHTML() {
+        const out = document.getElementById('res');
+        const wrap = document.getElementById('wrapper');
+        
+        // Tabellen-String ohne Umbrüche und Einrückungen bauen
+        let s = '<table style="width:100%;border-collapse:collapse;border:1px solid #ccc;"><thead><tr style="background:#f2f2f2;">';
+        
+        Array.from(document.querySelectorAll('#h input')).forEach(i => {
+            s += `<th style="border:1px solid #ccc;padding:8px;text-align:left;">${i.value}</th>`;
+        });
+        
+        s += '</tr></thead><tbody>';
+        
+        Array.from(document.querySelectorAll('#b tr')).forEach(row => {
+            s += '<tr>';
+            Array.from(row.querySelectorAll('input')).forEach(i => {
+                s += `<td style="border:1px solid #ccc;padding:8px;">${i.value}</td>`;
+            });
+            s += '</tr>';
+        });
+        
+        s += '</tbody></table>';
+
+        out.value = s;
+        wrap.style.display = 'block';
+        out.select();
+    }
+</script>
+
+</body>
+</html>

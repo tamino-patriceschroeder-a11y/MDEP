@@ -1,0 +1,105 @@
+
+    <html>
+      <head><style></style></head>
+      <body><!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Magic 8 Ball</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #2c3e50;
+            color: white;
+            font-family: sans-serif;
+        }
+        #ball {
+            width: 300px;
+            height: 300px;
+            background-color: #000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: inset -20px -20px 50px rgba(255,255,255,0.2);
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        #window {
+            width: 140px;
+            height: 140px;
+            background-color: #1a1a1a;
+            border-radius: 50%;
+            border: 5px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 10px;
+        }
+        #answer {
+            color: #4da6ff;
+            font-weight: bold;
+            font-size: 1.1rem;
+            opacity: 0;
+            transition: opacity 1s;
+        }
+        .shake {
+            animation: shakeAnim 0.5s ease-in-out;
+        }
+        @keyframes shakeAnim {
+            0% { transform: translate(0,0); }
+            25% { transform: translate(10px,10px); }
+            50% { transform: translate(-10px,10px); }
+            75% { transform: translate(10px,-10px); }
+            100% { transform: translate(0,0); }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Stell eine Frage und klick die Kugel!</h1>
+    <div id="ball" onclick="askMagicBall()">
+        <div id="window">
+            <div id="answer">8</div>
+        </div>
+    </div>
+
+    <script>
+        const answers = [
+            "Ja", "Nein", "Vielleicht", "Frag später", 
+            "Ganz sicher", "Niemals", "Auf jeden Fall", 
+            "Sehr unwahrscheinlich", "Die Sterne sagen Ja", 
+            "Besser nicht","Such dir Hobbys","Nerv Nicht","Meine Quellen sagen Ja","Nicht Heute","Du Nervst","🤨","🧐","😑","Nicht Wenn Dienstag ist","Warum nicht","Eher nicht"
+        ];
+
+        function askMagicBall() {
+            const ball = document.getElementById('ball');
+            const answerText = document.getElementById('answer');
+
+            // Animation starten
+            ball.classList.add('shake');
+            answerText.style.opacity = 0;
+
+            setTimeout(() => {
+                // Zufällige Antwort wählen
+                const randomIndex = Math.floor(Math.random() * answers.length);
+                answerText.innerText = answers[randomIndex];
+                
+                // Animation beenden und Text zeigen
+                ball.classList.remove('shake');
+                answerText.style.opacity = 1;
+            }, 500);
+        }
+    </script>
+
+</body>
+</html>
+<script></script></body>
+    </html>
+  

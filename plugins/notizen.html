@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Profi-Notizblock 2026 - Tabs Edition</title>
+    <style>
+        body { font-family: sans-serif; display: flex; flex-direction: column; height: 95vh; margin: 20px; background-color: #0e0e0e; color: white;}
+        
+        .tab-bar { display: flex; gap: 5px; margin-bottom: 0; user-select: none;}
+        .tab { 
+            padding: 10px 20px; cursor: pointer; background: #2c2c2c; border: 1px solid #444; border-bottom: none;
+            border-radius: 8px 8px 0 0; color: #aaa; transition: 0.2s; min-width: 80px; text-align: center; user-select: none;
+        }
+        .tab.active { background: #1e1e1e; color: white; border-top: 3px solid #2196F3; font-weight: bold; user-select: none;}
+        
+        .toolbar { 
+            display: flex; gap: 10px; padding: 15px; align-items: center; flex-wrap: wrap; 
+            background: #1e1e1e; border: 1px solid #444; border-bottom: none;
+        }
+
+        #findReplaceUI { 
+            display: none; background: #2c2c2c; padding: 10px; border: 1px solid #444; 
+            border-bottom: none; gap: 10px; align-items: center; user-select: none;
+        }
+        
+        textarea { 
+            flex-grow: 1; padding: 15px; font-size: 16px; border: 1px solid #444; 
+            background: #1e1e1e; color: white; resize: none; line-height: 1.5; outline: none;
+        }
+        
+        .stats-bar {
+            background: #1e1e1e; border: 1px solid #444; border-top: none; padding: 5px 15px;
+            font-size: 12px; color: #888; display: flex; gap: 20px; border-radius: 0 0 8px 8px;
+        }
+
+        button { padding: 8px 15px; cursor: pointer; border: none; border-radius: 5px; font-weight: bold; color: white; }
+        input[type="text"] { background: #1e1e1e; border: 1px solid #444; color: white; padding: 5px; border-radius: 3px; }
+        
+        .export-btn { background-color: #4CAF50; }
+        .import-btn { background-color: #2196F3; }
+        .delete-btn { background-color: #f44336; }
+        .find-btn { background-color: #607d8b; }
+        #fileInput { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="tab-bar">
+        <div class="tab active" id="tab1" onclick="switchTab(1)" ondblclick="renameTab(1)">Notiz 1</div>
+        <div class="tab" id="tab2" onclick="switchTab(2)" ondblclick="renameTab(2)">Notiz 2</div>
+        <div class="tab" id="tab3" onclick="switchTab(3)" ondblclick="renameTab(3)">Notiz 3</div>
+        <div class="tab" id="tab4" onclick="switchTab(4)" ondblclick="renameTab(4)">Notiz 4</div>
+        <div class="tab" id="tab5" onclick="switchTab(5)" ondblclick="renameTab(5)">Notiz 5</div>
+        <div class="tab" id="tab6" onclick="switchTab(6)" ondblclick="renameTab(6)">Notiz 6</div>
+        <div class="tab" id="tab7" onclick="switchTab(7)" ondblclick="renameTab(7)">Notiz 7</div>
+        <div class="tab" id="tab8" onclick="switchTab(8)" ondblclick="renameTab(8)">Notiz 8</div>
+        <div class="tab" id="tab9" onclick="switchTab(9)" ondblclick="renameTab(9)">Notiz 9</div>
+        <div class="tab" id="tab10" onclick="switchTab(10)" ondblclick="renameTab(10)">Notiz 10</div>
+    </div>
+
+    <div id="findReplaceUI">
+        <input type="text" id="findInput" placeholder="Suchen...">
+        <input type="text" id="replaceInput" placeholder="Ersetzen...">
+        <button onclick="replaceAll()" style="background:#444">Alle Ersetzen</button>
+        <button onclick="toggleFindUI()" style="background:#222">X</button>
+    </div>
+
+    <div class="toolbar">
+        <button class="export-btn" id="exportBtn">Export (.txt)</button>
+        <button class="import-btn" onclick="document.getElementById('fileInput').click()">Datei öffnen</button>
+        <input type="file" id="fileInput" accept=".txt">
+        <button class="find-btn" onclick="toggleFindUI()">Suchen & Ersetzen</button>
+        <button class="delete-btn" onclick="del()">Löschen</button>
+        <small style="color:#555">Doppelklick auf Tab zum Umbenennen</small>
+    </div>
+
+    <textarea id="notePad" placeholder="Schreibe hier..."></textarea>
+
+    <div class="stats-bar">
+        <span id="charCount">Zeichen: 0</span>
+        <span id="wordCount">Wörter: 0</span>
+        <span id="storageUsage">Speicher: 0%</span>
+        <span id="saveStatus" style="color: #4CAF50;">Bereit</span>
+    </div>
+
+    <script>
+        const pad = document.getElementById('notePad');
+        const saveStatus = document.getElementById('saveStatus');
+        const fileInput = document.getElementById('fileInput');
+        
+        let currentTab = 1;
+        let saveTimeout = null;
+
+        // Tab Namen laden oder Standard setzen
+        let tabNames = JSON.parse(localStorage.getItem('tabNames')) || {
+            1: "Notiz 1", 2: "Notiz 2", 3: "Notiz 3", 4: "Notiz 4", 5: "Notiz 5", 6: "Notiz 6", 7: "Notiz 7", 8: "Notiz 8", 9: "Notiz 9", 10: "Notiz 10"
+        };
+
+        function getStorageKey() {
+            return 'safe_note_' + tabNames[currentTab];
+        }
+
+        // --- SPEICHER LOGIK ---
+        function saveCurrentContent() {
+            try {
+                localStorage.setItem(getStorageKey(), pad.value);
+                saveStatus.innerText = "Gespeichert: " + new Date().toLocaleTimeString();
+                updateStorageUsage();
+            } catch (e) {
+                if (e.name === 'QuotaExceededError') alert("Local Storage ist voll!");
+            }
+        }
+
+        function loadCurrentContent() {
+            pad.value = localStorage.getItem(getStorageKey()) || '';
+            updateStats();
+        }
+
+        // --- TAB LOGIK ---
+        function switchTab(id) {
+            saveCurrentContent(); // Vorherigen Tab speichern
+            currentTab = id;
+            
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab' + id).classList.add('active');
+            
+            loadCurrentContent();
+        }
+
+        function renameTab(id) {
+            const oldName = tabNames[id];
+            const newName = prompt("Neuer Name für diesen Tab:", oldName);
+            if (newName && newName !== oldName) {
+                tabNames[id] = newName;
+                localStorage.setItem('tabNames', JSON.stringify(tabNames));
+                document.getElementById('tab' + id).innerText = newName;
+                saveCurrentContent(); // Unter neuem Namen sichern
+            }
+        }
+
+        // --- STATISTIKEN ---
+        function updateStats() {
+            const text = pad.value;
+            document.getElementById('charCount').innerText = `Zeichen: ${text.length}`;
+            const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+            document.getElementById('wordCount').innerText = `Wörter: ${words}`;
+            updateStorageUsage();
+        }
+
+        function updateStorageUsage() {
+            let total = 0;
+            for (let x in localStorage) {
+                if (localStorage.hasOwnProperty(x)) {
+                    total += (localStorage[x].length * 2);
+                }
+            }
+            const limit = 5 * 1024 * 1024; 
+            const percent = ((total / limit) * 100).toFixed(2);
+            const usageEl = document.getElementById('storageUsage');
+            usageEl.innerText = `Speicher: ${percent}%`;
+            usageEl.style.color = percent > 80 ? "#f44336" : "#888";
+        }
+
+        // --- TOOLS ---
+        function toggleFindUI() {
+            const ui = document.getElementById('findReplaceUI');
+            ui.style.display = (ui.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        function replaceAll() {
+            const find = document.getElementById('findInput').value;
+            const replace = document.getElementById('replaceInput').value;
+            if (!find) return;
+            pad.value = pad.value.replaceAll(find, replace);
+            saveCurrentContent();
+        }
+
+        function del() {
+            if(confirm("Inhalt dieses Tabs wirklich löschen?")) {
+                pad.value = '';
+                saveCurrentContent();
+                updateStats();
+            }
+        }
+
+        // --- EVENTS ---
+        pad.addEventListener('input', () => {
+            saveStatus.innerText = "Tippe...";
+            updateStats();
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(saveCurrentContent, 800); // Debouncing 800ms
+        });
+
+        document.getElementById('exportBtn').addEventListener('click', () => {
+            const blob = new Blob([pad.value], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${tabNames[currentTab]}.txt`;
+            link.click();
+            URL.revokeObjectURL(url);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                pad.value = ev.target.result;
+                saveCurrentContent();
+                updateStats();
+            };
+            reader.readAsText(file);
+        });
+
+        // Initialisierung
+        window.onload = () => {
+            for (let id in tabNames) {
+                document.getElementById('tab' + id).innerText = tabNames[id];
+            }
+            loadCurrentContent();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zufallsgenerator</title>
+    <style>
+        html {
+    background-color: #0e0e0e; 
+  }
+
+  body { 
+    font-family: Arial, sans-serif; 
+    color: #f0f0f0; 
+    
+    /* Hintergrundfarbe des gesamten Browserfensters (die äußere "Umrandung") */
+    background-color: #0e0e0e; 
+
+    /* Die Füllung, die sich innen abhebt */
+    background-color: #1a1a1a; 
+    
+    /* Innenabstand für den Inhalt */
+    padding: 20px;
+    
+    /* Der äußere Rand, der die Hintergrundfarbe #0e0e0e durchscheinen lässt */
+    margin: 20px; 
+    
+    /* Die sichtbare Linie als Rand */
+    border: 1px solid #555;
+    
+    /* Optional: abgerundete Ecken */
+    border-radius: 8px;
+
+    /* Optional: Maximale Breite für bessere Lesbarkeit auf großen Bildschirmen */
+    max-width: 900px;
+    /* Zentriert den Body, wenn er eine max-width hat */
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+        textarea { width: 80%; height: 150px; margin-bottom: 10px; border-radius: 15px; padding: 5px; background-color: #1a1a1a; 
+ color: #fff; border: 0px;}
+        textarea:focus { width: 80%; height: 150px; margin-bottom: 10px; border-radius: 15px; padding: 5px; background-color: #1a1a1a; 
+ color: #fff; border: 1px solid blue;}
+        button { padding: 10px 15px; border-radius: 15px; background-color: #1a1a1a; border: 1px dotted white; 
+ color: #fff;}
+        button:hover { padding: 10px 15px; border-radius: 15px; background-color: #1a1a1a; border: 1px dashed white; 
+ color: #fff;}
+        #ergebnis { margin-top: 20px; font-size: 1.2em; font-weight: bold; color: white; }
+    </style>
+</head>
+<body>
+    <h1>Zufallsgenerator</h1>
+    <p>Geben Sie hier Ihre Optionen ein, jede in einer neuen Zeile:</p>
+
+    <textarea id="optionenInput" placeholder="Option A
+Option B
+Option C"></textarea><br>
+    
+    <button onclick="zufallsauswahlTreffen()">Zufallsauswahl treffen</button>
+    
+    <div id="ergebnis"></div>
+
+    <script>
+        function zufallsauswahlTreffen() {
+            // 1. Text aus dem Eingabefeld holen
+            const inputElement = document.getElementById('optionenInput');
+            const eingabeText = inputElement.value;
+
+            // 2. Text nach Zeilenumbrüchen in ein Array aufteilen
+            // Dabei leere Zeilen entfernen, die durch doppelte Zeilenumbrüche entstehen könnten
+            const optionen = eingabeText.split('\n').filter(option => option.trim() !== '');
+
+            // 3. Prüfen, ob Optionen vorhanden sind
+            if (optionen.length === 0) {
+                document.getElementById('ergebnis').textContent = 'Bitte Optionen eingeben.';
+                return;
+            }
+
+            // 4. Eine zufällige Indexnummer generieren
+            const zufallsIndex = Math.floor(Math.random() * optionen.length);
+
+            // 5. Die ausgewählte Option ermitteln
+            const ausgewaehlteOption = optionen[zufallsIndex];
+
+            // 6. Das Ergebnis im HTML anzeigen
+            document.getElementById('ergebnis').textContent = 'Ausgewählt: ' + ausgewaehlteOption;
+        }
+    </script>
+
+</body>
+</html><script></script></body>
+    </html>
+  

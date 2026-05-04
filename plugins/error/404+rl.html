@@ -1,0 +1,183 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UNVERSCHÄMTHEIT</title>
+<style>
+  html {
+    background-color: #0e0e0e; 
+  }
+header { background: #333; padding: 10px; text-align: center; font-size: 1.5em; }
+  body { 
+    font-family: Arial, sans-serif; 
+    color: #f0f0f0; 
+    background-color: #0e0e0e; 
+    background-color: #1a1a1a; 
+    padding: 20px;
+    margin: 20px; 
+    border: 1px solid #555;
+    border-radius: 8px;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  pre { 
+    white-space: pre-wrap; 
+    background: #1e1e1e; 
+    padding: 10px; 
+    border-radius: 5px; 
+    overflow-x:auto; 
+    position: relative; 
+    margin:10px 0; 
+  }
+  .code-lang { position: absolute; top: 0; left: 0; font-size: 0.8em; font-family: Arial, sans-serif; color: #ccc; padding: 2px 5px; background: #2e2e2e; border-bottom-right-radius: 3px; }
+  blockquote { border-left: 3px solid #555; margin: 5px 0; padding-left: 10px; color: #ccc; }
+  hr { border: 1px solid #555; margin: 10px 0; }
+  ul, ol { margin: 5px 0 5px 20px; }
+  li { margin: 3px 0; }
+  a { color: #80c0ff; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  img {
+    max-width: 100%;
+    height: auto;
+}
+  ul.checklist { list-style: none; padding-left: 0; }
+  ul.checklist li { margin: 5px 0; }
+  details { background: #2a2a2a; padding: 5px 10px; border-radius: 5px; margin: 5px 0; }
+  summary { cursor: pointer; font-weight: bold; }
+  details[open] { background: #3a3a3a; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  background: #2e2e2e;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+  button { margin: 5px; padding: 5px 10px; background: #555; color: #f0f0f0; border: none; border-radius: 3px; cursor: pointer; }
+    button:hover { background: #777; }
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #444;
+  color: #f0f0f0;
+}
+
+th {
+  background: #444;
+  font-weight: bold;
+}
+
+td {
+  background: #333;
+}
+
+tr:nth-child(even) {
+  background: #3a3a3a;
+}
+
+tr:hover {
+  background: #555;
+}
+
+caption {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #f0f0f0;
+  margin-bottom: 10px;
+}
+
+.info-box {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        .info-box .icon-container {
+            margin-right: 15px;
+            display: flex; 
+            align-items: center;
+            justify-content: center;
+        }
+        .info-box svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+        .info-box.info {
+            background-color: #e0f7fa;
+            border-left: 5px solid #00bcd4;
+            color: #00796b;
+        }
+
+        .info-box.info .icon-container svg {
+            fill: #00bcd4;
+        }
+        .info-box.warning {
+            background-color: #fff8e1;
+            border-left: 5px solid #ffeb3b;
+            color: #ff6f00;
+        }
+        .info-box.warning .icon-container svg {
+            fill: #ffeb3b;
+        }
+
+.inline {background:#0e0e0e; padding:2px 4px; border-radius:3px; font-family:monospace;}
+
+.overlay {
+            background-color: #232323;
+            touch-action: none;
+            border: 2px solid #1e1e1e;
+            position: absolute;
+            width: 150px;
+            height: 100px;
+            overflow: auto;
+            resize: both; /* Größenveränderbar */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: move; /* Zeigt Verschiebbarkeit an */
+            user-select: none;
+            z-index: 1000;
+        }
+</style></head>
+<body>
+<script>
+// Prüfen, ob der Wert im Local Storage existiert
+let userliz = localStorage.getItem('richltinien_a');
+
+if (userliz === 'true') {
+   window.location.href = '../../MDEP.html';
+} if (userliz === 'false') {
+  console.log('Richtlinien nicht akzeptiert!');
+}
+    let das = setInterval(() => {document.body.style.transition = '1s'; document.body.style.rotate = '360deg'; setTimeout(() => {document.body.style.rotate = '0deg';}, 2000)}, 3000)
+</script>
+<h1><header style="background: #333; padding: 10px; text-align: center; font-size: 1.5em;">Würde mir stinken</header></h1><br>Da du dich nicht an die <a href="richtlinien.html" target="_blank">Richtlinien</a> halten willst, darfst du auch nicht mit dem MDE<span style="color:#ff0000;">Pro</span> arbeiten, lies dir die Richtlinien durch und beantworte eine Frage um mit dem MDE<span style="color:#ff0000;">Pro</span> arbeiten zu dürfen!<br><br>(btw. Stell dich in die ecke und denke nächstes mal über die Folgen deiner Handlungen nach!)<br><br><button onclick="alert(`Das kannst du vergessen! [Hier Emoji von Mittelfinger vorstellen]`);">Egal, Ich akzeptiere einfach die Richtlinienobwohl ich sie nicht kenne und dieser Knopf viel zu breit ist aber mich das garnicht interissiert!</button><br>
+
+    <button onclick="clearInterval(das)" style="background-color:red;"><b>Drehen stoppen</b></button>
+    
+<footer style="font-family: Arial, sans-serif; color: #f0f0f0;margin-left: auto;margin-right: auto; text-align: center; font-size: 10px">made with <a class="mail" href="mailto:mdep-tps.design@gmx.de?subject=Footer&">MDEP</a> by TPS-Design ©</footer>
+
+<!-- 
+===== Original Markdown Quelle =====
+# +[Würde mir stinken]
+Da du dich nicht an die [Richtlinien](richtlinien.html) halten willst, darfst du auch nicht mit dem MDE$#ff0000{Pro} arbeiten, lies dir die Richtlinien durch und beantworte eine Frage um mit dem MDE$#ff0000{Pro} arbeiten zu dürfen!
+
+(btw. Stell dich in die ecke und denke nächstes mal über die Folgen deiner Handlungen nach!)
+
+<button onclick="alert(`Das kannst du vergessen! [Hier Emoji von Mittelfinger vorstellen]`);">Egal, Ich akzeptiere einfach die Richtlinienobwohl ich sie nicht kenne und dieser Knopf viel zu breit ist aber mich das garnicht interissiert!</button>
+
+====================================
+-->
+</body>
+</html>

@@ -1,0 +1,299 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <title>gallerie</title>
+    <meta charset="UTF-8">
+    <style>
+        :root {
+  --card-width: 350px;
+  --card-height: 250px; /* Feste Höhe, damit alle Karten gleich groß sind */
+}
+
+        body {
+            background-color: #1e1e1e;
+            font-family: arial;
+        }
+.gallery-container {
+  width: 100%;
+  padding: 100px 0;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+}
+
+.gallery-wrapper {
+  display: inline-flex;
+  gap: 30px;
+  padding: 0 50px;
+}
+
+.project-card {
+  width: var(--card-width);
+  height: var(--card-height);
+  position: relative; /* Basis für die absolute Positionierung der Info */
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  background: #2e2e2e;
+  color: white;
+}
+
+.project-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Bild füllt den Kasten komplett aus ohne zu verzerren */
+  display: block;
+  transition: filter 0.4s ease;
+}
+
+/* Die Beschreibung als Overlay */
+.project-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.7); /* Transparenter */
+backdrop-filter: blur(10px); /* Der edle Milchglas-Effekt */
+/*
+  padding: 20px;
+  height: 100%; /* Nimmt beim Hover den ganzen Raum ein */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  white-space: normal;
+  border-radius: 15px;
+  padding: 5px;
+  /* Start-Zustand: Unsichtbar und nach unten verschoben */
+  opacity: 0;
+  transform: translateY(100%); 
+  transition: all 0.4s ease-in-out;
+}
+
+/* Hover-Effekte */
+.project-card:hover {
+  transform: scale(1.1); /* Karte wird leicht größer */
+  z-index: 10;
+}
+
+.project-card:hover img {
+  filter: blur(2px) brightness(0.7); /* Bild wird leicht dunkel/unscharf */
+}
+
+.project-card:hover .project-info {
+  opacity: 1;
+  transform: translateY(0); /* Info schiebt sich nach oben */
+}
+
+.project-info h3 {
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.project-info p {
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.4;
+}
+
+.gallery-container {
+  /* ... Ihre bisherigen Styles ... */
+  
+  /* Versteckt Scrollleiste für Chrome, Safari und Opera */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Versteckt Scrollleiste für Firefox */
+  scrollbar-width: none;
+
+  /* Versteckt Scrollleiste für IE und Edge */
+  -ms-overflow-style: none;
+}
+
+/* Der äußere Rahmen für die Pfeil-Positionierung */
+.gallery-main-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.gallery-container {
+  width: 100%;
+  overflow-x: auto;
+  scroll-behavior: smooth; /* Wichtig für flüssiges Klicken */
+  
+  /* Versteckt Scrollleiste für Chrome, Safari, Edge (2025 Standard) */
+  &::-webkit-scrollbar { display: none; }
+  /* Versteckt Scrollleiste für Firefox & IE */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* Grundzustand: Pfeile sind unsichtbar und leicht nach außen verschoben */
+.nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 20;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  
+  /* Animationseinstellungen */
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+/* Spezifische Startpositionen für das Einfliegen */
+.prev { 
+  left: 10px; 
+  transform: translateY(-50%) translateX(-20px); 
+}
+.next { 
+  right: 10px; 
+  transform: translateY(-50%) translateX(20px); 
+}
+
+/* Wenn der Nutzer über den gesamten Wrapper hovert... */
+.gallery-main-wrapper:hover .nav-btn {
+  opacity: 1;
+}
+
+/* Pfeile in ihre Endposition bringen beim Hover */
+.gallery-main-wrapper:hover .prev {
+  transform: translateY(-50%) translateX(0);
+}
+.gallery-main-wrapper:hover .next {
+  transform: translateY(-50%) translateX(0);
+}
+
+/* Kleiner Effekt beim Klicken auf den Button */
+.nav-btn:active {
+  transform: translateY(-50%) scale(0.9);
+}
+
+.nav-btn:hover {
+  background: #fff;
+  color: #000;
+}
+
+</style>
+</head>
+<body>
+    <div class="gallery-main-wrapper">
+  <!-- Navigationspfeile -->
+  <button class="nav-btn prev" id="prevBtn">&#10094;</button>
+  <button class="nav-btn next" id="nextBtn">&#10095;</button>
+        
+  <h1 style="color: white; text-align: center; position: fixed; left 50%; right: 50%; top: 125px;">Project Gallerie</h1>
+        
+  <div class="gallery-container">
+    <div class="gallery-wrapper">
+    <div class="gallery-container">
+  <div class="gallery-wrapper">
+    
+    <!-- Projekt 1 -->
+    <div class="project-card">
+      <img src="bilder/eewp.png" alt="Projekt 1">
+      <div class="project-info">
+        <h3>EEWP</h3>
+        <p>Der Education-Experiment-Work-Place ist nicht nur der beweis das es man jedes Wort mit einer Guten abkürzung versehen kann sondern auch eine Möglichkeit HTML, Java Script und CSS code zu visualisieren und zu exportieren</p>
+        <a href="../../plugins/eewp.html" style="margin-top:10px; color: blue; text-decoration: none; font-weight: bold;">Projekt ansehen →</a>
+      </div>
+    </div>
+
+    <!-- Projekt 2 -->
+    <div class="project-card">
+      <img src="bilder/mdep.png" alt="Projekt 2">
+      <div class="project-info">
+        <h3>MDEP</h3>
+        <p>Auch der Markdown Editor Pro ist eins von vielen Textformatierung Programmen, ihn zeichnet aber aus das er 100% offline Funktioniert, oft Geupdatet wird und auch von jedem bearbeitet werden darf, zudem ist er Kostenlos</p>
+        <a href="../../MDEP.html" style="margin-top:10px; color: blue; text-decoration: none; font-weight: bold;">Projekt ansehen →</a>
+      </div>
+    </div>
+
+    <!-- Projekt 3 -->
+    <div class="project-card">
+      <img src="bilder/TP-notes.png" alt="Projekt 3">
+      <div class="project-info">
+        <h3>TP - Notes</h3>
+        <p>Notiz App mit daten sicherung im Browser</p>
+        <a href="../../plugins/notizen.html" style="margin-top:10px; color: blue; text-decoration: none; font-weight: bold;">Projekt ansehen →</a>
+      </div>
+    </div>
+      
+    <!-- Projekt 4 -->
+    <div class="project-card">
+      <img src="picsum.photos" alt="Projekt 4">
+      <div class="project-info">
+        <h3>Projekt Name 4</h3>
+        <p>Interaktive JavaScript-Applikation mit API-Anbindung.</p>
+        <a href="DEIN_LINK_ZUM_PROJEKT" style="margin-top:10px; color: blue; text-decoration: none; font-weight: bold;">Projekt ansehen →</a>
+      </div>
+    </div>
+    
+    <!-- Projekt 5 -->
+    <div class="project-card">
+      <img src="picsum.photos" alt="Projekt 5">
+      <div class="project-info">
+        <h3>Projekt Name 5</h3>
+        <p>Interaktive JavaScript-Applikation mit API-Anbindung.</p>
+        <a href="DEIN_LINK_ZUM_PROJEKT" style="margin-top:10px; color: blue; text-decoration: none; font-weight: bold;">Projekt ansehen →</a>
+      </div>
+    </div>
+    <!-- Fügen Sie hier weitere Projekte hinzu -->
+
+  </div>
+</div>
+      </div>
+    <script>const scrollContainer = document.querySelector('.gallery-container');
+
+scrollContainer.addEventListener('wheel', (evt) => {
+  evt.preventDefault();
+  // Wandelt vertikales Scrollen in horizontales Scrollen um
+  scrollContainer.scrollLeft += evt.deltaY;
+});
+        const gallery = document.querySelector('.gallery-container');
+
+gallery.addEventListener('wheel', (e) => {
+  if (e.deltaY !== 0) {
+    e.preventDefault();
+    gallery.scrollLeft += e.deltaY * 2; // Multiplikator für schnelleres Scrollen
+  }
+});
+        
+const container = document.querySelector('.gallery-container');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+
+// Wie weit soll pro Klick gescrollt werden? (z.B. 380px)
+const scrollAmount = 380; 
+
+nextBtn.addEventListener('click', () => {
+  container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+});
+
+prevBtn.addEventListener('click', () => {
+  container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+});
+
+// Mausrad-Unterstützung bleibt erhalten
+container.addEventListener('wheel', (evt) => {
+  if (evt.deltaY !== 0) {
+    evt.preventDefault();
+    container.scrollLeft += evt.deltaY;
+  }
+});
+
+</script>
+</body>
+</html>

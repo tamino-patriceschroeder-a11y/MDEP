@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Mini Browser</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        #browserFrame {
+            flex: 1;
+            border: none;
+            width: 100%;
+        }
+        #addressBar {
+            display: flex;
+            padding: 5px;
+            background: #f0f0f0;
+        }
+        #addressInput {
+            flex: 1;
+            padding: 5px;
+            font-size: 16px;
+        }
+        #goButton {
+            padding: 5px 10px;
+            margin-left: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <iframe id="browserFrame" src="https://wikipedia.org"></iframe>
+    <div id="addressBar">
+        <input type="text" id="addressInput" placeholder="Gib hier die URL ein" />
+        <button id="goButton">Los</button>
+    </div>
+
+    <script>
+        const iframe = document.getElementById('browserFrame');
+        const input = document.getElementById('addressInput');
+        const button = document.getElementById('goButton');
+
+        button.addEventListener('click', () => {
+            let url = input.value.trim();
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
+            }
+            iframe.src = url;
+        });
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                button.click();
+            }
+        });
+    </script>
+</body>
+</html>

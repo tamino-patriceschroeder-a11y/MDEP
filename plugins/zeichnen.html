@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Einfaches Zeichenbrett</title>
+    <style>
+    body {
+        font-family: sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        /*min-height: 100vh;*/
+        position: absolute;
+        top: 45%;
+        bottom: 55%;
+        left: 48.5%;
+        right: 52.5%;
+        background-color: #1e1e1e;
+        scale: 0.7;
+}
+
+.app-container {
+    background-color: #3e3e3e;
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.toolbar {
+    margin-bottom: 15px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+canvas {
+    border: 2px solid #333;
+    background-color: #fff;
+    /* Stellen Sie die Größe hier ein oder per JS */
+    width: 800px; 
+    height: 500px;
+}
+
+button {
+    padding: 8px 12px;
+    cursor: pointer;
+}
+</style>
+</head>
+<body>
+    <div class="app-container">
+        <h1>Mein Zeichenbrett</h1>
+        
+        <div class="toolbar">
+            <label for="colorPicker">Farbe:</label>
+            <input type="color" id="colorPicker" value="#000000">
+            
+            <label for="lineWidth">Stärke:</label>
+            <input type="range" id="lineWidth" min="1" max="50" value="5">
+            <span id="lineWidthDisplay">5</span>
+            
+            <button id="clearCanvas">Löschen</button>
+            <button id="exportPng">Als PNG speichern</button>
+        </div>
+
+        <!-- Das Herzstück: die Zeichenfläche -->
+        <canvas id="drawingBoard"></canvas>
+    </div>
+
+</body>
+</html><script>const canvas = document.getElementById('drawingBoard');
+const ctx = canvas.getContext('2d');
+const colorPicker = document.getElementById('colorPicker');
+const lineWidthInput = document.getElementById('lineWidth');
+const lineWidthDisplay = document.getElementById('lineWidthDisplay');
+const clearButton = document.getElementById('clearCanvas');
+const exportButton = document.getElementById('exportPng');
+
+// Setzen Sie die tatsächliche Auflösung der Canvas (wichtig für den Export)
+canvas.width = 800;
+canvas.height = 500;
+
+let isDrawing = false;
+let currentColor = '#000000';
+let currentLineWidth = 5;
+
+// --- Zeichenfunktionen ---
+
+function startDrawing(e) {
+    isDrawing = true;
+    // Startet einen neuen Pfad, damit die Linien verbunden aussehen
+    ctx.beginPath(); 
+    draw(e);
+}
+
+function stopDrawing() {
+    isDrawing = false;
+    // Setzt den Pfad zurück, um neue, separate Linien zu beginnen
+    ctx.beginPath(); 
+}
+
+function draw(e) {
+    if (!isDrawing) return;
+
+    // Setze Stilparameter
+    ctx.lineWidth = currentLineWidth;
+    ctx.lineCap = 'round'; // Sorgt für weiche Enden der Linien
+    ctx.strokeStyle = currentColor;
+
+    // Zeichne die Linie zum aktuellen Mauspunkt
+    // ClientX/Y sind relativ zum Viewport, OffsetX/Y relativ zur Canvas
+    ctx.lineTo(e.offsetX, e.offsetY);
+    ctx.stroke();
+    // Bewegt den "Stift" zum aktuellen Punkt, damit der nächste Zug von hier startet
+    ctx.moveTo(e.offsetX, e.offsetY); 
+}
+
+// --- Event Listener für Interaktion ---
+
+canvas.addEventListener('mousedown', startDrawing);
+// document.addEventListener('mousemove', draw); // Kann auch außerhalb der Canvas zeichnen
+canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('mouseup', stopDrawing);
+canvas.addEventListener('mouseout', stopDrawing); // Stoppt das Zeichnen, wenn man die Fläche verlässt
+
+colorPicker.addEventListener('change', (e) => {
+    currentColor = e.target.value;
+});
+
+lineWidthInput.addEventListener('input', (e) => {
+    currentLineWidth = e.target.value;
+    lineWidthDisplay.textContent = e.target.value;
+});
+
+clearButton.addEventListener('click', () => {
+    // Löscht den gesamten Canvas-Bereich
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+});
+
+
+// --- PNG Export Funktion ---
+
+exportButton.addEventListener('click', () => {
+    // Die canvas.toDataURL() Methode konvertiert den Inhalt in ein Bildformat
+    const image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+    
+    // Trick: Erstellt einen temporären Link, um den Download auszulösen
+    const link = document.createElement('a');
+    link.download = 'mein-zeichenbrett-zeichnung.png';
+    link.href = image;
+    link.click();
+});</script></body>
+    </html>
+  

@@ -1,0 +1,1219 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>vPet — Ultimate</title>
+    <style>
+    :root {
+        --bg1: #f6f9ff;
+        --bg2: #e9f3ff;
+        --card: #ffffff;
+        --muted: #6b7280;
+        --accent: blue;
+        --ok: #ff0000;
+        --danger: #ff0000;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    * {
+        box-sizing: border-box
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(180deg, var(--bg1), var(--bg2));
+        padding: 18px
+    }
+
+    .wrap {
+        width: 980px;
+        max-width: 100%;
+        display: grid;
+        grid-template-columns: 360px 1fr;
+        gap: 18px
+    }
+
+    .card {
+        background: var(--card);
+        border-radius: 14px;
+        padding: 14px;
+        box-shadow: 0 8px 30px rgba(20, 30, 60, 0.08)
+    }/* left column */
+
+    .left header {
+        display: flex;
+        gap: 12px;
+        align-items: center
+    }
+
+    .sprite {
+        width: 96px;
+        height: 96px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 48px;
+        background: linear-gradient(#fff, #f3f8ff);
+        box-shadow: inset 0 -6px 18px rgba(0, 0, 0, 0.04)
+    }
+
+    .info {
+        flex: 1
+    }
+
+    .pet-name {
+        font-weight: 800;
+        font-size: 18px
+    }
+
+    .meta {
+        color: var(--muted);
+        font-size: 13px;
+        margin-top: 6px
+    }
+
+    .bars {
+        margin-top: 12px;
+        display: grid;
+        gap: 8px
+    }
+
+    .bar {
+        display: flex;
+        align-items: center;
+        gap: 8px
+    }
+
+    .label {
+        width: 90px;
+        font-size: 13px;
+        color: #334
+    }
+
+    .meter {
+        flex: 1;
+        height: 12px;
+        background: #eee;
+        border-radius: 999px;
+        overflow: hidden
+    }
+
+    .meter > i {
+        display: block;
+        height: 100%;
+        width: 50%
+    }
+
+    .controls {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        margin-top: 12px
+    }
+
+    button {
+        padding: 8px 10px;
+        border-radius: 10px;
+        border: 0;
+        background: var(--accent);
+        color: white;
+        font-weight: 700;
+        cursor: pointer
+    }
+
+    button.alt {
+        background: #9ca3ff;
+        color: #062b4e
+    }
+
+    .tools {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+        align-items: center
+    }
+
+    .mini {
+        font-size: 12px;
+        color: var(--muted)
+    }
+
+    .small {
+        font-size: 13px;
+        padding: 6px 8px;
+        border-radius: 8px
+    }
+
+    .danger {
+        background: var(--danger);
+        color: white
+    }
+
+    .muted-btn {
+        background: #eef2ff;
+        color: #334;
+        padding: 8px;
+        border-radius: 10px;
+        border: 1px solid rgba(0, 0, 0, 0.04)
+    }/* right column */
+
+    .right .toolbar {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        justify-content: space-between
+    }
+
+    .pet-list {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-top: 12px;
+        flex-wrap: wrap
+    }
+
+    .pet-pill {
+        padding: 6px 8px;
+        border-radius: 999px;
+        background: #f1f5f9;
+        border: 1px solid rgba(0, 0, 0, 0.03);
+        cursor: pointer;
+        display: flex;
+        gap: 8px;
+        align-items: center
+    }
+
+    .section {
+        margin-top: 14px
+    }
+
+    .inventory-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px
+    }
+
+    .item {
+        background: #f8fafc;
+        border-radius: 10px;
+        padding: 8px;
+        text-align: center;
+        font-weight: 600;
+        cursor: pointer
+    }
+
+    .games {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-top: 12px
+    }
+
+    .game-card {
+        padding: 10px;
+        border-radius: 10px;
+        background: linear-gradient(180deg, #fff, #fbfdff);
+        text-align: center
+    }/* modal */
+
+    .modal-back {
+        position: fixed;
+        inset: 0;
+        background: rgba(2, 6, 23, 0.45);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 60
+    }
+
+    .modal {
+        width: 720px;
+        max-width: 96%;
+        background: white;
+        border-radius: 12px;
+        padding: 14px;
+        box-shadow: 0 18px 60px rgba(10, 20, 40, 0.45)
+    }
+
+    .row {
+        display: flex;
+        gap: 8px;
+        align-items: center
+    }
+
+    .field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-top: 8px
+    }
+
+    input[type="text"], select, button.small {
+        padding: 8px;
+        border-radius: 8px;
+        border: 1px solid #e6eefc
+    }
+
+    .close {
+        margin-left: auto;
+        background: #f1f5f9;
+        border-radius: 8px;
+        padding: 6px 8px
+    }
+
+    .hidden {
+        display: none
+    }/* misc */
+
+    .status-line {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap
+    }
+
+    .badge {
+        padding: 6px 8px;
+        border-radius: 999px;
+        background: #fff7ed;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        font-weight: 700
+    }
+
+    footer {
+        margin-top: 12px;
+        color: var(--muted);
+        font-size: 13px;
+        display: flex;
+        justify-content: space-between
+    }
+
+    @media (max-width: 880px) {
+        .wrap {
+            grid-template-columns: 1fr;
+        }
+    }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <!-- LEFT: Active Pet -->
+        <div class="card left">
+            <header>
+                <div class="sprite" id="sprite">🐶</div>
+                <div class="info">
+                    <div class="pet-name" id="petName">-</div>
+                    <div class="meta">
+                        Art: 
+                        <span id="petSpecies">-</span>
+                         · Alter: 
+                        <span id="petAge">0d</span>
+                    </div>
+                    <div class="status-line" id="statusLine" style="margin-top:8px"></div>
+                </div>
+            </header>
+
+            <div class="bars">
+                <div class="bar">
+                    <div class="label">Hunger</div>
+                    <div class="meter">
+                        <i id="hungerBar" style="background:linear-gradient(90deg,#f97316,#f43f5e)"></i>
+                    </div>
+                </div>
+                <div class="bar">
+                    <div class="label">Happiness</div>
+                    <div class="meter">
+                        <i id="happyBar" style="background:linear-gradient(90deg,#60a5fa,#06b6d4)"></i>
+                    </div>
+                </div>
+                <div class="bar">
+                    <div class="label">Energy</div>
+                    <div class="meter">
+                        <i id="energyBar" style="background:linear-gradient(90deg,#34d399,#10b981)"></i>
+                    </div>
+                </div>
+                <div class="bar">
+                    <div class="label">Health</div>
+                    <div class="meter">
+                        <i id="healthBar" style="background:linear-gradient(90deg,#a78bfa,#7c3aed)"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button id="feedBtn">🍎 Füttern</button>
+                <button id="playBtn" class="alt">🎾 Spielen</button>
+                <button id="petBtn" class="alt">🤗 Streicheln</button>
+                <button id="sleepBtn" class="alt">💤 Schlafen</button>
+                <button id="docBtn" class="alt">🏥 Zum Arzt bringen</button>
+                <button id="cleBtn" class="alt">🧽 säubern</button>
+            </div>
+
+            <div class="section">
+                <div class="mini">
+                    Letzter Auto-Save: 
+                    <span id="lastSave">—</span>
+                </div>
+                <div class="tools" style="margin-top:8px">
+                    <button id="exportSingle" class="small">⬇️ Export .vpet</button>
+                    <label style="flex:1">
+                        <input type="file" id="fileInput" accept=".vpet,.vpetpack" class="hidden"/>
+                        <button id="importBtn" class="small muted-btn" style="width:100%">⬆️ Import .vpet / .vpetpack</button>
+                    </label>
+                    <button id="resetBtn" class="small danger">Zurücksetzen</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: Controls, Pets, Inventory, Games -->
+        <div class="card right">
+            <div class="toolbar">
+                <div style="display:flex;gap:8px;align-items:center">
+                    <h3 style="margin:0">vPet-Zentrale</h3>
+                    <div class="mini" style="margin-left:8px">
+                        XP: 
+                        <span id="coins">0</span>
+                    </div>
+                </div>
+                <div style="display:flex;gap:8px">
+                    <button id="exportAll" class="small">⬇️ Export .vpetpack</button>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="mini">Deine Haustiere</div>
+                <div class="pet-list" id="petList"></div>
+            </div>
+
+            <div class="section">
+                <div class="mini">Inventar</div>
+                <div class="inventory-grid" id="inventory"></div>
+            </div>
+
+            <div class="section">
+                <div class="mini">Minispiele</div>
+                <div class="games">
+                    <div class="game-card">
+                        <div style="font-weight:800">Ball Catch</div>
+                        <div class="mini">Fange den Ball — Geschicklichkeit</div>
+                        <button class="small" onclick="openGame('ball')">Spielen</button>
+                    </div>
+                    <div class="game-card">
+                        <div style="font-weight:800">Reaction</div>
+                        <div class="mini">Klicke schnell, wenn das Signal kommt</div>
+                        <button class="small" onclick="openGame('reaction')">Spielen</button>
+                    </div>
+                    <div class="game-card">
+                        <div style="font-weight:800">Memory</div>
+                        <div class="mini">Ein kleines Memory mit 3 Paaren</div>
+                        <button class="small" onclick="openGame('memory')">Spielen</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section" style="margin-top:14px">
+                <div class="mini">Notizen / Tagebuch (per Haustier)</div>
+                <textarea id="diary" rows="4" style="width:100%;margin-top:8px;border-radius:8px;padding:8px;border:1px solid #eef2ff"></textarea>
+                <div style="display:flex;gap:8px;margin-top:8px">
+                    <button id="saveDiary" class="small">Speichern</button>
+                    <button id="clearDiary" class="small alt">Löschen</button>
+                </div>
+            </div>
+
+            <footer>
+                <div class="mini">vPet • Tamagochi Remastert • Kein Cloud-Sync</div>
+                <div class="mini">v1 • TPS-DESIGN © 2025</div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- MODAL: New Pet / Game / Generic -->
+    <div class="modal-back" id="modalBack">
+        <div class="modal" id="modal">
+            <!-- content inserted dynamically -->
+        </div>
+    </div>
+
+    <script>
+    /* ============================
+       vPet Full — Single-File App
+       Features:
+       - multiple pets
+       - create pet (name/species/sprite upload)
+       - status effects (sickness, boredom, clean)
+       - inventory + items
+       - 3 minigames
+       - export/import (.vpet single, .vpetpack all)
+       - autosave & storage
+       ============================ */
+
+    /* -------------------------
+       GLOBAL / APP STATE
+    ------------------------- */
+    let tickerTimer = null; // must be declared before startTicker
+    const TICK_MS = 6000;   // time tick (decay)
+    const AUTOSAVE_MS = 10000;
+    const STORAGE_KEY = "vpet_app_v1";
+    const DEFAULT_PET = () => ({
+      id: "pet_" + Math.random().toString(36).slice(2,9),
+      version: "v1",
+      name: "Beispiel",
+      species: "Hund",
+      createdAt: Date.now(),
+      lastUpdated: Date.now(),
+      hunger: 100,
+      happiness: 1200,
+      energy: 100,
+      health: 100,
+      cleanliness: 100,
+      boredom: 0,
+      sickness: false,
+      ageDays: 0,
+      spriteEmoji: "😯",
+      inventory: [], // per-pet items (overrides global if needed)
+      diary: "wer das liest ist doof"
+    });
+
+
+    let appState = loadAppState() || {
+      coins: 0,
+      pets: [  ],
+      activePet: -1
+    };
+
+    /* -------------------------
+       HELPERS
+    ------------------------- */
+    const $ = id => document.getElementById(id);
+    function clamp(v){ return Math.max(0, Math.min(100, Math.round(v))); }
+    function now(){ return Date.now(); }
+    function saveAppState(){
+      appState.lastSaved = now();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+      $("lastSave").textContent = new Date().toLocaleTimeString();
+    }
+    function loadAppState(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : null;
+      }catch(e){ return null; }
+    }
+    function findActive(){ return appState.pets[appState.activePet] || null; }
+    function uid(){ return "i_"+Math.random().toString(36).slice(2,9); }
+
+    /* -------------------------
+       RENDER
+    ------------------------- */
+    function renderAll(){
+      renderPetList();
+      renderActivePet();
+      renderInventory();
+      $("coins").textContent = appState.coins || 0;
+      $("diary").value = findActive()?.diary || "";
+    }
+
+    function renderPetList(){
+      const wrap = $("petList");
+      wrap.innerHTML = "";
+      appState.pets.forEach((p, idx)=>{
+        const pill = document.createElement("div");
+        pill.className = "pet-pill";
+        pill.title = p.name + " · " + p.species;
+        pill.onclick = ()=>{ appState.activePet = idx; renderAll(); saveAppState(); animateSwap(); };
+        pill.innerHTML = `<div style="font-size:20px">${p.spriteEmoji||'🫥'}</div><div style="display:flex;flex-direction:column;align-items:flex-start"><div style="font-weight:800">${p.name}</div><div style="font-size:12px;color:${p.sickness? '#ef4444':'#6b7280'}">${p.species}</div></div>`;
+        // add quick actions
+        const btns = document.createElement("div");
+        btns.style.marginLeft="8px";
+        pill.appendChild(btns);
+        wrap.appendChild(pill);
+      });
+      // add "add" pill
+      const add = document.createElement("div");
+      add.className = "pet-pill";
+      add.style.fontWeight = 800;
+      add.style.justifyContent = "center";
+      add.onclick = ()=>openNewPetModal();
+      add.textContent = "➕ Neues";
+      wrap.appendChild(add);
+    }
+
+    function renderActivePet(){
+      const pet = findActive();
+      if(!pet) return;
+      $("sprite").textContent = pet.spriteEmoji || "🫥";
+      $("petName").textContent = pet.name;
+      $("petSpecies").textContent = pet.species;
+      $("petAge").textContent = calcAgeText(pet) + "d";
+      setBar("hungerBar", pet.hunger);
+      setBar("happyBar", pet.happiness);
+      setBar("energyBar", pet.energy);
+      setBar("healthBar", pet.health);
+      renderStatusLine(pet);
+      $("diary").value = pet.diary || "";
+    }
+
+    function setBar(id, value){
+      const el = $(id);
+      el.style.width = clamp(value) + "%";
+    }
+
+    /* show status badges e.g. 🤒, 🥱, 😐, 🧼 */
+    function renderStatusLine(pet){
+      const line = $("statusLine");
+      line.innerHTML = "";
+      const badges = [];
+      if(pet.health < 40) badges.push({icon:"🤒", text:"krank"});
+      if(pet.sickness || pet.health > 50) badges.push({icon:"😃", text:"gesund"});
+      if(pet.energy < 20) badges.push({icon:"🥱", text:"müde"});
+      if(pet.boredom > 70) badges.push({icon:"😐", text:"gelangweilt"});
+      if(pet.cleanliness < 30) badges.push({icon:"🧼", text:"dreckig"});
+      if(pet.hunger < 25) badges.push({icon:"🍽️", text:"hungrig"});
+      if(badges.length === 0) badges.push({icon:"😊", text:"glücklich"});
+      badges.forEach(b=>{
+        const s = document.createElement("div");
+        s.className = "badge";
+        s.textContent = `${b.icon} ${b.text}`;
+        line.appendChild(s);
+      });
+    }
+
+    /* -------------------------
+       AGE
+    ------------------------- */
+    function calcAgeText(pet){
+      const days = Math.floor((now() - pet.createdAt) / (1000*60*60*24));
+      pet.ageDays = days;
+      return days;
+    }
+
+    /* -------------------------
+       TICKER: passive decay + status generation
+    ------------------------- */
+    function startTicker(){
+      if(tickerTimer) clearInterval(tickerTimer);
+      tickerTimer = setInterval(()=>{
+        // apply decay to all pets
+        appState.pets.forEach(p => {
+          p.hunger = clamp(p.hunger - randBetween(2,6));
+          p.happiness = clamp(p.happiness - randBetween(1,4));
+          p.energy = clamp(p.energy - randBetween(2,5));
+          p.cleanliness = clamp(p.cleanliness - randBetween(0,3));
+          p.boredom = clamp(p.boredom + randBetween(2,6));
+          // health affected by extremes
+          if(p.hunger < 15 || p.cleanliness < 10) p.health = clamp(p.health - randBetween(4,8));
+          else if(p.happiness > 80 && p.energy > 60) p.health = clamp(p.health + 1);
+          // sickness chance
+          if(!p.sickness && Math.random() < 0.02 && (p.hunger < 20 || p.cleanliness < 20 || p.health < 30)) {
+            p.sickness = true;
+          }
+          p.lastUpdated = now();
+        });
+        renderAll();
+        saveAppState();
+      }, TICK_MS);
+    }
+
+    function randBetween(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+
+    /* -------------------------
+       INTERACTIONS: Feed, Play, Pet, Sleep
+    ------------------------- */
+    $("feedBtn").onclick = ()=>{
+      const p = findActive(); if(!p) return;
+      // look for food item in global inventory
+      const food = takeItem("food");
+      if(food){
+        p.hunger = clamp(p.hunger + 25);
+        p.energy = clamp(p.energy + 40);
+        p.happiness = clamp(p.happiness + 6);
+        p.cleanliness = clamp(p.cleanliness - 2);
+        p.boredom = clamp(p.boredom - 8);
+        p.lastUpdated = now();
+        flashSprite("🍎");
+        saveAppState(); renderAll();
+        return;
+      }
+      // fallback: default feed
+      p.hunger = clamp(p.hunger + 15);
+      p.happiness = clamp(p.happiness + 6);
+      p.cleanliness = clamp(p.cleanliness - 2);
+      p.boredom = clamp(p.boredom - 4);
+      p.lastUpdated = now();
+      flashSprite("🍎");
+      saveAppState(); renderAll();
+    };
+
+    $("playBtn").onclick = ()=>{
+      // playing opens a minigame (Ball Catch) for better reward
+      openGame("ball");
+    };
+
+    $("petBtn").onclick = ()=>{
+      const p = findActive(); if(!p) return;
+      p.happiness = clamp(p.happiness + 12);
+      p.boredom = clamp(p.boredom - 15);
+      p.energy = clamp(p.energy - 6);
+      flashSprite("🤗");
+      saveAppState(); renderAll();
+    };
+
+    $("sleepBtn").onclick = ()=>{
+      const p = findActive(); if(!p) return;
+      p.energy = clamp(p.energy + 40);
+      p.hunger = clamp(p.hunger + 12);
+      p.boredom = clamp(p.boredom + 6);
+      flashSprite("💤");
+      saveAppState(); renderAll();
+    };
+
+    $("docBtn").onclick = ()=>{
+      const p = findActive(); if(!p) return;
+      p.health = clamp(p.health = 100);
+      p.happiness = clamp(p.happiness + 6);
+      p.sickness = clamp(p.sickness);
+      flashSprite("💤");
+      saveAppState(); renderAll();
+    };
+
+    $("cleBtn").onclick = ()=>{
+      const p = findActive(); if(!p) return;
+      p.cleanliness = clamp(p.cleanliness + 10);
+      p.happiness = clamp(p.happiness + 6);
+      flashSprite("💤");
+      saveAppState(); renderAll();
+    };
+
+    /* -------------------------
+       INVENTORY (global)
+    ------------------------- */
+    function getGlobalInventory(){
+      if(!appState.inventory) appState.inventory = [];
+      return appState.inventory;
+    }
+    function renderInventory(){
+      const inv = getGlobalInventory();
+      const wrap = $("inventory");
+      wrap.innerHTML = "";
+      if(inv.length === 0){
+        wrap.innerHTML = '<div style="grid-column:1/-1;color:var(--muted);padding:8px">Kein Inventar. Gewinne Items in Minispielen.</div>';
+        return;
+      }
+      inv.forEach(it=>{
+        const d = document.createElement("div");
+        d.className = "item";
+        d.innerHTML = `<div style="font-size:20px">${it.icon||'❓'}</div><div style="font-size:12px">${it.name} (${it.amount})</div>`;
+        d.onclick = ()=>useItem(it.id);
+        wrap.appendChild(d);
+      });
+    }
+    function addItem(type, amount=1){
+      const inv = getGlobalInventory();
+      const proto = {
+        id: type,
+        name: itemName(type),
+        icon: itemIcon(type),
+        amount: amount
+      };
+      const existing = inv.find(i=>i.id===type);
+      if(existing) existing.amount += amount;
+      else inv.push(proto);
+      renderInventory();
+      saveAppState();
+    }
+    function takeItem(type, amount=1){
+      const inv = getGlobalInventory();
+      const it = inv.find(i=>i.id===type);
+      if(!it || it.amount < amount) return false;
+      it.amount -= amount;
+      if(it.amount <= 0) appState.inventory = inv.filter(x=>x.amount>0);
+      renderInventory();
+      saveAppState();
+      return true;
+    }
+    function useItem(id){
+      // apply to active pet
+      const p = findActive();
+      if(!p) return;
+      if(!takeItem(id,1)){
+        alert("Item nicht vorhanden.");
+        return;
+      }
+      if(id === "food"){
+        p.hunger = clamp(p.hunger + 30);
+        p.happiness = clamp(p.happiness + 8);
+        flashSprite("🍎");
+      } else if(id === "toy"){
+        p.happiness = clamp(p.happiness + 18);
+        p.boredom = clamp(p.boredom - 20);
+        p.energy = clamp(p.energy - 8);
+        flashSprite("🎾");
+      } else if(id === "soap"){
+        p.cleanliness = clamp(p.cleanliness + 30);
+        flashSprite("🧼");
+      } else if(id === "medicine"){
+        p.sickness = false;
+        p.health = clamp(p.health + 30);
+        flashSprite("💊");
+      } else {
+        // unknown
+        p.happiness = clamp(p.happiness + 5);
+      }
+      p.lastUpdated = now();
+      saveAppState(); renderAll();
+    }
+    function itemName(id){
+      return id === "food" ? "Essen" : id === "toy"? "Spielzeug" : id==="soap"? "Seife" : id==="medicine"? "Medizin" : "Item";
+    }
+    function itemIcon(id){
+      return id === "food" ? "🍎" : id === "toy"? "🎾" : id==="soap"? "🧼" : id==="medicine"? "💊" : "🎁";
+    }
+
+    /* -------------------------
+       DIARY
+    ------------------------- */
+    $("saveDiary").onclick = ()=>{
+      const p = findActive(); if(!p) return;
+      p.diary = $("diary").value;
+      p.lastUpdated = now();
+      saveAppState();
+      alert("Tagebuch gespeichert.");
+    };
+    $("clearDiary").onclick = ()=>{
+      if(!confirm("Tagebuch löschen?")) return;
+      const p = findActive(); if(!p) return;
+      p.diary = "";
+      $("diary").value = "";
+      saveAppState();
+    };
+
+    /* -------------------------
+       EXPORT / IMPORT
+    ------------------------- */
+    $("exportSingle").onclick = ()=>{
+      const p = findActive(); if(!p) return;
+      const data = JSON.stringify(p, null, 2);
+      downloadBlob(data, `${p.name || 'pet'}.vpet`, "application/json");
+    };
+
+    $("exportAll").onclick = ()=>{
+      const data = JSON.stringify(appState, null, 2);
+      downloadBlob(data, `vpetpack.vpetpack`, "application/json");
+    };
+
+    $("importBtn").onclick = ()=> $("fileInput").click();
+    $("fileInput").addEventListener("change", (e)=>{
+      const f = e.target.files[0];
+      if(!f) return;
+      const reader = new FileReader();
+      reader.onload = ev=>{
+        try{
+          const data = JSON.parse(ev.target.result);
+          if(data && data.pets && Array.isArray(data.pets)){
+            // it's a vpetpack
+            if(confirm("Importiere vpetpack: vorhandene Daten überschreiben? (OK=überschreiben, Abbrechen=hinzufügen)")){
+              appState = data;
+            } else {
+              // merge: append pets
+              appState.pets = appState.pets.concat(data.pets);
+            }
+            saveAppState(); renderAll();
+            alert("vpetpack importiert.");
+          } else if(data && data.version && data.name){
+            // single pet
+            if(confirm("Importiere einzelnes Haustier als neues Haustier? (OK=Hinzufügen)")){
+              appState.pets.push(data);
+              appState.activePet = appState.pets.length -1;
+              saveAppState(); renderAll();
+              alert("Haustier importiert.");
+            }
+          } else {
+            alert("Unbekanntes Format.");
+          }
+        }catch(err){
+          alert("Fehler beim Import: " + err.message);
+        }
+      };
+      reader.readAsText(f);
+      e.target.value = "";
+    });
+
+    /* -------------------------
+       RESET
+    ------------------------- */
+    $("resetBtn").onclick = ()=>{
+      if(!confirm("Wirklich alles zurücksetzen? (Lokal)")) return;
+      localStorage.removeItem(STORAGE_KEY);
+      location.reload();
+    };
+
+    /* -------------------------
+       NEW PET MODAL
+    ------------------------- */
+    function openNewPetModal(){
+      showModal(`
+        <div style="display:flex;gap:12px;align-items:center">
+          <h3 style="margin:0">Neues Haustier erstellen</h3>
+          <button class="close" onclick="closeModal()">✖</button>
+        </div>
+        <div class="row" style="margin-top:8px">
+          <div style="flex:1" class="field">
+            <label>Name</label>
+            <input id="newName" type="text" value="Flauschi" />
+          </div>
+          <div style="width:140px" class="field">
+            <label>Art</label>
+            <select id="newSpecies">
+              <option>Hund</option>
+              <option>Katze</option>
+              <option>Drache</option>
+              <option>Hamster</option>
+              <option>Vogel</option>
+              <option>Baum</option>
+              <option>Mensch</option>
+              <option>Auto</option>
+            </select>
+          </div>
+        </div>
+        <div class="row" style="margin-top:8px;gap:12px">
+          <div style="flex:1" class="field">
+            <label>Wähle Emoji als Sprite</label>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="small" onclick="chooseEmoji('🐶')">🐶</button>
+              <button class="small" onclick="chooseEmoji('🐱')">🐱</button>
+              <button class="small" onclick="chooseEmoji('🐹')">🐹</button>
+              <button class="small" onclick="chooseEmoji('🐉')">🐉</button>
+              <button class="small" onclick="chooseEmoji('🐦')">🐦</button>
+              <button class="small" onclick="chooseEmoji('🦊')">🦊</button>
+              <button class="small" onclick="chooseEmoji('🌳')">🌳</button>
+              <button class="small" onclick="chooseEmoji('🧑🏼')">🧑🏼</button>
+              <button class="small" onclick="chooseEmoji('🚔')">🚔</button>
+            </div>
+          </div>
+          <div style="width:180px" class="field">
+            <label>Oder upload (PNG/SVG)</label>
+            <input id="spriteUpload" type="file" accept="image/*" />
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+          <button class="small alt" onclick="closeModal()">Abbrechen</button>
+          <button class="small" onclick="createNewPet()">Erstellen</button>
+        </div>
+      `);
+      // default chosen emoji stored in modal
+      modalData.chosenEmoji = "🤓";
+      $("#spriteUpload").addEventListener("change", onSpriteUpload);
+    }
+    const modalData = {};
+    function chooseEmoji(e){ modalData.chosenEmoji = e; alert("Emoji gewählt: " + e); }
+    function onSpriteUpload(e){
+      const f = e.target.files[0];
+      if(!f) return;
+      const r = new FileReader();
+      r.onload = ev=>{
+        modalData.chosenDataUrl = ev.target.result;
+        alert("Sprite hochgeladen.");
+      };
+      r.readAsDataURL(f);
+    }
+    function createNewPet(){
+      const name = $("newName").value || "NeuesPet";
+      const species = $("newSpecies").value || "Unbekannt";
+      const base = DEFAULT_PET();
+      base.name = name;
+      base.species = species;
+      base.createdAt = now();
+      base.lastUpdated = now();
+      if(modalData.chosenDataUrl) {
+        base.spriteEmoji = "🖼️";
+        base.spriteImg = modalData.chosenDataUrl; // store image dataURL
+      } else {
+        base.spriteEmoji = modalData.chosenEmoji || "🤓";
+      }
+      appState.pets.push(base);
+      appState.activePet = appState.pets.length -1;
+      closeModal();
+      saveAppState(); renderAll();
+    }
+
+    /* -------------------------
+       Modal Helpers
+    ------------------------- */
+    function showModal(html){
+      $("modal").innerHTML = html;
+      $("modalBack").style.display = "flex";
+    }
+    function closeModal(){ $("modalBack").style.display = "none"; $("modal").innerHTML = ""; for(let k in modalData) delete modalData[k]; }
+
+    /* -------------------------
+       Sprite flash animation
+    ------------------------- */
+    function flashSprite(icon){
+      const el = $("sprite");
+      const old = el.textContent;
+      el.textContent = icon;
+      setTimeout(()=> el.textContent = old, 900);
+    }
+
+    /* -------------------------
+       Game Launcher
+    ------------------------- */
+    function openGame(name){
+      if(name === "ball") openBallGame();
+      else if(name === "reaction") openReactionGame();
+      else if(name === "memory") openMemoryGame();
+    }
+
+    /* -------------------------
+       Ball Catch Game (simple)
+    ------------------------- */
+    function openBallGame(){
+      showModal(`
+        <div style="display:flex;align-items:center;gap:12px">
+          <h3 style="margin:0">Ball Catch</h3>
+          <button class="close" onclick="closeModal()">✖</button>
+        </div>
+        <div style="margin-top:12px">
+          <div id="ballArea" style="height:200px;border-radius:10px;background:linear-gradient(#fff,#f7fbff);position:relative;overflow:hidden;padding:10px">
+            <div id="basket" style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);width:100px;height:20px;background:#ddd;border-radius:8px"></div>
+            <!-- ball will be created by JS -->
+          </div>
+          <div style="display:flex;gap:8px;margin-top:10px;justify-content:flex-end">
+            <button class="small alt" onclick="closeModal()">Abbrechen</button>
+            <button class="small" id="startBall">Start</button>
+          </div>
+        </div>
+      `);
+      let score = 0;
+      const ballArea = $("ballArea");
+      const basket = $("basket");
+      let basketX = ballArea.clientWidth/2 - 50;
+      basket.style.left = basketX + "px";
+      // move basket by mouse
+      ballArea.onmousemove = (e)=>{
+        const rect = ballArea.getBoundingClientRect();
+        basketX = e.clientX - rect.left - 50;
+        basketX = Math.max(6, Math.min(ballArea.clientWidth-110, basketX));
+        basket.style.left = basketX + "px";
+      };
+      let running = false;
+      let dropTimer = null;
+      $("startBall").onclick = ()=>{
+        if(running) return;
+        running = true;
+        score = 0;
+        dropTimer = setInterval(()=>spawnBall(), 900);
+        $("startBall").textContent = "Running...";
+        setTimeout(()=>{ // auto-stop after 20s
+          if(dropTimer) clearInterval(dropTimer);
+          running = false;
+          $("startBall").textContent = "Start";
+          // reward based on score
+          const coins = Math.max(1, Math.floor(score/2));
+          appState.coins += coins;
+          // give item sometimes
+          if(Math.random() < 0.5) addItem("toy",1); else addItem("food",1);
+          saveAppState(); renderAll();
+          alert(`Spiel beendet! Punkte: ${score} • XP +${coins}`);
+          closeModal();
+        }, 20000);
+      };
+      function spawnBall(){
+        const b = document.createElement("div");
+        b.style.width = "28px"; b.style.height="28px"; b.style.borderRadius="999px";
+        b.style.position="absolute"; b.style.left = (Math.random()*(ballArea.clientWidth-40)+10)+"px";
+        b.style.top = "-30px"; b.style.background = "radial-gradient(circle,#ffd166,#ff7b7b)";
+        ballArea.appendChild(b);
+        const fallSpeed = 3 + Math.random()*4;
+        const t = setInterval(()=>{
+          const top = parseFloat(b.style.top);
+          b.style.top = (top + fallSpeed) + "px";
+          // collision with basket
+          if(top + 28 > ballArea.clientHeight - 30){
+            const ballLeft = parseFloat(b.style.left);
+            if(ballLeft + 14 > basketX && ballLeft + 14 < basketX + 100){
+              // caught
+              score++;
+              flashSprite("🎉");
+            }
+            // remove
+            b.remove();
+            clearInterval(t);
+          }
+        }, 16);
+      }
+    }
+
+    /* -------------------------
+       Reaction Game
+    ------------------------- */
+    function openReactionGame(){
+      showModal(`
+        <div style="display:flex;align-items:center;gap:12px">
+          <h3 style="margin:0">Reaction Test</h3>
+          <button class="close" onclick="closeModal()">✖</button>
+        </div>
+        <div style="margin-top:12px">
+          <div id="reactBox" style="height:160px;border-radius:10px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-size:24px">Klicke Start</div>
+          <div style="display:flex;gap:8px;margin-top:10px;justify-content:flex-end">
+            <button class="small alt" onclick="closeModal()">Abbrechen</button>
+            <button class="small" id="startReact">Start</button>
+          </div>
+        </div>
+      `);
+      const box = $("reactBox");
+      let ready = false, startT=0;
+      $("startReact").onclick = ()=>{
+        box.textContent = "Warte...";
+        box.style.background = "#fff2cc";
+        const delay = 1200 + Math.random()*2000;
+        setTimeout(()=>{
+          box.textContent = "JETZT!";
+          box.style.background = "#bbf7d0";
+          ready = true;
+          startT = performance.now();
+        }, delay);
+      };
+      box.onclick = ()=>{
+        if(!ready) return;
+        const r = performance.now() - startT;
+        const ms = Math.round(r);
+        const coins = Math.max(1, Math.floor(1500 / Math.max(100, ms)));
+        appState.coins += coins;
+        // small happiness boost
+        const p = findActive();
+        if(p) p.happiness = clamp(p.happiness + Math.max(3, Math.floor(200/ms)));
+        saveAppState(); renderAll();
+        alert(`Reaktionszeit: ${ms} ms • XP +${coins}`);
+        closeModal();
+      };
+    }
+
+    /* -------------------------
+       Memory Game (3 pairs)
+    ------------------------- */
+    function openMemoryGame(){
+      showModal(`
+        <div style="display:flex;align-items:center;gap:12px">
+          <h3 style="margin:0">Memory</h3>
+          <button class="close" onclick="closeModal()">✖</button>
+        </div>
+        <div style="margin-top:12px">
+          <div id="memArea" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px"></div>
+          <div style="display:flex;gap:8px;margin-top:10px;justify-content:flex-end">
+            <button class="small alt" onclick="closeModal()">Abbrechen</button>
+            <button class="small" id="startMem">Start</button>
+          </div>
+        </div>
+      `);
+      const memArea = $("memArea");
+      let cards = [];
+      let flipped = [];
+      let pairsFound = 0;
+      $("startMem").onclick = ()=>{
+        const icons = ["🍎","🎾","🧸","🍪","⭐","🍓"];
+        const pick = icons.sort(()=>0.5-Math.random()).slice(0,3);
+        cards = shuffle([...pick, ...pick]).map((icon, idx)=>({id:idx, icon, matched:false}));
+        renderCards();
+        pairsFound = 0;
+      };
+      function renderCards(){
+        memArea.innerHTML = "";
+        cards.forEach(c=>{
+          const el = document.createElement("div");
+          el.style.background="#fff"; el.style.borderRadius="8px"; el.style.height="80px"; el.style.display="flex"; el.style.alignItems="center"; el.style.justifyContent="center"; el.style.fontSize="28px"; el.style.cursor="pointer";
+          el.textContent = c.matched || flipped.includes(c.id) ? c.icon : "❓";
+          el.onclick = ()=>{
+            if(c.matched || flipped.includes(c.id)) return;
+            flipped.push(c.id);
+            renderCards();
+            if(flipped.length === 2){
+              const a = cards.find(x=>x.id===flipped[0]);
+              const b = cards.find(x=>x.id===flipped[1]);
+              if(a.icon === b.icon){
+                a.matched = b.matched = true;
+                pairsFound++;
+                appState.coins += 2;
+                addItem(Math.random()<0.5?'food':'toy',1);
+                saveAppState(); renderAll();
+                flipped = [];
+                if(pairsFound === 3){
+                  alert("Alle Paare gefunden! XP +6");
+                  closeModal();
+                }
+              } else {
+                setTimeout(()=>{ flipped = []; renderCards(); }, 700);
+              }
+            }
+          };
+          memArea.appendChild(el);
+        });
+      }
+    }
+
+    /* -------------------------
+       Misc Helpers
+    ------------------------- */
+    function shuffle(a){ return a.sort(()=>0.5-Math.random()); }
+    function downloadBlob(text, name, type){
+      const blob = new Blob([text], {type});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = name; document.body.appendChild(a); a.click();
+      setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 500);
+    }
+    function animateSwap(){
+      const el = $("sprite");
+      el.style.transform = "scale(0.95)";
+      setTimeout(()=> el.style.transform = "", 220);
+    }
+
+    /* -------------------------
+       INIT
+    ------------------------- */
+    renderAll();
+    startTicker();
+    setInterval(saveAppState, AUTOSAVE_MS);
+
+    /* -------------------------
+       small UX: allow clicking emoji to edit pet name/species
+    ------------------------- */
+    $("sprite").onclick = ()=>{
+      const p = findActive();
+      if(!p) return openNewPetModal();
+      showModal(`
+        <div style="display:flex;align-items:center;gap:12px">
+          <h3 style="margin:0">Haustier anpassen</h3>
+          <button class="close" onclick="closeModal()">✖</button>
+        </div>
+        <div class="field"><label>Name</label><input id="editName" type="text" value="${escapeHtml(p.name)}"/></div>
+        <div class="field"><label>Art</label><input id="editSpecies" type="text" value="${escapeHtml(p.species)}"/></div>
+        <div class="field"><label>Emoji Sprite</label><input id="editEmoji" type="text" value="${escapeHtml(p.spriteEmoji||'')}" /></div>
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
+          <button class="small alt" onclick="closeModal()">Abbrechen</button>
+          <button class="small" onclick="savePetEdit()">Speichern</button>
+        </div>
+      `);
+    };
+    function savePetEdit(){
+      const p = findActive();
+      if(!p) return;
+      p.name = $("editName").value || p.name;
+      p.species = $("editSpecies").value || p.species;
+      p.spriteEmoji = $("editEmoji").value || p.spriteEmoji;
+      p.lastUpdated = now();
+      saveAppState(); renderAll(); closeModal();
+    }
+    function escapeHtml(s){ return (s+"").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+    /* -------------------------
+       END
+    ------------------------- */
+    </script>
+</body>
+</html>

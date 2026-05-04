@@ -1,0 +1,55 @@
+
+    <html>
+      <head><style></style></head>
+      <body><!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genaue Uhrzeit</title>
+<style>
+html {background-color: #00000f; padding: 5px;}
+body {border-radius: 5px; background-color:#1e1e1e; font-family: Arial; padding: 10px; color: #fff;}
+</style>
+</head>
+<body>
+    <h1>Aktuelle Uhrzeit (JS)</h1>
+    <div id="clock"></div>
+<script>
+function updateClock() {
+    const now = new Date(); // Erzeugt ein neues Date-Objekt mit der aktuellen Zeit
+
+    // Formatierung für Jahr/Monat/Tag/Stunde/Minute/Sekunde/Millisekunde
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0'); // Monate sind 0-basiert
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const milliseconds = String(now.getMilliseconds()).padStart(3, '0');
+
+    // Kombinierte Zeichenkette
+    const fullDateTime = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}`;
+
+    // Für eine genaue Messung der Zeitspanne (z.B. für Timer)
+    const preciseTime = performance.now(); // Millisekunden seit Skriptstart
+
+    // Anzeige im HTML-Element
+    const clockElement = document.getElementById('clock');
+    clockElement.innerHTML = `
+        <p><b>Absolute Zeit (Format ISO):</b><br> ${fullDateTime}</p>
+        <p><b>Zeit seit Skriptstart (Performance API):</b><br> ${preciseTime.toFixed(3)} ms</p>
+        <p><b>Sprachspezifisch:</b><br> ${now.toLocaleString()}</p>
+    `;
+}
+
+// Uhr aktualisieren alle 100 Millisekunden (um Millisekunden zu sehen)
+setInterval(updateClock, 100);
+
+// Sofort einmal ausführen, um die Uhr beim Laden zu starten
+updateClock();
+</script>
+</body>
+</html><script></script></body>
+    </html>
+  

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messgerät</title>
+    <style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background: #1a1a1a;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        transition: background 0.1s;
+        /* Schneller Wechsel für Effekte */
+        min-height: 100vh;
+        margin: 0;
+    }/* Effekt-Animation */
+
+    @keyframes alarmEffect {
+        0% {
+            background: #ff0000;
+        }
+
+        50% {
+            background: orange;
+        }
+
+        100% {
+            background: #ff0000;
+        }
+    }
+
+    .alarm-mode {
+        animation: alarmEffect 0.2s infinite;
+    }/* Nadel-Zittern bei Max */
+
+    @keyframes shake {
+        0% {
+            margin-left: 0px;
+        }
+
+        25% {
+            margin-left: 2px;
+        }
+
+        75% {
+            margin-left: -2px;
+        }
+
+        100% {
+            margin-left: 0px;
+        }
+    }
+
+    .shaking {
+        animation: shake 0.05s infinite;
+    }
+
+    .meter-container {
+        position: relative;
+        width: 300px;
+        height: 150px;
+        border: 5px solid #444;
+        border-bottom: none;
+        border-radius: 150px 150px 0 0;
+        background: linear-gradient(90deg, #00ff00, #ffff00, #ff8000, #ff0000);
+        overflow: hidden;
+        margin-top: 50px;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        background-color: #222;
+    }
+
+    .needle {
+        position: absolute;
+        bottom: 0;
+        left: calc(50% - 2px);
+        width: 4px;
+        height: 130px;
+        background: white;
+        transform-origin: bottom center;
+        transform: rotate(-90deg);
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        z-index: 10;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    }
+
+    .needle-center {
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 20px;
+        height: 20px;
+        background: white;
+        border-radius: 50%;
+        z-index: 11;
+    }
+
+    h1 {
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
+
+    .controls {
+        background: rgba(51, 51, 51, 0.9);
+        padding: 20px;
+        border-radius: 10px;
+        width: 320px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 20px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    label {
+        font-size: 0.75rem;
+        color: #ccc;
+        text-transform: uppercase;
+    }
+
+    input {
+        padding: 10px;
+        border-radius: 5px;
+        border: none;
+        background: #222;
+        color: white;
+        font-weight: bold;
+    }
+
+    input[type="range"] {
+        cursor: pointer;
+    }
+
+    .current-val-display {
+        text-align: center;
+        font-size: 3rem;
+        font-weight: bold;
+        margin: 10px 0;
+        text-shadow: 2px 2px 0px #000;
+    }
+
+    .status-text {
+        font-weight: bold;
+        text-align: center;
+        height: 20px;
+        margin-bottom: 10px;
+    }
+    </style>
+</head>
+<body>
+
+    <h1>Bullshit-o-Meter</h1>
+
+    <div class="meter-container" id="meterBox">
+        <div class="needle" id="needle"></div>
+        <div class="needle-center"></div>
+    </div>
+
+    <div class="current-val-display" id="display">0</div>
+    <div class="status-text" id="statusText">Normal</div>
+
+    <details>
+        <div class="controls">
+            <label>Min-Bereich:</label>
+            <input type="number" id="minInput" value="0" oninput="updateRange()">
+
+            <label>Max-Bereich:</label>
+            <input type="number" id="maxInput" value="100" oninput="updateRange()">
+
+            <hr style="border: 0; border-top: 1px solid #555; margin: 10px 0;">
+
+            <label>Wert einstellen:</label>
+            <input type="range" id="slider" min="0" max="100" value="0" oninput="syncValue(this.value)">
+            <input type="number" id="manualInput" value="0" oninput="syncValue(this.value)">
+        </div>
+    </details>
+    <script>
+    const needle = document.getElementById('needle');
+    const display = document.getElementById('display');
+    const slider = document.getElementById('slider');
+    const manualInput = document.getElementById('manualInput');
+    const minInput = document.getElementById('minInput');
+    const maxInput = document.getElementById('maxInput');
+    const statusText = document.getElementById('statusText');
+    const meterBox = document.getElementById('meterBox');
+
+    function updateRange() {
+        const min = parseFloat(minInput.value) || 0;
+        const max = parseFloat(maxInput.value) || 100;
+        slider.min = min;
+        slider.max = max;
+        syncValue(manualInput.value);
+    }
+
+    function syncValue(val) {
+        const min = parseFloat(minInput.value) || 0;
+        const max = parseFloat(maxInput.value) || 100;
+        let current = parseFloat(val) || 0;
+
+        // Werte synchronisieren
+        slider.value = current;
+        manualInput.value = current;
+        display.innerText = current;
+
+        // Prozent berechnen
+        const percentage = (current - min) / (max - min);
+
+        // Nadel bewegen
+        const rotation = (percentage * 180) - 90;
+        const safeRotation = Math.max(-100, Math.min(100, rotation)); // Leicht überdrehen erlaubt für Effekt
+        needle.style.transform = `rotate(${safeRotation}deg)`;
+
+        // Effekte prüfen
+        if (current >= max) {
+            document.body.classList.add('alarm-mode');
+            needle.classList.add('shaking');
+            statusText.innerText = "VOLLER BULLSHIT AUSSCHLAG!!!";
+            statusText.style.color = "white";
+            display.style.color = "white";
+        } else {
+            document.body.classList.remove('alarm-mode');
+            needle.classList.remove('shaking');
+            statusText.innerText = percentage > 0.7 ? "Hoch" : (percentage > 0.4 ? "Mittel" : "Normal");
+
+            // Farbe der Anzeige
+            if (percentage > 0.8)
+                display.style.color = '#ff0000';
+            else if (percentage > 0.4)
+                display.style.color = '#ffaa00';
+            else
+                display.style.color = '#00ff00';
+            statusText.style.color = display.style.color;
+        }
+    }
+
+    // Init
+    updateRange();
+    </script>
+</body>
+</html>

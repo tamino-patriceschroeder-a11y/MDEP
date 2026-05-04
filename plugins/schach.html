@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Farbiges Schachbrett – Rot vs. Blau</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+      background: #1e1e1e;
+      scale: 1.1;
+    }
+    .chessboard-container {
+      display: inline-block;
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 10px;
+      background-color: #3e3e3e;
+    }
+    .coords-row, .coords-row-bottom {
+      display: flex;
+      justify-content: center;
+      margin: 0 36px;
+      user-select: none;
+    }
+    .coords-row span, .coords-col span {
+      width: 44px;
+      text-align: center;
+      font-weight: bold;
+      color: #fff;
+    }
+    .board-wrapper {
+      display: flex;
+    }
+    .coords-col {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      margin-right: 2px;
+      user-select: none;
+    }
+    .coords-col span {
+      height: 44px;
+      line-height: 44px;
+      font-weight: bold;
+      color: #fff;
+    }
+    table {
+      border-spacing: 0;
+      border-collapse: collapse;
+      user-select: none;
+    }
+    td {
+      width: 44px;
+      height: 44px;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 32px;
+      cursor: pointer;
+    }
+    .white {
+      background: #eee;
+    }
+    .black {
+      background: #666;
+      color: white;
+    }
+    td.highlight {
+      outline: 3px solid #4CAF50;
+    }
+    .red { color: #c0392b; }   /* Deine Armee */
+    .blue { color: #2980b9; }  /* Meine Armee */
+  </style>
+</head>
+<body>
+  <div class="chessboard-container">
+    <div class="coords-row">
+      <span>a</span><span>b</span><span>c</span><span>d</span><span>e</span><span>f</span><span>g</span><span>h</span>
+    </div>
+    <div class="board-wrapper">
+      <div class="coords-col">
+        <span>8</span><span>7</span><span>6</span><span>5</span><span>4</span><span>3</span><span>2</span><span>1</span>
+      </div>
+      <table id="chessboard" aria-label="Schachbrett">
+        <!-- Zellen werden per JS eingefügt -->
+      </table>
+      <div class="coords-col" style="margin-left:2px;">
+        <span>8</span><span>7</span><span>6</span><span>5</span><span>4</span><span>3</span><span>2</span><span>1</span>
+      </div>
+    </div>
+    <div class="coords-row coords-row-bottom">
+      <span>a</span><span>b</span><span>c</span><span>d</span><span>e</span><span>f</span><span>g</span><span>h</span>
+    </div>
+  </div>
+
+  <script>
+    const piecesUnicode = {
+      'r': '♜', 'n': '♞', 'b': '♝', 'q': '♛', 'k': '♚', 'p': '♟',
+      'R': '♖', 'N': '♘', 'B': '♗', 'Q': '♕', 'K': '♔', 'P': '♙'
+    };
+
+    // Hinweis: Großbuchstaben = Rot (du), Kleinbuchstaben = Blau (ich)
+    let boardState = [
+  	['r','n','b','q','k','b','n','r'],
+ 	 ['p','p','p','p','p','p','p','p'],
+	 ['','','','','','','',''],
+	 ['','','','','','','',''],
+	 ['','','','','','','',''],
+	 ['','','','','','','',''],
+	 ['P','P','P','P','P','P','P','P'],
+	 ['R','N','B','Q','K','B','N','R']
+	];
+
+    let selected = null;
+
+    function createBoard() {
+      const table = document.getElementById('chessboard');
+      table.innerHTML = '';
+      for(let r=0; r<8; r++) {
+        const tr = document.createElement('tr');
+        for(let c=0; c<8; c++) {
+          const td = document.createElement('td');
+          let isWhite = (r + c) % 2 === 1;
+          td.className = isWhite ? 'white' : 'black';
+
+          td.dataset.row = r;
+          td.dataset.col = c;
+
+          let piece = boardState[r][c];
+          if (piece) {
+            td.textContent = piecesUnicode[piece];
+            td.classList.add(/[A-Z]/.test(piece) ? 'red' : 'blue');
+          }
+
+          td.addEventListener('click', () => onCellClick(r, c));
+          tr.appendChild(td);
+        }
+        table.appendChild(tr);
+      }
+      highlightSelected();
+    }
+
+    function highlightSelected() {
+      if (selected) {
+        const table = document.getElementById('chessboard');
+        const tr = table.rows[selected.row];
+        if(tr) {
+          const td = tr.cells[selected.col];
+          if(td) {
+            td.classList.add('highlight');
+          }
+        }
+      }
+    }
+
+    function onCellClick(r, c) {
+      if (selected) {
+        if (selected.row === r && selected.col === c) {
+          selected = null;
+          createBoard();
+          return;
+        }
+        boardState[r][c] = boardState[selected.row][selected.col];
+        boardState[selected.row][selected.col] = '';
+        selected = null;
+        createBoard();
+      } else {
+        if (boardState[r][c]) {
+          selected = { row: r, col: c };
+          createBoard();
+        }
+      }
+    }
+
+    createBoard();
+  </script>
+</body>
+</html>

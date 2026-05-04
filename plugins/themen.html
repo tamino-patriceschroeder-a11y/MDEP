@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro-Themen Generator 2025</title>
+    <style>
+        :root { --primary: #3498db; --bg: #f4f4f9; --text: #2c3e50; }
+        body { font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: var(--bg); }
+        .container { text-align: center; background: white; padding: 2.5rem; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 450px; }
+        #topic-display { font-size: 1.2rem; font-weight: 600; color: var(--text); margin: 2rem 0; min-height: 4rem; display: flex; align-items: center; justify-content: center; border: 2px dashed #eee; padding: 10px; border-radius: 8px; }
+        .controls { display: flex; flex-direction: column; gap: 12px; }
+        select, button { padding: 12px; border-radius: 8px; border: 1px solid #ddd; font-size: 1rem; cursor: pointer; transition: 0.3s; }
+        button { background: var(--primary); color: white; border: none; font-weight: bold; }
+        button:hover { background: #2980b9; transform: translateY(-2px); }
+        button:disabled { background: #bdc3c7; }
+        .upload-area { margin-top: 15px; font-size: 0.85rem; border-top: 1px solid #eee; pt: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Inspirations-Hub</h2>
+    
+    <!-- Kategorie-Wähler -->
+    <select id="category-select" onchange="changeCategory()">
+        <option value="tech">Web-Dev Trends 2025</option>
+        <option value="politik">Politik & Zeitgeschehen</option>
+        <option value="zukunft">Zukunft & Ethik</option>
+        <option value="custom" disabled id="custom-option">Eigene Liste (geladen)</option>
+    </select>
+
+    <div id="topic-display">Klicke auf den Button für Inspiration</div>
+    
+    <div class="controls">
+        <button id="draw-btn" onclick="generateTopic()">Zufälliges Thema</button>
+        
+        <div class="upload-area">
+            <p>Oder eigene JSON hochladen:</p>
+            <input type="file" id="file-input" accept=".json" onchange="handleFile(this.files)">
+        </div>
+    </div>
+</div>
+
+<script>
+    // Die fest integrierten Listen (Hardcoded für schnellen Zugriff)
+    const presetTopics = {
+        tech: [
+            "WebAssembly (Wasm) für High-Performance Apps",
+            "Server-Driven UI Architekturen",
+            "Edge Computing mit Cloudflare Workers",
+            "KI-Orchestrierung im Frontend",
+            "Automatisierte Accessibility-Pipelines"
+        ],
+        politik: [
+            "Migration und Asylpolitik 2025",
+            "Wirtschaftliche Wettbewerbsfähigkeit",
+            "Klimaschutz vs. Industriewachstum",
+            "Sicherheitspolitik in Europa"
+        ],
+        zukunft: [
+            "Ethik von autonomen Systemen",
+            "Bedingungsloses Grundeinkommen durch KI",
+            "Deepfakes und digitale Wahrheit",
+            "Besiedlung des Mars"
+        ]
+    };
+
+    let currentTopics = presetTopics.tech; // Start-Kategorie
+
+    // Wechselt die Kategorie über das Dropdown
+    function changeCategory() {
+        const val = document.getElementById('category-select').value;
+        if (val !== 'custom') {
+            currentTopics = presetTopics[val];
+            document.getElementById('topic-display').innerText = `Kategorie "${val}" gewählt!`;
+        }
+    }
+
+    function handleFile(files) {
+        const file = files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = JSON.parse(e.target.result);
+                const loadedList = Array.isArray(data) ? data : data.themen;
+
+                if (loadedList && loadedList.length > 0) {
+                    currentTopics = loadedList;
+                    // Custom Option im Menü freischalten
+                    const customOpt = document.getElementById('custom-option');
+                    customOpt.disabled = false;
+                    document.getElementById('category-select').value = 'custom';
+                    document.getElementById('topic-display').innerText = "Eigene Liste geladen!";
+                }
+            } catch (err) {
+                alert("Fehler beim JSON-Format.");
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    function generateTopic() {
+        const display = document.getElementById('topic-display');
+        const randomIndex = Math.floor(Math.random() * currentTopics.length);
+        
+        // Kleiner Animationseffekt für den Text
+        display.style.opacity = 0;
+        setTimeout(() => {
+            display.innerText = currentTopics[randomIndex];
+            display.style.opacity = 1;
+        }, 150);
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COUNDDOWN</title>
+    <style>
+    body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #1e1e1e;
+        margin: 0;
+        scale: 0.75;
+        }
+
+.countdown-container {
+    text-align: center;
+    background: #3e3e3e;
+    color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.settings {
+    margin-bottom: 20px;
+}
+
+input[type="datetime-local"], button {
+    padding: 10px;
+    margin: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border: none;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.countdown {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.time-unit {
+    background: #333;
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    min-width: 80px;
+}
+
+.time-unit span {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.time-unit p {
+    margin: 0;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+.milliseconds {
+    /* Millisekunden kÃ¶nnen kleiner dargestellt werden */
+    min-width: 100px; 
+}
+</style>
+</head>
+<body>
+    <div class="countdown-container">
+        <h1>Countdown</h1>
+
+        <div class="settings">
+            <label for="end-datetime">Ziel-Datum & Zeit:</label>
+            <!-- Erlaubt die Auswahl von Datum und Uhrzeit bis auf die Minute genau -->
+            <input type="datetime-local" id="end-datetime" required value="2025-12-31T20:59">
+            <button onclick="startCountdown()">Start Countdown</button>
+        </div>
+        
+        <div class="countdown" id="countdown">
+            <div class="time-unit" title="Wer das liest ist doof">
+                <span id="days">--</span>
+                <p>Tage</p>
+            </div>
+            <div class="time-unit">
+                <span id="hours">--</span><p>Stunden</p>
+            </div>
+            <div class="time-unit">
+                <span id="minutes">--</span>
+                <p>Minuten</p>
+            </div>
+            <div class="time-unit">
+                <span id="seconds">--</span>
+                <p>Sekunden</p>
+            </div>
+            <div class="time-unit milliseconds">
+                <span id="milliseconds">---</span>
+                <p>Ms</p>
+            </div>
+        </div>
+    </div>
+<script>
+    let countdownInterval;
+
+function startCountdown() {
+    // Stoppt den vorherigen Countdown, falls vorhanden
+    clearInterval(countdownInterval);
+
+    const endDatetimeInput = document.getElementById('end-datetime').value;
+    if (!endDatetimeInput) {
+        alert("Bitte ein Ziel-Datum und eine Zeit auswÃ¤hlen.");
+        return;
+    }
+
+    // Das Enddatum in Millisekunden seit der Unix-Epoche
+    const endDate = new Date(endDatetimeInput).getTime();
+
+    if (isNaN(endDate)) {
+        alert("UngÃ¼ltiges Datum/Zeit Format. Bitte prÃ¼fen Sie die Eingabe.");
+        return;
+    }
+
+    // Aktualisiert den Countdown alle 10 Millisekunden fÃ¼r Millisekunden-Genauigkeit
+    countdownInterval = setInterval(function() {
+        const now = new Date().getTime();
+        const distance = endDate - now; // Differenz in Millisekunden
+
+        if (distance < 0) {
+            clearInterval(countdownInterval);
+            document.getElementById('countdown').innerHTML = "<h2 style='color: red;'>COUNTDOWN ENDE</h2>";
+            return;
+        }
+
+        // Berechnet Tage, Stunden, Minuten, Sekunden und Millisekunden
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        const milliseconds = Math.floor(distance % 1000);
+
+        // Zeigt die Ergebnisse in den entsprechenden HTML-Elementen an
+        document.getElementById('days').innerText = formatTime(days);
+        document.getElementById('hours').innerText = formatTime(hours);
+        document.getElementById('minutes').innerText = formatTime(minutes);
+        document.getElementById('seconds').innerText = formatTime(seconds);
+        document.getElementById('milliseconds').innerText = formatMilliseconds(milliseconds);
+    }, 10); // Intervall von 10ms fÃ¼r flÃ¼ssigere Millisekundenanzeige
+
+    updateCurrentYear(); // Setzt das Eingabefeld auf das aktuelle Jahr (optional, aber hilfreich)
+}
+
+// Hilfsfunktion, um sicherzustellen, dass Zahlen zweistellig sind
+function formatTime(time) {
+    return time < 10 ? `0${time}` : time;
+}
+
+// Hilfsfunktion, um sicherzustellen, dass Millisekunden dreistellig sind
+function formatMilliseconds(time) {
+    if (time < 10) return `00${time}`;
+    if (time < 100) return `0${time}`;
+    return time;
+}
+
+// Optionale Funktion: Setzt das Eingabefeld standardmÃ¤ÃŸig auf ein Datum im nÃ¤chsten Monat
+function updateCurrentYear() {
+    const now = new Date();
+    // Beispiel: setzt das Standarddatum auf den ersten des nÃ¤chsten Monats
+    const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1, 0, 0, 0); 
+    const formattedDate = nextMonth.toISOString().slice(0, 16);
+    document.getElementById('end-datetime').value = formattedDate;
+}
+
+// Initialer Aufruf beim Laden der Seite
+updateCurrentYear();
+startCountdown();</script></body>
+    </html>
+  

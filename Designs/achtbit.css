@@ -1,0 +1,129 @@
+/* === Retro Pixel Theme === */
+body {
+  margin: 0;
+  font-family: "Press Start 2P", monospace; /* typische 8-Bit Schrift */
+  background: #000000; /* tiefes Schwarz */
+  color: #ffffff;      /* klassisches Weiß */
+    /* Innenabstand für den Inhalt */
+    padding: 20px;
+    
+    /* Der äußere Rand, der die Hintergrundfarbe #0e0e0e durchscheinen lässt */
+    margin: 20px; 
+    
+    /* Die sichtbare Linie als Rand */
+    border: 1px solid #555;
+    
+    /* Optional: abgerundete Ecken */
+    border-radius: 8px;
+
+    /* Optional: Maximale Breite für bessere Lesbarkeit auf großen Bildschirmen */
+    max-width: 900px;
+    /* Zentriert den Body, wenn er eine max-width hat */
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+header {
+  background: #111111;
+  color: #ff0000; /* knalliges Rot */
+  padding: 10px;
+  text-align: center;
+  font-size: 1.2em;
+  border-bottom: 4px solid #00ffff; /* Cyan-Kante */
+}
+
+.pane {
+  background: #222222;
+  color: #ffffff;
+  margin: 5px;
+  padding: 10px;
+  border: 4px solid #ff00ff; /* Magenta-Rahmen */
+  image-rendering: pixelated; /* Retro-Kanten */
+}
+
+.inline {background:#00e2fe; padding:2px 4px; border-radius:3px; font-family:monospace; color: #000;}
+
+.code-lang { position: absolute; top: 0; left: 0; font-size: 0.8em; font-family: Arial, sans-serif; color: #ccc; padding: 2px 5px; background: #000000; border-bottom-right-radius: 3px; }
+a {
+  color: #00ffff; /* Cyan */
+}
+a:hover {
+  color: #ffff00; /* Gelb */
+}
+
+button {
+  background: #ff0000;
+  color: #ffffff;
+  border: 3px solid #00ffff;
+  cursor: pointer;
+  font-family: "Press Start 2P", monospace;
+}
+button:hover {
+  background: #00ffff;
+  color: #000000;
+}
+
+pre, table, details {
+  background: #000000;
+  color: #ffffff;
+  border: 3px solid #ff00ff;
+}
+details[open] { background: #000000; }
+
+blockquote {
+  border-left: 6px solid #ffff00;
+  color: #ffffff;
+  background: #111111;
+  padding-left: 10px;
+}
+
+hr {
+  border: 2px dashed #00ffff;
+}
+
+th {
+  background: #ff00ff;
+  color: #000000;
+}
+td {
+  background: #222222;
+}
+tr:nth-child(even) {
+  background: #111111;
+}
+tr:hover {
+  background: #00ffff;
+  color: #000000;
+}
+
+caption {
+  font-size: 1em;
+  font-weight: bold;
+  color: #ffff00;
+  margin-bottom: 10px;
+}
+
+/* Info Boxes */
+.info-box {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 3px solid #ff0000;
+  background: #111111;
+  color: #ffffff;
+  image-rendering: pixelated;
+}
+.info-box .icon-container svg {
+  fill: #00ffff;
+}
+.info-box.info {
+  background-color: #222222;
+  border-left-color: #00ffff;
+}
+.info-box.warning {
+  background-color: #333333;
+  border-left-color: #ffff00;
+  color: #ffff00;
+}

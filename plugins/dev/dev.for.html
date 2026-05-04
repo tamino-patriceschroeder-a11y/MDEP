@@ -1,0 +1,174 @@
+
+    <html>
+      <head><title>projekt</title><style></style></head>
+      <body><!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>For-Schleifen Simulator 2D (2026)</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #eef2f7; padding: 20px; color: #333; }
+        .container { max-width: 900px; margin: auto; }
+        .controls { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .input-group { margin-bottom: 12px; }
+        label { font-weight: bold; display: block; margin-bottom: 5px; font-size: 0.9em; }
+        input, select { padding: 8px; width: 100%; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+        button { grid-column: span 2; padding: 12px; background: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1em; font-weight: bold; transition: 0.3s; }
+        button:hover { background: #0056b3; }
+        
+        #code-display { margin-top: 20px; font-family: 'Fira Code', monospace; background: #282c34; color: #abb2bf; padding: 15px; border-radius: 8px; border-left: 5px solid #61dafb; }
+        .keyword { color: #c678dd; }
+        .number { color: #d19a66; }
+        .func { color: #61dafb; }
+
+        .canvas-container { margin-top: 20px; background: white; padding: 10px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; }
+        canvas { border: 1px solid #eee; width: 100%; height: auto; background: #fff; }
+        
+        #visual-output { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 8px; }
+        .box { width: 40px; height: 40px; background: #28a745; color: white; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 0.8em; animation: pop 0.3s ease-out; }
+        @keyframes pop { from { transform: scale(0); } to { transform: scale(1); } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Advanced For-Loop Simulator (2D)</h2>
+
+    <div class="controls">
+        <div class="left">
+            <div class="input-group">
+                <label>Start (i = )</label>
+                <input type="number" id="start" value="-10" step="0.1">
+            </div>
+            <div class="input-group">
+                <label>Bedingung (i < )</label>
+                <input type="number" id="end" value="10" step="0.1">
+            </div>
+            <div class="input-group">
+                <label>Schrittweite (i += )</label>
+                <input type="number" id="step" value="0.5" step="0.1">
+            </div>
+        </div>
+        <div class="right">
+            <div class="input-group">
+                <label>2D-Funktion: f(i) =</label>
+                <select id="math-func">
+                    <option value="i">i (Linear)</option>
+                    <option value="i*i * 0.1">i² * 0.1 (Parabel)</option>
+                    <option value="Math.sin(i) * 5">sin(i) * 5 (Welle)</option>
+                    <option value="Math.cos(i) * i">cos(i) * i (Spirale/Chaos)</option>
+                    <option value="Math.tan(i)">tan(i) (Tangens)</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Anzeige-Modus</label>
+                <select id="mode">
+                    <option value="2d">2D Koordinatensystem</option>
+                    <option value="box">Klassische Boxen</option>
+                </select>
+            </div>
+        </div>
+        <button onclick="runSimulation()">Simulation starten</button>
+    </div>
+
+    <div id="code-display">
+        <span class="keyword">for</span> ( <span class="keyword">let</span> i = <span class="number" id="code-start">0</span>; i < <span class="number" id="code-end">10</span>; i += <span class="number" id="code-step">1</span> ) { <br>
+            <span class="keyword">let</span> y = <span class="func" id="code-func">f(i)</span>; <br>
+            zeichnePunkt(i, y); <br>
+        }
+    </div>
+
+    <div id="canvas-area" class="canvas-container">
+        <canvas id="myCanvas" width="800" height="400"></canvas>
+    </div>
+
+    <div id="visual-output"></div>
+</div>
+
+<script>
+    function runSimulation() {
+        const start = parseFloat(document.getElementById('start').value);
+        const end = parseFloat(document.getElementById('end').value);
+        const step = parseFloat(document.getElementById('step').value);
+        const mode = document.getElementById('mode').value;
+        const funcStr = document.getElementById('math-func').value;
+        
+        const output = document.getElementById('visual-output');
+        const canvas = document.getElementById('myCanvas');
+        const ctx = canvas.getContext('2d');
+        const canvasArea = document.getElementById('canvas-area');
+
+        // UI Update
+        document.getElementById('code-start').innerText = start;
+        document.getElementById('code-end').innerText = end;
+        document.getElementById('code-step').innerText = step;
+        document.getElementById('code-func').innerText = funcStr;
+
+        output.innerHTML = '';
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        if (step <= 0) {
+            alert("Schrittweite muss > 0 sein!");
+            return;
+        }
+
+        if (mode === 'box') {
+            canvasArea.style.display = 'none';
+            output.style.display = 'flex';
+            for (let i = start; i < end; i += step) {
+                const box = document.createElement('div');
+                box.className = 'box';
+                box.innerText = i.toFixed(1);
+                output.appendChild(box);
+            }
+        } else {
+            canvasArea.style.display = 'block';
+            output.style.display = 'none';
+            drawCoordinateSystem(ctx, canvas);
+
+            ctx.beginPath();
+            ctx.strokeStyle = '#007bff';
+            ctx.lineWidth = 3;
+
+            for (let i = start; i < end; i += step) {
+                // Berechne Y basierend auf der Auswahl
+                let y = eval(funcStr); 
+                
+                // Umrechnung auf Canvas-Koordinaten (Zentrum ist 0,0)
+                let canvasX = canvas.width / 2 + (i * 30);
+                let canvasY = canvas.height / 2 - (y * 30);
+
+                if (i === start) ctx.moveTo(canvasX, canvasY);
+                else ctx.lineTo(canvasX, canvasY);
+
+                // Kleiner Punkt für jeden Schleifendurchlauf
+                ctx.fillStyle = '#f92672';
+                ctx.fillRect(canvasX-2, canvasY-2, 4, 4);
+            }
+            ctx.stroke();
+        }
+    }
+
+    function drawCoordinateSystem(ctx, canvas) {
+        ctx.strokeStyle = '#ddd';
+        ctx.lineWidth = 1;
+        // X-Achse
+        ctx.beginPath();
+        ctx.moveTo(0, canvas.height / 2);
+        ctx.lineTo(canvas.width, canvas.height / 2);
+        ctx.stroke();
+        // Y-Achse
+        ctx.beginPath();
+        ctx.moveTo(canvas.width / 2, 0);
+        ctx.lineTo(canvas.width / 2, canvas.height);
+        ctx.stroke();
+    }
+
+    // Initialer Start
+    runSimulation();
+</script>
+</body>
+</html>
+<script></script></body>
+    </html>
+  
